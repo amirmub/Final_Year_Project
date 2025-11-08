@@ -1,13 +1,28 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import img from "../../assets/img/logo.jpg";
 
 function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3 px-4">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2  px-4" style={{position: "sticky", top: 0, zIndex: 1000}}>
       <div className="container-fluid">
         {/* Brand */}
-        <a className="navbar-brand fw-bold text-primary" href="#">
-          JIMMA UNIVERSITY
+        <a
+          className="navbar-brand fw-bold text-primary position-relative"
+          href="#"
+          style={{ height: "60px" }}
+        >
+          <img
+            src={img}
+            alt="Logo"
+            style={{
+              height: "75px",
+              width: "90px",
+              position: "absolute",
+              top: "-8px", // moves it upward
+              left: "10px",
+            }}
+          />
         </a>
 
         {/* Toggler */}

@@ -1,3 +1,4 @@
+import Facts from "../Facts/Facts";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 
@@ -11,7 +12,7 @@ export default function LandingPage() {
       <section
         className="text-center text-white d-flex align-items-center"
         style={{
-          backgroundImage: "url('../../assets/img/banners.png')", // your image path here
+          backgroundImage: "url('../../assets/img/ban copy.png')", // your image path here
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -94,9 +95,9 @@ export default function LandingPage() {
       </section>
 
       <section className="py-5 text-center bg-light">
-        <h2 className="fw-bold mb-4">Simple 3-Step Process</h2>
+        <h2 className="fw-bold mb-5">Simple 3-Step Process</h2>
         <div className="container">
-          <div className="d-flex justify-content-center align-items-center gap-5 flex-wrap">
+          <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
             <div className="text-center">
               <div
                 className="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center"
@@ -105,11 +106,12 @@ export default function LandingPage() {
                   height: "60px",
                   fontSize: "24px",
                   fontWeight: "bold",
+                  margin: "0 auto",
                 }}
               >
                 1
               </div>
-              <h6 className="fw-semibold mt-3">Create Account</h6>
+              <h5 className="fw-semibold mt-3">Create Account</h5>
               <p className="text-muted small">
                 Sign up using your university email.
               </p>
@@ -126,11 +128,12 @@ export default function LandingPage() {
                   height: "60px",
                   fontSize: "24px",
                   fontWeight: "bold",
+                  margin: "0 auto",
                 }}
               >
                 2
               </div>
-              <h6 className="fw-semibold mt-3">Submit Title</h6>
+              <h5 className="fw-semibold mt-3">Submit Title</h5>
               <p className="text-muted small">
                 Enter your proposed research project title.
               </p>
@@ -147,11 +150,12 @@ export default function LandingPage() {
                   height: "60px",
                   fontSize: "24px",
                   fontWeight: "bold",
+                  margin: "0 auto",
                 }}
               >
                 3
               </div>
-              <h6 className="fw-semibold mt-3">Get Results</h6>
+              <h5 className="fw-semibold mt-3">Get Results</h5>
               <p className="text-muted small">
                 Receive similarity analysis instantly.
               </p>
@@ -159,30 +163,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      <section
-        className="text-white text-center py-5"
-        style={{ background: "#1976d2" }}
-      >
-        <div className="container d-flex justify-content-around">
-          <div>
-            <h3>290+</h3>
-            <p>Projects Analyzed</p>
-          </div>
-          <div>
-            <h3>55%</h3>
-            <p>Reduced Duplication</p>
-          </div>
-          <div>
-            <h3>580+</h3>
-            <p>Active Users</p>
-          </div>
-          <div>
-            <h3>5+</h3>
-            <p>Departments</p>
-          </div>
-        </div>
-      </section>
+      {/* Facts Section */}
+      <Facts />
 
       {/* Testimonials */}
       <section className="container py-5 text-center">
@@ -217,9 +199,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="text-center py-5" style={{ background: "#fbc02d" }}>
+      <section className="text-center" style={{ background: "#fbc02d",padding: "100px 0" }}>
         <h2 className="fw-bold">Ready to Check Your Title?</h2>
-        <button className="btn btn-dark mt-3 px-4">Get Started Now</button>
+        <h6 className="my-3">Join hundreds of students ensuring their project titles are unique.</h6>
+        <button className="btn px-5 py-2" style={{background :'#2C74E0',color : "white"}}>Get Started Now</button>
+        <h6 className="my-3">it's free for all private university students</h6>
       </section>
 
       {/* Footer */}
