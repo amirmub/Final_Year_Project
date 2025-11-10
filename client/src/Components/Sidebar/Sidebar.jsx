@@ -11,8 +11,8 @@ const Sidebar = () => {
     { path: "/submit-title", label: "Submit Title", icon: <FaUpload /> },
     { path: "/my-submissions", label: "My Submissions", icon: <FaBook /> },
     { path: "/announcements", label: "Announcements", icon: <FaBell /> },
-    { path: "/profile-settings", label: "Profile Settings", icon: <FaUser /> },
-    { path: "/help-support", label: "Help & Support", icon: <FaQuestionCircle /> },
+    // { path: "/profile-settings", label: "Profile Settings", icon: <FaUser /> },
+    { path: "/faq", label: "FAQ", icon: <FaQuestionCircle /> }
   ];
 
   return (
