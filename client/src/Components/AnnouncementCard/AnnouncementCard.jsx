@@ -1,5 +1,5 @@
 import { Card, Badge } from "react-bootstrap";
-import { FaTrophy, FaUsers, FaUniversity } from "react-icons/fa";
+import { FaTrophy, FaUsers, FaUniversity, FaCalendarAlt } from "react-icons/fa";
 import winnerImg from "../../../assets/img/winners.png"; // ← replace with your actual image path
 
 const AnnouncementCard = () => {
@@ -49,12 +49,23 @@ const AnnouncementCard = () => {
             </p>
           </div>
 
-          <div>
+          <div className="mb-3">
             <h6 className="text-muted fw-semibold small mb-1">
               <FaUniversity className="me-2 text-secondary" />
               Department
             </h6>
             <p className="mb-0 small text-dark">Computing and Informatics</p>
+          </div>
+
+          {/* Submission Deadline Section */}
+          <div className="pt-2 border-top">
+            <h6 className="text-muted fw-semibold small mb-1">
+              <FaCalendarAlt className="me-2 text-danger" />
+              Submission Deadline
+            </h6>
+            <p className="mb-0 small text-dark">
+              <strong>📅 November 25, 2025</strong> — Final project titles must be submitted before midnight.
+            </p>
           </div>
         </div>
       </Card.Body>

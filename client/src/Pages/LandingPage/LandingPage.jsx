@@ -39,7 +39,7 @@ export default function LandingPage() {
         <div className="row g-4 justify-content-center">
           <div className="col-md-4">
             <div className="p-4 rounded shadow border-0 h-100">
-              <i className="bi bi-search fs-1 text-primary"></i>
+              <i className="bi bi-search fs-1 text-warning"></i>
               <h5 className="mt-3 fw-semibold">Instant Detection</h5>
               <p className="text-muted">
                 Check similarity in seconds with AI-powered analysis.
@@ -48,7 +48,7 @@ export default function LandingPage() {
           </div>
           <div className="col-md-4">
             <div className="p-4 rounded shadow border-0 h-100">
-              <i className="bi bi-archive fs-1 text-primary"></i>
+              <i className="bi bi-archive fs-1 text-warning"></i>
               <h5 className="mt-3 fw-semibold">Comprehensive Database</h5>
               <p className="text-muted">
                 Access previous final-year research titles instantly.
@@ -57,7 +57,7 @@ export default function LandingPage() {
           </div>
           <div className="col-md-4">
             <div className="p-4 rounded shadow border-0 h-100">
-              <i className="bi bi-shield-check fs-1 text-primary"></i>
+              <i className="bi bi-shield-check fs-1 text-warning"></i>
               <h5 className="mt-3 fw-semibold">Prevent Duplication</h5>
               <p className="text-muted">
                 Ensure your title is original and accepted.
@@ -66,7 +66,7 @@ export default function LandingPage() {
           </div>
           <div className="col-md-4">
             <div className="p-4 rounded shadow border-0 h-100">
-              <i className="bi bi-graph-up fs-1 text-primary"></i>
+              <i className="bi bi-graph-up fs-1 text-warning"></i>
               <h5 className="mt-3 fw-semibold">Similarity Score</h5>
               <p className="text-muted">
                 Get a clear similarity percentage comparison.
@@ -75,7 +75,7 @@ export default function LandingPage() {
           </div>
           <div className="col-md-4">
             <div className="p-4 rounded shadow border-0 h-100">
-              <i className="bi bi-bell fs-1 text-primary"></i>
+              <i className="bi bi-bell fs-1 text-warning"></i>
               <h5 className="mt-3 fw-semibold">Real-Time Alerts</h5>
               <p className="text-muted">
                 Receive updates when similar titles are detected.
@@ -84,7 +84,7 @@ export default function LandingPage() {
           </div>
           <div className="col-md-4">
             <div className="p-4 rounded shadow border-0 h-100">
-              <i className="bi bi-people fs-1 text-primary"></i>
+              <i className="bi bi-people fs-1 text-warning"></i>
               <h5 className="mt-3 fw-semibold">Easy Collaboration</h5>
               <p className="text-muted">
                 Students and advisors work better together.
@@ -189,7 +189,7 @@ export default function LandingPage() {
           ].map((s, i) => (
             <div className="col-md-4" key={i}>
               <div className="p-3 rounded shadow border-0 h-100 bg-white">
-                <i className="bi bi-person-circle fs-1 text-primary"></i>
+                <i className="bi bi-person-circle fs-1 text-warning"></i>
                 <p className="mt-3 text-muted">"{s.text}"</p>
                 <h6 className="fw-bold mt-3">{s.name}</h6>
                 <p className="text-muted small">{s.dept}</p>
@@ -199,10 +199,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="text-center" style={{ background: "#fbc02d",padding: "80px 0" }}>
+      <section className="text-center" style={{ background: "#F1F1F1",padding: "80px 0" }}>
         <h2 className="fw-bold">Ready to Check Your Title?</h2>
         <h6 className="my-3">Join hundreds of students ensuring their project titles are unique.</h6>
-        <button className="btn px-5 py-2" style={{background :'#2C74E0',color : "white"}}>Get Started Now</button>
+        <button className="btn px-5 py-2 bg-warning fw-semibold">Get Started Now</button>
         <h6 className="my-3">it's free for all private university students</h6>
       </section>
 

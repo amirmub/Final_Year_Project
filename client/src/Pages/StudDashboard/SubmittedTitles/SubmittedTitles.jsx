@@ -5,7 +5,7 @@ import { Col, Container, Row } from 'react-bootstrap'
 
 function SubmittedTitles() {
   return (
-    <>
+    <div style={{backgroundColor: "#F7F7F7"}}>
     <Header />
      <Container fluid>
         <Row>
@@ -17,7 +17,7 @@ function SubmittedTitles() {
           </Col>
         </Row>
       </Container>
-    </>
+    </div>
   )
 }
 

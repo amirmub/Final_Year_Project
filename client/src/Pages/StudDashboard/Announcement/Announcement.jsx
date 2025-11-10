@@ -5,7 +5,7 @@ import AnnouncementCard from '../../../Components/AnnouncementCard/AnnouncementC
 
 function Announcement() {
   return (
-    <>
+    <div style={{backgroundColor: "#F7F7F7"}}>
       <Header />
      <Container fluid>
         <Row>
@@ -17,7 +17,7 @@ function Announcement() {
           </Col>
         </Row>
       </Container>
-    </>
+    </div>
   )
 }
 

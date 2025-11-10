@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
 import { FaHome, FaUpload, FaBook, FaBell, FaUser, FaQuestionCircle } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
@@ -15,6 +15,14 @@ const Sidebar = () => {
     { path: "/faq", label: "FAQ", icon: <FaQuestionCircle /> }
   ];
 
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992); // lg breakpoint
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 992);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div
       className="d-flex flex-column vh-100 p-3 shadow-sm text-white"
@@ -22,9 +30,10 @@ const Sidebar = () => {
         background: "linear-gradient(180deg, #2C74E0 0%, #1B4DA0 100%)",
         minWidth: "220px",
         minHeight: "80vh",
-        position: "sticky",
-        top: 0,
+        position: isDesktop ? "fixed" : "sticky",
+        top: isDesktop ? "68px" : "69px",
         left: 0,
+        zIndex: 999,
       }}
     >
       {/* Logo / Title */}

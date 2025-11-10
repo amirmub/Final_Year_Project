@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaBookOpen, FaUserPlus } from "react-icons/fa";
-import logo from "../../../assets/img/logo.jpg";
+import logo from "../../../assets/img/jimma_logo.png";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -43,7 +42,7 @@ export default function RegisterPage() {
           className="d-flex flex-column align-items-center justify-content-center text-center text-white px-4"
           style={{
             backdropFilter: "blur(4px)",
-            background: "rgba(44, 116, 224, 0.9)",
+            background: "#2E76E1",
           }}
         >
           <Link to="/" className="mb-3">
@@ -53,14 +52,14 @@ export default function RegisterPage() {
               style={{
                 width: "180px",
                 marginBottom: "20px",
-                // borderRadius: "50%",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                height: "150px",
+                width: "150px",
               }}
             />
           </Link>
 
           <h2 className="fw-bold mb-3" style={{ fontSize: "2rem" }}>
-            Join Our Community 🎓
+            Join Our Community
           </h2>
           <p style={{ color: "#e0edff", fontSize: "1.1rem" }}>
             Create an account to submit and check project titles
@@ -108,7 +107,7 @@ export default function RegisterPage() {
                 value={formData.fullName}
                 onChange={handleChange}
                 required
-                className="py-2"
+                className="py-1"
               />
             </Form.Group>
 
@@ -121,7 +120,7 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="py-2"
+                className="py-1"
               />
             </Form.Group>
 
@@ -134,7 +133,7 @@ export default function RegisterPage() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="py-2"
+                className="py-1"
               />
             </Form.Group>
 
@@ -147,7 +146,7 @@ export default function RegisterPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                className="py-2"
+                className="py-1"
               />
             </Form.Group>
 

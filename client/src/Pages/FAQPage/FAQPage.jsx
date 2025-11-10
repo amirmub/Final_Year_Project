@@ -5,7 +5,7 @@ import Sidebar from "../../Components/Sidebar/Sidebar";
 
 const FAQPage = () => {
   return (
-   <div style={{backgroundColor: "#F7F7F7"}}>
+   <div style={{backgroundColor: "#F7F7F7",paddingBottom: "30px"}}>
    <Header />
      <Container fluid>
         <Row>
@@ -29,7 +29,7 @@ const FAQPage = () => {
       </Card>
 
       {/* FAQ Section */}
-      <Accordion defaultActiveKey="0" alwaysOpen className="shadow-sm rounded-4 border-0">
+      <Accordion eventKey="0" alwaysOpen className="shadow-sm rounded-4 border-0">
         <Accordion.Item eventKey="0">
           <Accordion.Header>
             <FaBook className="text-warning me-2" />

@@ -27,9 +27,9 @@ const MySubmissions = () => {
   return (
     <div className="mt-4">
       <Card className="border-0 shadow rounded-4 p-4">
-        <div className="d-flex align-items-center mb-3">
+        <div className="d-flex align-items-center mb-3 pt-2">
           <FaBookOpen className="text-primary me-2 fs-4" />
-          <h5 className="fw-bold text-primary m-0">My Submission</h5>
+          <h5 className="fw-bold text-primary m-0 ">My Submission</h5>
         </div>
 
         <div className="p-2">

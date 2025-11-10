@@ -2,7 +2,7 @@ import { Form, Button, Card } from "react-bootstrap";
 
 const QuickTitleCheck = () => (
   <Card className="border-0 shadow-lg mt-2 p-4 rounded-4">
-    <div className="d-flex align-items-center mb-3">
+    <div className="d-flex align-items-center mb-2">
       <h5 className="fw-bold text-primary m-0 flex-grow-1">📘Submit Your Title</h5>
     </div>
     <Form className="mt-1">

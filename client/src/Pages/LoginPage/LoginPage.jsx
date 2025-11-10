@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaUserGraduate, FaBookOpen } from "react-icons/fa";
-import logo from "../../../assets/img/logo.jpg";
+import logo from "../../../assets/img/jimma_logo.png";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -40,18 +40,18 @@ export default function LoginPage() {
           className="d-flex flex-column align-items-center justify-content-center text-center text-white px-4"
           style={{
             backdropFilter: "blur(4px)",
-            background: "rgba(44, 116, 224, 0.9)",
+            background: "#2E76E1",
           }}
         >
-          <Link to="/" className="mb-3">
+          <Link to="/" className="mb-0">
             <img
               src={logo}
               alt="Logo"
               style={{
                 width: "180px",
                 marginBottom: "20px",
-                // borderRadius: "50%",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                height: "150px",
+                width: "150px",
               }}
             />
           </Link>
