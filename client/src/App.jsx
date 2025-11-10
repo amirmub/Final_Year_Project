@@ -1,8 +1,8 @@
 import './App.css'
-import LandingPage from './LandingPage/LandingPage'
+import LandingPage from './Pages/LandingPage/LandingPage'
 import { Route, Routes } from 'react-router-dom'
-import RegisterPage from './RegisterPage/RegisterPage'
-import LoginPage from './LoginPage/LoginPage'
+import RegisterPage from './Pages/RegisterPage/RegisterPage'
+import LoginPage from './Pages/LoginPage/LoginPage'
 
 function App() {
 

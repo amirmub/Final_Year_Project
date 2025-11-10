@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaUserGraduate, FaBookOpen } from "react-icons/fa";
-import logo from "../../assets/img/logo.jpg";
+import logo from "../../../assets/img/logo.jpg";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({

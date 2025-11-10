@@ -1,6 +1,6 @@
-import Facts from "../Facts/Facts";
-import Footer from "../Footer/Footer";
-import Navbar from "../Navbar/Navbar";
+import Facts from "../../Components/Facts/Facts";
+import Footer from "../../Components/Footer/Footer";
+import Navbar from "../../Components/Navbar/Navbar";
 
 export default function LandingPage() {
   return (

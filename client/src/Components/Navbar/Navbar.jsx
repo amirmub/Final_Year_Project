@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import img from "../../assets/img/logo.jpg";
+import img from "../../../assets/img/logo.jpg";
 import { Link } from "react-router-dom";
 
 function Navbar() {
