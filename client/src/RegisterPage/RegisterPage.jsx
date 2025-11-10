@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import logo from "../../assets/img/logo.jpg";
 import { Link } from "react-router-dom";
+import { FaBookOpen, FaUserPlus } from "react-icons/fa";
+import logo from "../../assets/img/logo.jpg";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -23,49 +24,83 @@ export default function RegisterPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    // Handle form submission here
   };
 
   return (
-    <Container fluid className="min-vh-70 d-flex">
-      <Row className="flex-grow-1">
+    <Container
+      fluid
+      className="d-flex"
+      style={{
+        minHeight: "90vh",
+        background: "linear-gradient(to right, #2C74E0, #4F9EFF)",
+        fontSize: "15px",
+      }}
+    >
+      <Row className="flex-grow-1 w-100">
         {/* Left Side */}
         <Col
           md={6}
-          className="d-flex flex-column align-items-center justify-content-center text-center text-white"
-          style={{ backgroundColor: "#2C74E0" }}
+          className="d-flex flex-column align-items-center justify-content-center text-center text-white px-4"
+          style={{
+            backdropFilter: "blur(4px)",
+            background: "rgba(44, 116, 224, 0.9)",
+          }}
         >
-          <Link to="/">
+          <Link to="/" className="mb-3">
             <img
-            src={logo}
-            alt="Logo"
-            style={{ width: "180px", marginBottom: "20px" }}
-          />
+              src={logo}
+              alt="Logo"
+              style={{
+                width: "180px",
+                marginBottom: "20px",
+                borderRadius: "50%",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              }}
+            />
           </Link>
-          <h2>Join Our Community</h2>
-          <p style={{ color: "#d0e6ff" }}>Create an account to submit and check project titles</p>
+
+          <h2 className="fw-bold mb-3" style={{ fontSize: "2rem" }}>
+            Join Our Community 🎓
+          </h2>
+          <p style={{ color: "#e0edff", fontSize: "1.1rem" }}>
+            Create an account to submit and check project titles
+          </p>
+
           <ul style={{ color: "#d0e6ff" }} className="list-unstyled">
-            <li>✔ Submit project titles</li>
-            <li>✔ Access previous projects</li>
+            <li>✔ Create a personal profile</li>
+            <li className="my-2">✔ Access previous projects</li>
             <li>✔ Receive announcements</li>
           </ul>
-          <p className="mt-3"><em>"We are in the Community"</em></p>
+
+          <p className="mt-2 fst-italic" style={{ opacity: 0.9 }}>
+            "We are in the Community"
+          </p>
         </Col>
 
         {/* Right Side - Form */}
         <Col
           md={6}
-          className="d-flex align-items-center justify-content-center"
+          className="d-flex align-items-center justify-content-center bg-white"
+          style={{ minHeight: "100vh" }}
         >
           <Form
             onSubmit={handleSubmit}
-            className="p-4 shadow rounded"
-            style={{ width: "100%", maxWidth: "450px" }}
+            className="py-3 px-4 mt-2 shadow-lg rounded-4 small-placeholder"
+            style={{
+              width: "100%",
+              maxWidth: "450px",
+              border: "1px solid #e5e5e5",
+              fontSize: "14.5px",
+            }}
           >
-            <h4 className="text-center mb-4">Create Your Account</h4>
+            <h4 className="text-center mb-4 fw-bold text-primary">
+              Create Your Account
+            </h4>
 
             <Form.Group className="mb-3">
-              <Form.Label style={{ fontSize: "12px" }}>Full Name *</Form.Label>
+              <Form.Label className="fw-semibold" >
+                Full Name *
+              </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter your full name"
@@ -73,11 +108,12 @@ export default function RegisterPage() {
                 value={formData.fullName}
                 onChange={handleChange}
                 required
+                className="py-2"
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Email Address *</Form.Label>
+              <Form.Label className="fw-semibold">Email Address *</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter your email"
@@ -85,11 +121,12 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                className="py-2"
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Password *</Form.Label>
+              <Form.Label className="fw-semibold">Password *</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Create a strong password"
@@ -97,11 +134,12 @@ export default function RegisterPage() {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                className="py-2"
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Confirm Password *</Form.Label>
+              <Form.Label className="fw-semibold">Confirm Password *</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Confirm your password"
@@ -109,6 +147,7 @@ export default function RegisterPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
+                className="py-2"
               />
             </Form.Group>
 
@@ -123,18 +162,37 @@ export default function RegisterPage() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100 mb-2">
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-100 py-2 mb-2 fw-semibold"
+              style={{
+                background: "linear-gradient(to right, #2C74E0, #4F9EFF)",
+                border: "none",
+                transition: "transform 0.2s ease-in-out",
+              }}
+              onMouseOver={(e) => (e.target.style.transform = "scale(1.02)")}
+              onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+            >
               Create Account
             </Button>
-            <p className="text-center">
-              Already have an account? <a href="/login">Login</a>
+
+            <p className="text-center mt-1">
+              Already have an account?{" "}
+              <Link to="/login" className="text-primary fw-semibold">
+                Login
+              </Link>
             </p>
-            <small className="text-muted text-center d-block">
-              Your information is protected and confidential
+
+            <small className="text-muted text-center d-block mt-2">
+              Your information is protected and confidential 🔒
             </small>
           </Form>
         </Col>
       </Row>
+
+      {/* Inline animation styles */}
+
     </Container>
   );
 }
