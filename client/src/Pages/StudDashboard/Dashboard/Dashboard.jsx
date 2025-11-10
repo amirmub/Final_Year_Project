@@ -16,21 +16,51 @@ function Dashboard() {
           </Col>
 
           {/* Main Content */}
-          <Col md={9} lg={10} className="p-5" style={{ backgroundColor: "#f8f9fa", paddingTop: "800px" }}>
+          <Col
+            md={9}
+            lg={10}
+            className="p-5"
+            style={{
+              backgroundColor: "#f4f6f9",
+              minHeight: "100vh",
+            }}
+          >
+            <h4 className="fw-bold mb-3 text-primary">Dashboard Overview</h4>
             <Row className="g-4">
-              <Col md={3}> <StatsCard title="My Submissions" value="2" icon={<FaFileAlt />} color="#007bff" />
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="My Submissions"
+                  value="2"
+                  icon={<FaFileAlt />}
+                  color="#007bff"
+                />
               </Col>
 
-              <Col md={3}>
-                <StatsCard  title="Pending Review"  value="1" icon={<FaClock />} color="#ffc107" />
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="Pending Review"
+                  value="1"
+                  icon={<FaClock />}
+                  color="#ffc107"
+                />
               </Col>
 
-              <Col md={3}>
-                <StatsCard title="Approved Titles" value="2" icon={<FaCheckCircle />} color="#28a745"/>
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="Approved Titles"
+                  value="2"
+                  icon={<FaCheckCircle />}
+                  color="#28a745"
+                />
               </Col>
 
-              <Col md={3}>
-                <StatsCard title="Similarity Alerts" value="0" icon={<FaExclamationTriangle />} color="#dc3545"/>
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="Similarity Alerts"
+                  value="0"
+                  icon={<FaExclamationTriangle />}
+                  color="#dc3545"
+                />
               </Col>
             </Row>
           </Col>
