@@ -53,7 +53,7 @@ export default function RegisterPage() {
               style={{
                 width: "180px",
                 marginBottom: "20px",
-                borderRadius: "50%",
+                // borderRadius: "50%",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
               }}
             />

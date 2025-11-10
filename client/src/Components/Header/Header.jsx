@@ -1,16 +1,17 @@
+import { Link } from "react-router-dom";
 
 
 const Header = () => {
   return (
-    <nav className="navbar navbar-expand-lg p-1 navbar-dark shadow" style={{ backgroundColor: "#2B72DD" }}>
+    <nav className="navbar navbar-expand-lg p-1 navbar-dark shadow " style={{ backgroundColor: "#2B72DD",position: "sticky", top: 0, zIndex: 1000 }}>
       <div className="container-fluid d-flex justify-content-between align-items-center">
         {/* Left side - Logo and Title */}
-        <div className=" ">
+        <Link to="/" className=" text-decoration-none">
         <h6 style={{ color: "#cce0ff", fontSize:"17px" }} className="navbar-brand fw-bold">
             🎓 Title Similarity <br />
             <span style={{ marginLeft: "30px" }}>Detection System</span>
         </h6>
-      </div>
+      </Link>
 
         {/* Right side - Notifications, User and Logout */}
         <div className="d-flex align-items-center">
