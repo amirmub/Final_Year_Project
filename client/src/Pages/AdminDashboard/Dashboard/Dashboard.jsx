@@ -1,0 +1,73 @@
+import { Col, Container, Row } from "react-bootstrap";
+import Sidebar from "../../../Components/Sidebar/Sidebar";
+import StatsCard from "../../../Components/StatsCard/StatsCard";
+import { FaCheckCircle, FaClock, FaExclamationTriangle, FaFileAlt } from "react-icons/fa";
+import Header from "../../../Components/Header/Header";
+
+function Dashboard() {
+  return (
+    <>
+      <Header />
+      <Container fluid>
+        <Row>
+          {/* Sidebar */}
+          <Col md={3} lg={2} className="p-0">
+            <Sidebar />
+          </Col>
+
+          {/* Main Content */}
+          <Col
+            md={9}
+            lg={10}
+            className="p-5"
+            style={{
+              backgroundColor: "#f4f6f9",
+              minHeight: "100vh",
+            }}
+          >
+            <h4 className="fw-bold mb-3 text-primary">Dashboard Overview</h4>
+            <Row className="g-4">
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="My Submissions"
+                  value="2"
+                  icon={<FaFileAlt />}
+                  color="#007bff"
+                />
+              </Col>
+
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="Pending Review"
+                  value="1"
+                  icon={<FaClock />}
+                  color="#ffc107"
+                />
+              </Col>
+
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="Approved Titles"
+                  value="2"
+                  icon={<FaCheckCircle />}
+                  color="#28a745"
+                />
+              </Col>
+
+              <Col sm={6} lg={3}>
+                <StatsCard
+                  title="Similarity Alerts"
+                  value="0"
+                  icon={<FaExclamationTriangle />}
+                  color="#dc3545"
+                />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Container>
+    </>
+  );
+}
+
+export default Dashboard;

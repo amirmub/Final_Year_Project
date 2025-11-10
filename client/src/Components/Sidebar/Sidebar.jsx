@@ -7,12 +7,11 @@ const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: "/dashboard", label: "Dashboard", icon: <FaHome /> },
-    { path: "/submit-title", label: "Submit Title", icon: <FaUpload /> },
-    { path: "/my-submissions", label: "My Submissions", icon: <FaBook /> },
-    { path: "/announcements", label: "Announcements", icon: <FaBell /> },
-    // { path: "/profile-settings", label: "Profile Settings", icon: <FaUser /> },
-    { path: "/faq", label: "FAQ", icon: <FaQuestionCircle /> }
+    { path: "/student/dashboard", label: "Dashboard", icon: <FaHome /> },
+    { path: "/student/submit-title", label: "Submit Title", icon: <FaUpload /> },
+    { path: "/student/my-submissions", label: "My Submissions", icon: <FaBook /> },
+    { path: "/student/announcements", label: "Announcements", icon: <FaBell /> },
+    { path: "/student/faq", label: "FAQ", icon: <FaQuestionCircle /> }
   ];
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992); // lg breakpoint

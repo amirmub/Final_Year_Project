@@ -8,6 +8,7 @@ import SubmittedTitles from './Pages/StudDashboard/SubmittedTitles/SubmittedTitl
 import Dashboard from './Pages/StudDashboard/Dashboard/Dashboard'
 import Announcement from './Pages/StudDashboard/Announcement/Announcement'
 import FAQPage from './Pages/FAQPage/FAQPage'
+import NotFound from './Pages/NotFound/NotFound'
 
 function App() {
 
@@ -17,11 +18,12 @@ function App() {
         <Route path='/' element={<LandingPage />}/>
         <Route path='/register' element={<RegisterPage />}/>
         <Route path='/login' element={<LoginPage />}/>
-        <Route path='/dashboard' element={<Dashboard />}/>
-        <Route path='/submit-title' element={<SubmitTitle />}/>
-        <Route path='/my-submissions' element={<SubmittedTitles />}/>
-        <Route path='/announcements' element={<Announcement />}/>
-        <Route path='/faq' element={<FAQPage />}/>
+        <Route path='/student/dashboard' element={<Dashboard />}/>
+        <Route path='/student/submit-title' element={<SubmitTitle />}/>
+        <Route path='/student/my-submissions' element={<SubmittedTitles />}/>
+        <Route path='/student/announcements' element={<Announcement />}/>
+        <Route path='/student/faq' element={<FAQPage />}/>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )
