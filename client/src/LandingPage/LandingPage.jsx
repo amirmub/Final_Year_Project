@@ -199,7 +199,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="text-center" style={{ background: "#fbc02d",padding: "100px 0" }}>
+      <section className="text-center" style={{ background: "#fbc02d",padding: "80px 0" }}>
         <h2 className="fw-bold">Ready to Check Your Title?</h2>
         <h6 className="my-3">Join hundreds of students ensuring their project titles are unique.</h6>
         <button className="btn px-5 py-2" style={{background :'#2C74E0',color : "white"}}>Get Started Now</button>

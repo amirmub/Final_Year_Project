@@ -1,6 +1,6 @@
-import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import img from "../../assets/img/logo.jpg";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
@@ -17,9 +17,9 @@ function Navbar() {
             alt="Logo"
             style={{
               height: "75px",
-              width: "90px",
+              width: "100px",
               position: "absolute",
-              top: "-8px", // moves it upward
+              top: "-7px", // moves it upward
               left: "10px",
             }}
           />
@@ -71,8 +71,8 @@ function Navbar() {
 
           {/* Right-Aligned Buttons */}
           <div className="d-flex justify-content-center justify-content-lg-end mt-3 mt-lg-0">
-            <button className="btn btn-primary ms-3">Login</button>
-            <button className="btn btn-outline-primary ms-3">Register</button>
+            <Link to="/login"> <button className="btn btn-primary ms-3">Login</button></Link>
+            <Link to="/register"><button className="btn btn-outline-primary ms-3">Register</button></Link>
           </div>
         </div>
       </div>
