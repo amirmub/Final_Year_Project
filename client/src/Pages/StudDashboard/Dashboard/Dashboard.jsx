@@ -16,7 +16,7 @@ function Dashboard() {
           </Col>
 
           {/* Main Content */}
-          <Col md={9} lg={10} className="p-5">
+          <Col md={9} lg={10} className="p-5" style={{ backgroundColor: "#f8f9fa", paddingTop: "800px" }}>
             <Row className="g-4">
               <Col md={3}> <StatsCard title="My Submissions" value="2" icon={<FaFileAlt />} color="#007bff" />
               </Col>

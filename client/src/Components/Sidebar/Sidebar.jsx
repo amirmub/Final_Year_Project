@@ -10,9 +10,9 @@ const Sidebar = () => {
     { path: "/dashboard", label: "Dashboard", icon: <FaHome /> },
     { path: "/submit-title", label: "Submit Title", icon: <FaUpload /> },
     { path: "/my-submissions", label: "My Submissions", icon: <FaBook /> },
-    { path: "#", label: "Announcements", icon: <FaBell /> },
-    { path: "#", label: "Profile Settings", icon: <FaUser /> },
-    { path: "#", label: "Help & Support", icon: <FaQuestionCircle /> },
+    { path: "/announcements", label: "Announcements", icon: <FaBell /> },
+    { path: "/profile-settings", label: "Profile Settings", icon: <FaUser /> },
+    { path: "/help-support", label: "Help & Support", icon: <FaQuestionCircle /> },
   ];
 
   return (
@@ -22,6 +22,9 @@ const Sidebar = () => {
         background: "linear-gradient(180deg, #2C74E0 0%, #1B4DA0 100%)",
         minWidth: "220px",
         minHeight: "80vh",
+        position: "sticky",
+        top: 0,
+        left: 0,
       }}
     >
       {/* Logo / Title */}

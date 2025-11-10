@@ -60,3 +60,13 @@ table th {
   padding: 6px 10px;
   border-radius: 8px;
 }
+
+/*  */
+.card ul li {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.bg-light {
+  background-color: #f1f1f1 !important;
+}
