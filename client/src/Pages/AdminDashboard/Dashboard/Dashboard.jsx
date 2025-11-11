@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import Sidebar from "../../../Components/Sidebar/Sidebar";
+import AdminSidebar from "../../../Components/AdminSidebar/AdminSidebar";
 import StatsCard from "../../../Components/StatsCard/StatsCard";
 import { FaCheckCircle, FaClock, FaExclamationTriangle, FaFileAlt } from "react-icons/fa";
 import Header from "../../../Components/Header/Header";
@@ -12,7 +12,7 @@ function Dashboard() {
         <Row>
           {/* Sidebar */}
           <Col md={3} lg={2} className="p-0">
-            <Sidebar />
+            <AdminSidebar />
           </Col>
 
           {/* Main Content */}
