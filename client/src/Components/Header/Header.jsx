@@ -4,7 +4,7 @@ import logo from "../../../assets/img/jimma_logo.png";
 const Header = () => {
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-dark shadow p-1"
+      className="navbar navbar-expand-lg navbar-dark p-1"
       style={{ backgroundColor: "#2B72DD", position: "sticky", top: 0, zIndex: 1000 }}
     >
       <div className="container-fluid">

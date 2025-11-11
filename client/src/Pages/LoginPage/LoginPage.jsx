@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaUserGraduate, FaBookOpen } from "react-icons/fa";
+import { FaUserGraduate, FaBookOpen, FaArrowLeft } from "react-icons/fa";
 import logo from "../../../assets/img/jimma_logo.png";
 
 export default function LoginPage() {
@@ -43,6 +43,53 @@ export default function LoginPage() {
             background: "#2E76E1",
           }}
         >
+           {/* 🔹 Back to Home Icon with Modern Tooltip */}
+      <OverlayTrigger
+        placement="right"
+        delay={{ show: 100, hide: 150 }}
+        overlay={
+          <Tooltip
+            id="back-home-tooltip"
+            className=""
+            style={{
+              // backgroundColor: "#1c1c1c",
+              color: "#fff",
+              // padding: "6px 10px",
+              borderRadius: "6px",
+              fontSize: "0.85rem",
+              // boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+            }}
+          >
+            Back to Home
+          </Tooltip>
+        }
+      >
+        <Link
+          to="/"
+          className="position-absolute"
+          style={{
+            top: "15px",
+            left: "20px",
+            color: "white",
+            fontSize: "1.6rem",
+            textDecoration: "none",
+            transition: "all 0.3s ease-in-out",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = "scale(1.2)";
+            e.target.style.color = "#FFD43B";
+            e.target.style.textShadow = "0 0 8px rgba(255, 212, 59, 0.7)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = "scale(1)";
+            e.target.style.color = "white";
+            e.target.style.textShadow = "none";
+          }}
+        >
+          <FaArrowLeft />
+        </Link>
+      </OverlayTrigger>
+
           <Link to="/" className="mb-0">
             <img
               src={logo}

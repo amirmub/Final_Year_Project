@@ -47,9 +47,9 @@ const Sidebar = () => {
           <Nav.Item key={index}>
             <Link
               to={item.path}
-              className={`d-flex align-items-center px-3 py-2 rounded text-decoration-none ${
+              className={`d-flex align-items-center px-3 py-1 rounded text-decoration-none ${
                 location.pathname === item.path
-                  ? "bg-white text-primary shadow-sm "
+                  ? "bg-white text-primary "
                   : "text-light"
               }`}
               style={{
