@@ -86,7 +86,7 @@ export default function LoginPage() {
         >
           <Form
             onSubmit={handleSubmit}
-            className="p-4 shadow-lg rounded-4"
+            className="p-4 shadow-lg rounded-4 custom-input"
             style={{
               width: "100%",
               maxWidth: "450px",

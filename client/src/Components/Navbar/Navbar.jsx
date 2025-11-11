@@ -48,25 +48,25 @@ function Navbar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link fw-semibold" href="#">
+              <a className="nav-link fw-semibold" href="#features">
                 Features
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link fw-semibold" href="#">
+              <a className="nav-link fw-semibold" href="#how-it-works">
                 How it Works
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link fw-semibold" href="#">
+              <a className="nav-link fw-semibold" href="#about">
                 About
               </a>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <a className="nav-link fw-semibold" href="#">
                 Contact
               </a>
-            </li>
+            </li> */}
           </ul>
 
           {/* Right-Aligned Buttons */}

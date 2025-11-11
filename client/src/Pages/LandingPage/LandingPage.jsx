@@ -34,8 +34,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="container text-center py-5">
-        <h2 className="fw-bold mb-4">Why Use Our System?</h2>
+      <section id="features" className="container text-center py-5">
+        <h2 className="fw-bold mb-4 mt-4">Why Use Our System?</h2>
         <div className="row g-4 justify-content-center">
           <div className="col-md-4">
             <div className="p-4 rounded shadow border-0 h-100">
@@ -94,65 +94,49 @@ export default function LandingPage() {
         </div>
       </section>
 
-    <section className="py-5 text-center bg-light">
-      <div className="container">
-        <h2 className="fw-bold mb-5">Simple 3-Step Process</h2>
+      <section className="py-5 text-center bg-light process-section" id="how-it-works">
+        <div className="container-fluid py-5">
+          <h2 className="fw-bold mb-5">Simple 3-Step Process</h2>
 
-        <div className="row justify-content-center align-items-center g-4">
-          {/* Step 1 */}
-          <div className="col-12 col-md-3">
-            <div className="text-center">
-              <div className="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center mx-auto"
-                  style={{ width: "60px", height: "60px", fontSize: "24px", fontWeight: "bold" }}>
-                1
+          <div className="d-flex justify-content-center align-items-center flex-wrap process-chain">
+            {/* Step 1 */}
+            <div className="col-12 col-md-3 position-relative mb-4 mb-md-0">
+              <div className="step-item">
+                <div className="step-circle">1</div>
+                <h5 className="fw-semibold mt-3">Create Account</h5>
+                <p className="text-muted small mb-0">Sign up using your email.</p>
               </div>
-              <h5 className="fw-semibold mt-3">Create Account</h5>
-              <p className="text-muted small mb-0">Sign up using your university email.</p>
             </div>
-          </div>
 
-          {/* Connector (only visible on md and larger) */}
-          <div className="col-md-1 d-none d-md-flex justify-content-center">
-            <div className="border-top border-3 flex-grow-1 align-self-center w-100"></div>
-          </div>
-
-          {/* Step 2 */}
-          <div className="col-12 col-md-3">
-            <div className="text-center">
-              <div className="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center mx-auto"
-                  style={{ width: "60px", height: "60px", fontSize: "24px", fontWeight: "bold" }}>
-                2
+            {/* Step 2 */}
+            <div className="col-12 col-md-3 position-relative mb-4 mb-md-0">
+              <div className="step-item">
+                <div className="step-circle">2</div>
+                <h5 className="fw-semibold mt-3">Submit Title</h5>
+                <p className="text-muted small mb-0">Enter your proposed research project title.</p>
               </div>
-              <h5 className="fw-semibold mt-3">Submit Title</h5>
-              <p className="text-muted small mb-0">Enter your proposed research project title.</p>
             </div>
-          </div>
 
-          {/* Connector (only visible on md and larger) */}
-          <div className="col-md-1 d-none d-md-flex justify-content-center">
-            <div className="border-top border-3 flex-grow-1 align-self-center w-100"></div>
-          </div>
-
-          {/* Step 3 */}
-          <div className="col-12 col-md-3">
-            <div className="text-center">
-              <div className="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center mx-auto"
-                  style={{ width: "60px", height: "60px", fontSize: "24px", fontWeight: "bold" }}>
-                3
+            {/* Step 3 */}
+            <div className="col-12 col-md-3 position-relative">
+              <div className="step-item">
+                <div className="step-circle">3</div>
+                <h5 className="fw-semibold mt-3">Get Results</h5>
+                <p className="text-muted small mb-0">Receive similarity analysis instantly.</p>
               </div>
-              <h5 className="fw-semibold mt-3">Get Results</h5>
-              <p className="text-muted small mb-0">Receive similarity analysis instantly.</p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
 
       {/* Facts Section */}
-      <Facts />
+      <div style={{marginTop: "90px"}}>
+        <Facts />
+      </div>
 
       {/* Testimonials */}
-      <section className="container py-5 text-center">
+      <section className="container py-5 text-center my-5" id="about">
         <h2 className="fw-bold mb-4">What Students Say</h2>
         <div className="row g-4 justify-content-center">
           {[
