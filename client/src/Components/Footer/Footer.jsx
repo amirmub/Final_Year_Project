@@ -1,12 +1,13 @@
 import { Container, Row, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import {Link} from "react-router-dom"
 
 export default function Footer() {
   return (
     <footer
       style={{
-        backgroundColor: "#1550CC",
+        background: "linear-gradient(135deg, #1550CC, #1E88E5)",
         color: "#e3f2fd",
         fontSize: "14.5px",
       }}
@@ -29,10 +30,10 @@ export default function Footer() {
           <Col xs={6} md={3}>
             <h6 className="fw-bold text-white mb-3">Quick Links</h6>
             <ul className="list-unstyled mb-0">
-              <li><a href="#" className="text-light text-decoration-none d-block mb-1">Home</a></li>
-              <li><a href="#" className="text-light text-decoration-none d-block mb-1">Features</a></li>
-              <li><a href="#" className="text-light text-decoration-none d-block mb-1">How it Works</a></li>
-              <li><a href="#" className="text-light text-decoration-none d-block">About</a></li>
+              <li><Link to="#" className="text-light text-decoration-none d-block mb-1">Home</Link></li>
+              <li><Link to="#" className="text-light text-decoration-none d-block mb-1">Features</Link></li>
+              <li><Link to="#" className="text-light text-decoration-none d-block mb-1">How it Works</Link></li>
+              <li><Link to="#" className="text-light text-decoration-none d-block">About</Link></li>
             </ul>
           </Col>
 
@@ -40,9 +41,9 @@ export default function Footer() {
           <Col xs={6} md={3}>
             <h6 className="fw-bold text-white mb-3">Resources</h6>
             <ul className="list-unstyled mb-0">
-              <li><a href="#" className="text-light text-decoration-none d-block mb-1">User Guide</a></li>
-              <li><a href="#" className="text-light text-decoration-none d-block mb-1">Help & Support</a></li>
-              <li><a href="#" className="text-light text-decoration-none d-block">Policy</a></li>
+              <li><Link to="#" className="text-light text-decoration-none d-block mb-1">User Guide</Link></li>
+              <li><Link to="#" className="text-light text-decoration-none d-block mb-1">Help & Support</Link></li>
+              <li><Link to="#" className="text-light text-decoration-none d-block">Policy</Link></li>
             </ul>
           </Col>
 
@@ -52,12 +53,12 @@ export default function Footer() {
             <p className="mb-1">Jimma, Ethiopia</p>
             <p className="mb-1">
               Email:{" "}
-              <a
-                href="mailto:info@ju.edu.et"
+              <Link
+                to="mailto:info@ju.edu.et"
                 className="text-warning text-decoration-none"
               >
                 info@ju.edu.et
-              </a>
+              </Link>
             </p>
             <p className="mb-1">
               Phone: <span className="text-warning">+251-91-111-1234</span>
@@ -82,15 +83,15 @@ export default function Footer() {
             md={6}
             className="text-md-end mt-3 mt-md-0 d-flex justify-content-center justify-content-md-end gap-3"
           >
-            <a href="#" className="text-light fs-5">
+            <Link to="#" className="text-light fs-5">
               <i className="bi bi-facebook"></i>
-            </a>
-            <a href="#" className="text-light fs-5">
+            </Link>
+            <Link to="#" className="text-light fs-5">
               <i className="bi bi-twitter"></i>
-            </a>
-            <a href="#" className="text-light fs-5">
+            </Link>
+            <Link to="#" className="text-light fs-5">
               <i className="bi bi-linkedin"></i>
-            </a>
+            </Link>
           </Col>
         </Row>
       </Container>
