@@ -21,7 +21,7 @@ function Facts() {
   ];
 
   return (
-    <div className="container-fluid my-5 py-5" style={{ backgroundColor: "#2C74E0" }}>
+    <div className="container-fluid my-5 py-5" style={{ backgroundColor: "#5A8BC5" }}>
       <div className="container">
         <div className="row g-4">
           {facts.map(({ icon, end, label, delay }, index) => {

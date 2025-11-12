@@ -43,7 +43,7 @@ export default function RegisterPage() {
           className="d-flex flex-column align-items-center justify-content-center text-center text-white px-4"
           style={{
             backdropFilter: "blur(4px)",
-            background: "#2E76E1",
+            background: "#5A8BC5",
           }}
         >
       {/* 🔹 Back to Home Icon with Modern Tooltip */}
@@ -140,7 +140,7 @@ export default function RegisterPage() {
               fontSize: "14.5px",
             }}
           >
-            <h4 className="text-center mb-4 fw-bold text-primary">
+            <h4 className="text-center mb-4 fw-bold " style={{color : "#5A8BC5"}}>
               Create Your Account
             </h4>
 
@@ -214,7 +214,7 @@ export default function RegisterPage() {
               type="submit"
               className="w-100 py-2 mb-2 fw-semibold"
               style={{
-                background: "linear-gradient(to right, #2C74E0, #4F9EFF)",
+                background: "#5A8BC5",
                 border: "none",
                 transition: "transform 0.2s ease-in-out",
               }}

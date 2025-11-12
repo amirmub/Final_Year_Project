@@ -40,7 +40,7 @@ export default function LoginPage() {
           className="d-flex flex-column align-items-center justify-content-center text-center text-white px-4"
           style={{
             backdropFilter: "blur(4px)",
-            background: "#2E76E1",
+            background: "#5A8BC5",
           }}
         >
            {/* 🔹 Back to Home Icon with Modern Tooltip */}
