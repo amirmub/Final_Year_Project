@@ -71,7 +71,7 @@ function Navbar() {
 
           {/* Right-Aligned Buttons */}
           <div className="d-flex justify-content-center justify-content-lg-end mt-3 mt-lg-0">
-            <Link to="/login"> <button className="btn btn-primary ms-3 ">Login</button></Link>
+            <Link to="/login"> <button className="btn  ms-3 " style={{background : "#408CF1", color : "#fff"}}>Login</button></Link>
             <Link to="/register"><button className="btn btn-outline-primary ms-3">Register</button></Link>
           </div>
         </div>

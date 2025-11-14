@@ -140,7 +140,7 @@ export default function LoginPage() {
               border: "1px solid #e5e5e5",
             }}
           >
-            <h4 className="text-center mb-4 fw-bold text-primary">
+            <h4 className="text-center mb-4 fw-bold" style={{color : "#408CF1"}}>
               Login to Your Account
             </h4>
 
@@ -191,7 +191,7 @@ export default function LoginPage() {
               type="submit"
               className="w-100 py-2 mb-3 fw-semibold"
               style={{
-                background: "linear-gradient(to right, #2C74E0, #4F9EFF)",
+                background: "linear-gradient(to right,rgb(51, 116, 214), #4F9EFF)",
                 border: "none",
                 transition: "transform 0.2s ease-in-out",
               }}

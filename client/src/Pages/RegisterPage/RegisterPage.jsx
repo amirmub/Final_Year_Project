@@ -140,7 +140,7 @@ export default function RegisterPage() {
               fontSize: "14.5px",
             }}
           >
-            <h4 className="text-center mb-4 fw-bold " style={{color : "#5A8BC5"}}>
+            <h4 className="text-center mb-4 fw-bold " style={{color : "#408CF1"}}>
               Create Your Account
             </h4>
 
@@ -214,7 +214,7 @@ export default function RegisterPage() {
               type="submit"
               className="w-100 py-2 mb-2 fw-semibold"
               style={{
-                background: "#5A8BC5",
+                background: "#408CF1",
                 border: "none",
                 transition: "transform 0.2s ease-in-out",
               }}
