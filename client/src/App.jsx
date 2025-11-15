@@ -3,14 +3,10 @@ import LandingPage from './Pages/LandingPage/LandingPage'
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from './Pages/LoginPage/LoginPage'
 import RegisterPage from './Pages/RegisterPage/RegisterPage'
-import SubmitTitle from './Pages/StudDashboard/SubmitTitle/SubmitTitle'
-import SubmittedTitles from './Pages/StudDashboard/SubmittedTitles/SubmittedTitles'
-import StudDashboard from './Pages/StudDashboard/Dashboard/Dashboard'
 import AdminDashboard from './Pages/AdminDashboard/Dashboard/Dashboard'
-import Announcement from './Pages/StudDashboard/Announcement/Announcement'
-import FAQPage from './Pages/FAQPage/FAQPage'
 import NotFound from './Pages/NotFound/NotFound'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
+import StudentRoutes from './Routes/StudentRoutes/StudentRoutes'
 
 function App() {
 
@@ -22,17 +18,12 @@ function App() {
         <Route path='/login' element={<LoginPage />}/>
         <Route path="*" element={<NotFound />} />
 
-        {/* student routes */}
-        <Route path='/student/dashboard'
-         element={
-          <ProtectedRoute>
-             <StudDashboard />
-          </ProtectedRoute>
-         }/>
-        <Route path='/student/submit-title' element={<SubmitTitle />}/>
-        <Route path='/student/my-submissions' element={<SubmittedTitles />}/>
-        <Route path='/student/announcements' element={<Announcement />}/>
-        <Route path='/student/faq' element={<FAQPage />}/>
+        <Route path="/student/*" element={
+            <ProtectedRoute>
+              <StudentRoutes />
+            </ProtectedRoute>
+           }
+        />
 
         {/* admin routes */}
         <Route path='/admin/dashboard' element={<AdminDashboard />}/>
