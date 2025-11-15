@@ -79,7 +79,7 @@ export default function RegisterPage() {
       });
 
       toast.success("User added successfully!", { style: iosToastStyle });
-      setTimeout(() => navigate("/student/dashboard"), 1600);
+      setTimeout(() => navigate("/login"), 1600);
 
     } catch (error) {
       const errorMsg = error.response?.data.message || "Something went wrong!";
@@ -209,12 +209,10 @@ export default function RegisterPage() {
               checked={termsChecked}
               onChange={(e) => setTermsChecked(e.target.checked)}
           />
-
-
             <Button
               variant="primary"
               type="submit"
-              className="w-100 py-2 mb-2 fw-semibold"
+              className="w-100 py-2 mb-2 fw-semibold mt-3"
               style={{ background: "#408CF1", border: "none", transition: "transform 0.2s ease-in-out" }}
             >
               Create Account
