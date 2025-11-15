@@ -22,7 +22,7 @@ async function login (req, res)  {
       return res.status(401).json({ message: "password is incorrect" });
     }
 
-    const payload = { id: user._id, email: user.email, /*role: user.role */ };
+    const payload = { id: user._id, email: user.email, role: user.role };
     // console.log(payload);
     
 
