@@ -3,8 +3,13 @@ import Sidebar from "../../../Components/Sidebar/Sidebar";
 import StatsCard from "../../../Components/StatsCard/StatsCard";
 import { FaCheckCircle, FaClock, FaExclamationTriangle, FaFileAlt } from "react-icons/fa";
 import Header from "../../../Components/Header/Header";
+import { getAuth } from "../../../utils/auth";
 
 function Dashboard() {
+  const authData = getAuth();
+  const loginUser = authData?.token || "no token";
+  console.log(loginUser);
+  
   return (
     <>
       <Header />

@@ -10,6 +10,7 @@ import AdminDashboard from './Pages/AdminDashboard/Dashboard/Dashboard'
 import Announcement from './Pages/StudDashboard/Announcement/Announcement'
 import FAQPage from './Pages/FAQPage/FAQPage'
 import NotFound from './Pages/NotFound/NotFound'
+import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 
 function App() {
 
@@ -22,7 +23,12 @@ function App() {
         <Route path="*" element={<NotFound />} />
 
         {/* student routes */}
-        <Route path='/student/dashboard' element={<StudDashboard />}/>
+        <Route path='/student/dashboard'
+         element={
+          <ProtectedRoute>
+             <StudDashboard />
+          </ProtectedRoute>
+         }/>
         <Route path='/student/submit-title' element={<SubmitTitle />}/>
         <Route path='/student/my-submissions' element={<SubmittedTitles />}/>
         <Route path='/student/announcements' element={<Announcement />}/>

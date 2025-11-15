@@ -62,6 +62,7 @@ export default function LoginPage() {
         password: passwordValue,
       });
       toast.success("Logged in successfully!", { style: iosToastStyle });
+      localStorage.setItem("Token", response.data.token);
       setTimeout(() => {
         navigate("/student/dashboard");
       }, 1200);
