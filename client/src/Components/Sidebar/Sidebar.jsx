@@ -26,7 +26,7 @@ const Sidebar = () => {
     <div
       className="d-flex flex-column vh-100 p-3 shadow-sm text-white"
       style={{
-        background: "linear-gradient(180deg, #2C74E0 0%, #1B4DA0 100%)",
+        background: "#5581BB",
         minWidth: "220px",
         minHeight: "80vh",
         position: isDesktop ? "fixed" : "sticky",

@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <nav
       className="navbar navbar-expand-lg navbar-dark p-1"
-      style={{ backgroundColor: "#2B72DD", position: "sticky", top: 0, zIndex: 1000 }}
+      style={{ backgroundColor: "#5581BB", position: "sticky", top: 0, zIndex: 1000 }}
     >
       <div className="container-fluid">
         {/* Left side - Logo and Title */}
