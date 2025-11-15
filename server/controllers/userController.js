@@ -49,4 +49,19 @@ async function createUser(req, res) {
   }
 }
 
-module.exports = { createUser };
+// to get all users
+async function getAllUsers(req, res) {
+ try {
+    const allUser =  await User.find({});
+    return res.status(200).json({ 
+       total : allUser.length, status: "success", msg : allUser
+    });
+  } catch (error) {
+    return res.status(500).json({ 
+        error : error,
+        msg: "Internal server error" 
+    });
+  }
+};
+
+module.exports = { createUser, getAllUsers };
