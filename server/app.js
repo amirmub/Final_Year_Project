@@ -4,6 +4,9 @@ const app = express();
 
 app.use(express.json());
 
+const cors = require("cors") 
+app.use(cors())
+
 // db connection file
 const dbConnection = require("./config/config");
 dbConnection();
