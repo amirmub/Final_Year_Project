@@ -2,9 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 // db connection file
 const dbConnection = require("./config/config");
 dbConnection();
+
+// all routes
+const routes = require("./routes/index.js");
+app.use("/api/v1",routes);
 
 app.listen(5000, (err) => {
   if (err) console.log(err);
