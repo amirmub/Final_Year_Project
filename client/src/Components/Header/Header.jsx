@@ -2,6 +2,11 @@ import { Link } from "react-router-dom";
 import logo from "../../../assets/img/jimma_logo.png";
 
 const Header = () => {
+    function logOut() {
+    localStorage.removeItem("Token");
+    window.location.reload();
+  }
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-dark p-1"
@@ -52,7 +57,7 @@ const Header = () => {
             </div>
 
             {/* Logout Button */}
-            <button className="btn btn-outline-light btn-sm">Logout</button>
+            <button onClick={logOut} className="btn btn-outline-light btn-sm">Logout</button>
           </div>
         </div>
       </div>
