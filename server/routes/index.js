@@ -7,4 +7,7 @@ router.use(userRouter);
 const userLogin = require('./userLoginRoute');
 router.use(userLogin);
 
+const titles = require('./titleRoute');
+router.use(titles);
+
 module.exports = router;
