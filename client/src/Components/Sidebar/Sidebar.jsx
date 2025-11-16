@@ -6,10 +6,12 @@ import { Link, useLocation } from "react-router-dom";
 const Sidebar = () => {
   const location = useLocation();
 
+  const submissionId = localStorage.getItem("latestSubmissionId"); // store after submission
+
   const navItems = [
     { path: "/student/dashboard", label: "Dashboard", icon: <FaHome /> },
     { path: "/student/submit-title", label: "Submit Title", icon: <FaUpload /> },
-    { path: "/student/my-submissions", label: "My Submissions", icon: <FaBook /> },
+    { path: `/student/my-submissions/${submissionId || ""}`, label: "My Submissions", icon: <FaBook /> },
     { path: "/student/announcements", label: "Announcements", icon: <FaBell /> },
     { path: "/student/faq", label: "FAQ", icon: <FaQuestionCircle /> }
   ];

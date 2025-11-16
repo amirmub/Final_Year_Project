@@ -11,7 +11,7 @@ export default function StudentRoutes() {
     <Routes>
       <Route path="dashboard" element={<StudDashboard />} />
       <Route path="submit-title" element={<SubmitTitle />  } />
-      <Route path="my-submissions" element={<SubmittedTitles />} />
+      <Route path="my-submissions/:id" element={<SubmittedTitles />} />
       <Route path="announcements" element={<Announcement />} />
       <Route path="faq" element={<FAQPage />} />
     </Routes>

@@ -73,9 +73,15 @@ function QuickTitleCheck() {
       title2Ref.current.value = "";
       title3Ref.current.value = "";
 
+      // Save ID for sidebar
+      localStorage.setItem("latestSubmissionId", res.data.data.title._id);
+
       console.log(res.data);
+      const newTitleId = res.data.data?.title?._id;
+      console.log(newTitleId);
+      
       setTimeout(() => {
-        navigate("/student/my-submissions");
+        navigate(`/student/my-submissions/${newTitleId}`);
       }, 1200);
 
     } catch (error) {
