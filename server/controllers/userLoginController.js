@@ -22,8 +22,8 @@ async function login (req, res)  {
       return res.status(401).json({ message: "password is incorrect" });
     }
 
-    const payload = { id: user._id, email: user.email, role: user.role };
-    // console.log(payload);
+    const payload = { id: user._id, name: user.name, email: user.email, role: user.role };
+    console.log(payload);
     
 
     // If you want to generate a JWT token upon successful login
