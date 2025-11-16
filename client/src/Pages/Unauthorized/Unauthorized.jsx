@@ -1,10 +1,6 @@
-// src/components/Unauthorized.jsx
-
-import React from "react";
 import { Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
 
 const Unauthorized = () => {
   const navigate = useNavigate();
