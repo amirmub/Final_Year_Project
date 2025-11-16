@@ -13,12 +13,11 @@ function QuickTitleCheck() {
   const title3Ref = useRef();
 
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
 
-  const loginUser = getAuth().token;
+  const auth = getAuth() || {};
+  const { token, id: userId } = auth;
 
-  // iOS Toast Style
   const iosToastStyle = {
     borderRadius: "14px",
     background: "#fff",
@@ -32,7 +31,6 @@ function QuickTitleCheck() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for empty fields
     if (
       !leaderNameRef.current.value ||
       !departmentRef.current.value ||
@@ -40,9 +38,7 @@ function QuickTitleCheck() {
       !title2Ref.current.value ||
       !title3Ref.current.value
     ) {
-      return toast.error("Please fill in all fields", {
-        style: iosToastStyle,
-      });
+      return toast.error("Please fill in all fields", { style: iosToastStyle });
     }
 
     setLoading(true);
@@ -51,45 +47,35 @@ function QuickTitleCheck() {
       const res = await axios.post(
         "/titles",
         {
+          user: userId, // associate submission with logged-in user
           name: leaderNameRef.current.value,
           department: departmentRef.current.value,
           title_1: title1Ref.current.value,
           title_2: title2Ref.current.value,
           title_3: title3Ref.current.value,
         },
-        {
-          headers: { Authorization: `Bearer ${loginUser}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toast.success("Title submitted successfully", {
-        style: iosToastStyle,
-      });
+      toast.success("Title submitted successfully", { style: iosToastStyle });
 
-      // Reset values
+      // Save latest submission ID per user in localStorage
+      localStorage.setItem(`latestSubmissionId_${userId}`, res.data.data.title._id);
+
+      // Reset form
       leaderNameRef.current.value = "";
       departmentRef.current.value = "";
       title1Ref.current.value = "";
       title2Ref.current.value = "";
       title3Ref.current.value = "";
 
-      // Save ID for sidebar
-      localStorage.setItem("latestSubmissionId", res.data.data.title._id);
-
-      console.log(res.data);
-      const newTitleId = res.data.data?.title?._id;
-      console.log(newTitleId);
-      
+      // Navigate to the newly submitted title
       setTimeout(() => {
-        navigate(`/student/my-submissions/${newTitleId}`);
+        navigate(`/student/my-submissions/${res.data.data.title._id}`);
       }, 1200);
-
     } catch (error) {
-      console.error(error.response);
-
-      toast.error("Failed to submit! Try again", {
-        style: iosToastStyle,
-      });
+      console.error(error.response || error.message);
+      toast.error("Failed to submit! Try again", { style: iosToastStyle });
     } finally {
       setLoading(false);
     }
@@ -101,19 +87,13 @@ function QuickTitleCheck() {
 
       <Card className="border-0 shadow-lg mt-2 p-4 rounded-4">
         <div className="d-flex align-items-center mb-2">
-          <h5 className="fw-bold text-primary m-0 flex-grow-1">
-            📘 Submit Your Title
-          </h5>
+          <h5 className="fw-bold text-primary m-0 flex-grow-1">📘 Submit Your Title</h5>
         </div>
 
         <Form onSubmit={handleSubmit} className="mt-1">
           <Form.Group className="mb-2">
             <Form.Label className="fw-semibold">Group Leader Name</Form.Label>
-            <Form.Control
-              ref={leaderNameRef}
-              placeholder="Enter full name"
-              className="custom-input"
-            />
+            <Form.Control ref={leaderNameRef} placeholder="Enter full name" className="custom-input" />
           </Form.Group>
 
           <Form.Group className="mb-2">
@@ -129,45 +109,26 @@ function QuickTitleCheck() {
 
           <Form.Group className="mb-2">
             <Form.Label className="fw-semibold">Project Title 1</Form.Label>
-            <Form.Control
-              ref={title1Ref}
-              placeholder="Project title 1"
-              className="custom-input"
-            />
+            <Form.Control ref={title1Ref} placeholder="Project title 1" className="custom-input" />
           </Form.Group>
 
           <Form.Group className="mb-2">
             <Form.Label className="fw-semibold">Project Title 2</Form.Label>
-            <Form.Control
-              ref={title2Ref}
-              placeholder="Project title 2"
-              className="custom-input"
-            />
+            <Form.Control ref={title2Ref} placeholder="Project title 2" className="custom-input" />
           </Form.Group>
 
           <Form.Group className="mb-2">
             <Form.Label className="fw-semibold">Project Title 3</Form.Label>
-            <Form.Control
-              ref={title3Ref}
-              placeholder="Project title 3"
-              className="custom-input"
-            />
+            <Form.Control ref={title3Ref} placeholder="Project title 3" className="custom-input" />
           </Form.Group>
 
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={loading}
-            className="w-100 py-2 mt-2 fw-semibold shadow-sm"
-          >
+          <Button type="submit" variant="primary" disabled={loading} className="w-100 py-2 mt-2 fw-semibold shadow-sm">
             {loading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
                 Submitting...
               </>
-            ) : (
-              "Submit"
-            )}
+            ) : "Submit"}
           </Button>
         </Form>
       </Card>

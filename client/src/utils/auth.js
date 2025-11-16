@@ -31,7 +31,8 @@ export const getAuth = () => {
     email: decodedToken.email,
     id: decodedToken.id,
     role: decodedToken.role,
-    name: decodedToken.name
+    name: decodedToken.name,
+    user: decodedToken.user
   };
 }
 
