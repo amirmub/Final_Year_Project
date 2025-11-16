@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 // Create User Controller
 async function createUser(req, res) {
-  const { name, email, password, passwordConfirm } = req.body;
+  const { name, email, password, passwordConfirm, role } = req.body;
 
   try {
     // 1. Check if email already exists
@@ -32,7 +32,8 @@ async function createUser(req, res) {
       name,
       email,
       password: hashedPassword,
-      passwordConfirm: hashedPassword
+      passwordConfirm: hashedPassword,
+      role
     });
 
     res.status(201).json({
