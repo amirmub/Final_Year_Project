@@ -7,6 +7,7 @@ import AdminDashboard from './Pages/AdminDashboard/Dashboard/Dashboard'
 import NotFound from './Pages/NotFound/NotFound'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import StudentRoutes from './Routes/StudentRoutes/StudentRoutes'
+import Unauthorized from './Pages/Unauthorized/Unauthorized'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path='/register' element={<RegisterPage />}/>
         <Route path='/login' element={<LoginPage />}/>
         <Route path="*" element={<NotFound />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
         <Route path="/student/*" element={
             <ProtectedRoute>
