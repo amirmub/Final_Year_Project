@@ -42,4 +42,37 @@ async function getAllTitles(req, res) {
   }
 };
 
-module.exports = { createTitle, getAllTitles };
+// to get a single Title
+async function getTitle(req, res) {
+  try { 
+    const title = await Title.findById(req.params.id);
+
+    if (!title) {
+      return res.status(404).json({ status: "fail", message: "Invalid ID" });
+    }
+
+    res.status(200).json({ status: "success", message: title });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+//  to delete a title
+async function deleteTitle(req, res) {
+   try {
+    const title = await Title.findById(req.params.id);
+    if (!title) {
+        return res.status(404).json({ status : "fail", message: "title not found"});
+    }
+
+    await title.deleteOne();
+    return res.status(200).json({ status : "success", message: "title deleted successfully", data: null });
+
+   } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal server error"});
+   }
+};
+
+module.exports = { createTitle, getAllTitles, getTitle, deleteTitle };
