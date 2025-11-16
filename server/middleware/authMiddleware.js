@@ -15,10 +15,21 @@ function tokenVerify(req, res, next) {
       return res.status(401).json({ message: "Token is invalid or expired" });
     }
 
-    // req.employee_role = decoded.employee_role; // Attach role to request
+    req.role = decoded.role; // Attach role to request
     req.user = decoded; // Attach entire decoded payload to request
     next();
   });
 }
 
-module.exports = { tokenVerify };
+// Middleware to check if the user is an admin (role 3)
+function isAdmin(req, res, next) {
+  const role = req.role;
+
+  if (role === "admin" ) {
+    next();
+  } else {
+    return res.status(403).json({ msg: "Access denied: Admins only" });
+  }
+}
+
+module.exports = { tokenVerify, isAdmin };

@@ -7,6 +7,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.post("/users", userController.createUser);
 
 // routes to get all users
-router.get("/users", authMiddleware.tokenVerify, userController.getAllUsers);
+router.get("/users", [authMiddleware.tokenVerify,authMiddleware.isAdmin], userController.getAllUsers);
 
 module.exports = router;
