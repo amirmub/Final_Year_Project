@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import logo from "../../../assets/img/jimma_logo.png";
+import { getAuth } from "../../utils/auth";
 
 const Header = () => {
-    function logOut() {
+  const auth = getAuth();
+
+  function logOut() {
     localStorage.removeItem("Token");
     window.location.reload();
   }
@@ -13,7 +16,7 @@ const Header = () => {
       style={{ backgroundColor: "#5581BB", position: "sticky", top: 0, zIndex: 1000 }}
     >
       <div className="container-fluid">
-        {/* Left side - Logo and Title */}
+        {/* Left side */}
         <Link to="/" className="navbar-brand d-flex align-items-center gap-2">
           <img
             src={logo}
@@ -26,38 +29,42 @@ const Header = () => {
           </div>
         </Link>
 
-        {/* Toggler button (for mobile) */}
+        {/* Toggler */}
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarContent"
-          aria-controls="navbarContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Collapsible content */}
+        {/* Right Side */}
         <div className="collapse navbar-collapse justify-content-end" id="navbarContent">
           <div className="d-flex align-items-center mt-2 mt-lg-0">
-            {/* User Avatar */}
+
+            {/* Avatar */}
             <div
               className="d-flex align-items-center bg-warning rounded-circle text-dark fw-bold me-2"
               style={{ width: "35px", height: "35px", justifyContent: "center" }}
             >
-              AM
+              {auth?.name ? auth.name.substring(0, 2).toUpperCase() : "NA"}
             </div>
 
             {/* User Info */}
             <div className="text-white me-3 text-center text-lg-start">
-              <div className="fw-bold">Amir Mubarek</div>
-              <small>Student</small>
+              <div className="fw-bold">
+                {auth?.name || "Unknown User"}
+              </div>
+              <small>
+                {auth?.role || "Unknown Role"}
+              </small>
             </div>
 
-            {/* Logout Button */}
-            <button onClick={logOut} className="btn btn-outline-light btn-sm">Logout</button>
+            {/* Logout */}
+            <button onClick={logOut} className="btn btn-outline-light btn-sm">
+              Logout
+            </button>
           </div>
         </div>
       </div>
