@@ -46,7 +46,11 @@ function Dashboard() {
 
       <Header />
 
-      <Container fluid className="p-0">
+      <Container fluid className="p-0"
+        style={{
+              backgroundColor: "#eef2f5",
+              minHeight: "100vh",
+            }}>
         <Row className="g-0">
           {/* Sidebar */}
           <Col md={3} lg={2} className="p-0">
@@ -56,12 +60,9 @@ function Dashboard() {
           {/* Main Content */}
           <Col
             md={9}
-            lg={10}
-            className="px-4 py-4"
-            style={{
-              backgroundColor: "#eef2f5",
-              minHeight: "100vh",
-            }}
+            lg={9}
+            className="py-4 m-auto"
+           
           >
             {/* Page Header */}
             <div
