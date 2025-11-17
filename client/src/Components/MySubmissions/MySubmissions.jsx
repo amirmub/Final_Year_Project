@@ -43,16 +43,16 @@ const MySubmissions = () => {
   }, [id, token]);
 
   if (loading) return (
-    <div className="text-center mt-5">
+    <div className="text-center mt-5 " >
       <Spinner animation="border" variant="primary" />
       <p className="mt-2 text-muted">Loading your submission...</p>
     </div>
   );
 
   if (!submission) return (
-    <div className="text-center mt-5 text-muted">
-      <FaBookOpen className="fs-1 text-secondary mb-3" />
-      <p>No submission found.</p>
+    <div className="text-center text-muted d-flex flex-column justify-content-center align-items-center" style={{ height: '87vh' }}>
+      <FaBookOpen className=" text-secondary" style={{fontSize : "50px"}} />
+      <h5>No submission found.</h5>
     </div>
   );
 
