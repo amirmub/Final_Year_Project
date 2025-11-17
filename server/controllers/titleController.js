@@ -1,4 +1,5 @@
 const Title = require("../models/titleModel");
+const mongoose = require("mongoose");
 
 // Create User Controller
 async function createTitle(req, res) {
@@ -44,17 +45,23 @@ async function getAllTitles(req, res) {
 
 // to get a single Title
 async function getTitle(req, res) {
-  try { 
-    const title = await Title.findById(req.params.id);
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ status: "fail", message: "Invalid ID format" });
+    }
+
+    const title = await Title.findById(id);
 
     if (!title) {
-      return res.status(404).json({ status: "fail", message: "Invalid ID" });
+      return res.status(404).json({ status: "fail", message: "Title not found" });
     }
 
     res.status(200).json({ status: "success", message: title });
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
