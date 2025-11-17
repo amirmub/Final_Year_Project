@@ -1,72 +1,121 @@
 import { Card, Badge } from "react-bootstrap";
-import { FaTrophy, FaUsers, FaUniversity, FaCalendarAlt } from "react-icons/fa";
-import winnerImg from "../../../assets/img/winners.png"; // ← replace with your actual image path
+import { FaTrophy, FaUsers, FaUniversity } from "react-icons/fa";
+import winnerImg from "../../../assets/img/winners.png";
+import { useState } from "react";
 
 const AnnouncementCard = () => {
+  const [hover, setHover] = useState(false);
+
   return (
-    <Card className="border-0 shadow px-4 py-2 rounded-4 overflow-hidden my-3">
+    <Card
+      className="rounded-4 p-4 border-0"
+      style={{
+        transition: "0.35s",
+        background: "linear-gradient(180deg,#ffffff,#fafbfd)",
+        boxShadow: hover
+          ? "0 14px 28px rgba(0,0,0,0.12)"
+          : "0 10px 20px rgba(0,0,0,0.07)",
+        transform: hover ? "translateY(-6px)" : "translateY(0)",
+        borderLeft: "6px solid #f4c542",
+        animation: "fadeIn 0.55s ease",
+      }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
       {/* Header */}
-      <Card.Header className="bg-white border-0 pb-0">
-        <h5 className="fw-bold text-dark mb-1">
+      <div
+        style={{
+          background: "linear-gradient(90deg,#fff,#fffae5,#fff)",
+          padding: "10px 0 12px 0",
+          borderRadius: "10px",
+        }}
+      >
+        <h5 className="fw-bold text-dark mb-1 d-flex align-items-center ">
           <FaTrophy className="text-warning me-2" />
           Last Year’s Final Project Winners
         </h5>
-        <p className="text-muted small mb-2">
-          Computing and Informatics Department — 2023/2024 Academic Year
-        </p>
-      </Card.Header>
 
-      {/* Image Section */}
-      <Card.Img
-        variant="top"
-        src={winnerImg}
-        alt="Project Winners"
-        height={300}
-        className="rounded-3"
-      />
-      <p className="text-muted text-center small mt-1 mb-0">
-        Jimma University Computing Team — National Tech4Good Competition Winners 2024
+        <p className="text-muted small mb-0">
+          Computing and Informatics — 2023/2024 Academic Year
+        </p>
+      </div>
+
+      {/* Image */}
+      <div
+        className="position-relative mt-3"
+        style={{
+          overflow: "hidden",
+          borderRadius: 16,
+          height: 240,
+        }}
+      >
+        <Card.Img
+          src={winnerImg}
+          alt="Project Winners"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transition: "0.45s",
+            transform: hover ? "scale(1.05)" : "scale(1)",
+            filter: hover ? "brightness(1.07)" : "brightness(1)",
+          }}
+        />
+
+        {/* Slight dark fade bottom */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "45%",
+            background:
+              "linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0))",
+          }}
+        />
+      </div>
+
+      <p className="text-muted text-center small mt-2">
+        Jimma University — Tech4Good Winners 2024
       </p>
 
-      {/* Content Section */}
-      <Card.Body>
+      {/* Body */}
+      <Card.Body className="pt-0">
         <h6 className="fw-bold text-dark">
-          Smart Agricultural Management System Using IoT and AI
+          Smart Agricultural Management System Using IoT & AI
         </h6>
 
-        <Badge bg="warning" text="dark" className="my-2 px-3 py-2 rounded-pill">
-          🥇 1st Place — National Tech4Good Competition 2024
+        <Badge
+          bg="warning"
+          text="dark"
+          className="px-3 py-2 rounded-pill my-3 shadow-sm"
+          style={{
+            fontWeight: 600,
+            fontSize: "0.85rem",
+            boxShadow: "0 3px 10px rgba(244,197,66,0.45)",
+          }}
+        >
+          🥇 1st Place — National Tech4Good 2024
         </Badge>
 
-        <div className="mt-3">
-          <div className="mb-2">
-            <h6 className="text-muted fw-semibold small mb-1">
-              <FaUsers className="me-2 text-secondary" />
-              Team Members
-            </h6>
-            <p className="mb-0 small text-dark">
-              Abebe Kebede (Team Leader), Tigist Alemu, Mohammed Hassen, Sara Tesfaye, Daniel Mengesha
-            </p>
-          </div>
+        {/* Team */}
+        <div className="mt-2">
+          <h6 className="text-muted small fw-semibold mb-1 d-flex align-items-center">
+            <FaUsers className="me-2 text-secondary" />
+            Team Members
+          </h6>
+          <p className="small mb-3">
+            Abebe Kebede, Tigist Alemu, Mohammed Hassen, Sara Tesfaye,
+            Daniel Mengesha
+          </p>
 
-          <div className="mb-3">
-            <h6 className="text-muted fw-semibold small mb-1">
-              <FaUniversity className="me-2 text-secondary" />
-              Department
-            </h6>
-            <p className="mb-0 small text-dark">Computing and Informatics</p>
-          </div>
-
-          {/* Submission Deadline Section */}
-          <div className="pt-2 border-top">
-            <h6 className="text-muted fw-semibold small mb-1">
-              <FaCalendarAlt className="me-2 text-danger" />
-              Submission Deadline
-            </h6>
-            <p className="mb-0 small text-dark">
-              <strong>📅 November 25, 2025</strong> — Final project titles must be submitted before midnight.
-            </p>
-          </div>
+          {/* Department */}
+          <h6 className="text-muted small fw-semibold mb-1 d-flex align-items-center">
+            <FaUniversity className="me-2 text-secondary" />
+            Department
+          </h6>
+          <p className="small mb-0">Computing and Informatics</p>
         </div>
       </Card.Body>
     </Card>

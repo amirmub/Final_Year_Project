@@ -43,7 +43,7 @@ const MySubmissions = () => {
   }, [id, token]);
 
   if (loading) return (
-    <div className="text-center mt-5 " >
+    <div className="text-center text-muted d-flex flex-column justify-content-center align-items-center" style={{ height: '87vh' }} >
       <Spinner animation="border" variant="primary" />
       <p className="mt-2 text-muted">Loading your submission...</p>
     </div>

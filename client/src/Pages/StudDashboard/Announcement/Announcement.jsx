@@ -2,6 +2,7 @@ import Header from '../../../Components/Header/Header'
 import { Col, Container, Row } from 'react-bootstrap'
 import Sidebar from '../../../Components/Sidebar/Sidebar'
 import AnnouncementCard from '../../../Components/AnnouncementCard/AnnouncementCard'
+import AnnouncementsPreview from '../../../Components/AnnouncementsPreview/AnnouncementsPreview'
 
 function Announcement() {
   return (
@@ -13,7 +14,7 @@ function Announcement() {
             <Sidebar />
           </Col>
           <Col md={9} lg={10} className="px-5">
-            <AnnouncementCard />
+            <AnnouncementsPreview />
           </Col>
         </Row>
       </Container>

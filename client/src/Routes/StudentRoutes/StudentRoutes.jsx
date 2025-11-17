@@ -5,6 +5,7 @@ import SubmitTitle from '../../Pages/StudDashboard/SubmitTitle/SubmitTitle'
 import SubmittedTitles from '../../Pages/StudDashboard/SubmittedTitles/SubmittedTitles'
 import StudDashboard from '../../Pages/StudDashboard/Dashboard/Dashboard'
 import { PrivateRoute } from "../PrivateRoute/PrivateRoute";
+import AnnouncementCard from "../../Components/AnnouncementCard/AnnouncementCard";
 
 export default function StudentRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function StudentRoutes() {
       <Route path="submit-title" element={<SubmitTitle />  } />
       <Route path="my-submissions/:id" element={<SubmittedTitles />} />
       <Route path="announcements" element={<Announcement />} />
+      <Route path="announcements/view" element={<AnnouncementCard />} />
       <Route path="faq" element={<FAQPage />} />
     </Routes>
   );
