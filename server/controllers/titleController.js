@@ -1,32 +1,40 @@
 const Title = require("../models/titleModel");
-const mongoose = require("mongoose");
+const User = require("../models/userModel");
 
-// Create User Controller
+// Create a new title for a user
 async function createTitle(req, res) {
   const { name, department, title_1, title_2, title_3 } = req.body;
 
   try {
-    // Create Title
+    // Create title linked to user from nested route
     const title = await Title.create({
       name,
       department,
       title_1,
       title_2,
-      title_3
+      title_3,
+      user: req.params.userId
+    });
+
+    // Populate user info
+    await title.populate({
+      path: "user",
+      select: "-password -__v -createdAt -passwordConfirm"
     });
 
     res.status(201).json({
       status: "success",
-      data: { title }
+      data: title
     });
-
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       status: "fail",
       message: error.message
     });
   }
 }
+
 
 // to get all Titles
 async function getAllTitles(req, res) {
@@ -43,25 +51,33 @@ async function getAllTitles(req, res) {
   }
 };
 
-// to get a single Title
+// Get a single title with populated user info
 async function getTitle(req, res) {
   try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ status: "fail", message: "Invalid ID format" });
-    }
-
-    const title = await Title.findById(id);
+    const title = await Title.findById(req.params.id)
+      .select("-__v -createdAt")
+      .populate({
+        path: "user",
+        select: "-password -__v -createdAt"
+      });
 
     if (!title) {
-      return res.status(404).json({ status: "fail", message: "Title not found" });
+      return res.status(404).json({
+        status: "fail",
+        message: "Title not found"
+      });
     }
 
-    res.status(200).json({ status: "success", message: title });
+    res.status(200).json({
+      status: "success",
+      data: title
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error"
+    });
   }
 }
 

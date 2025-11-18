@@ -65,4 +65,20 @@ async function getAllUsers(req, res) {
   }
 };
 
-module.exports = { createUser, getAllUsers };
+// to get a single user
+async function getUser(req, res) {
+  try { 
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ status: "fail", message: "Invalid ID" });
+    }
+
+    res.status(200).json({ status: "success", msg: user });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ msg: "Internal server error" });
+  }
+}
+
+module.exports = { createUser, getAllUsers, getUser };

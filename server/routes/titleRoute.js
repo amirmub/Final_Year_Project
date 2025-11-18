@@ -1,18 +1,18 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const titleController = require("../controllers/titleController");
-const authMiddleware = require("../middleware/authMiddleware"); 
+const authMiddleware = require("../middleware/authMiddleware");
 
-// routes to create user
-router.post("/titles", authMiddleware.tokenVerify, titleController.createTitle);
+// CREATE title (nested under user)
+router.post("/", authMiddleware.tokenVerify, titleController.createTitle);
 
-// routes to get all titles
-router.get("/titles", [authMiddleware.tokenVerify,authMiddleware.isAdmin], titleController.getAllTitles);
+// GET all titles (admin only)
+router.get("/", [authMiddleware.tokenVerify, authMiddleware.isAdmin], titleController.getAllTitles);
 
-// routes to get all titles
-router.get("/titles/:id", [authMiddleware.tokenVerify], titleController.getTitle);
+// GET single title
+router.get("/:id", authMiddleware.tokenVerify, titleController.getTitle);
 
-// routes to get all titles
-router.delete("/titles/:id", [authMiddleware.tokenVerify,authMiddleware.isAdmin], titleController.deleteTitle);
+// DELETE title (admin only)
+router.delete("/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], titleController.deleteTitle);
 
 module.exports = router;

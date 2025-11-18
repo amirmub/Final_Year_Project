@@ -2,11 +2,18 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware"); 
+const titleRoute = require("./titleRoute");
 
-// routes to create user
+// Nested route: all title routes are under /users/:userId/titles
+router.use("/users/:userId/titles", titleRoute);
+
+// Create user
 router.post("/users", userController.createUser);
 
-// routes to get all users
-router.get("/users", [authMiddleware.tokenVerify,authMiddleware.isAdmin], userController.getAllUsers);
+// Get all users (admin only)
+router.get("/users", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.getAllUsers);
+
+// Get a single user
+router.get("/users/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.getUser);
 
 module.exports = router;
