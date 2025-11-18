@@ -45,7 +45,7 @@ function QuickTitleCheck() {
 
     try {
       const res = await axios.post(
-        "/titles",
+        `/users/${userId}/titles`,
         {
           user: userId, // associate submission with logged-in user
           name: leaderNameRef.current.value,
@@ -56,11 +56,13 @@ function QuickTitleCheck() {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      console.log(res);
+      
 
       toast.success("Title submitted successfully", { style: iosToastStyle });
 
       // Save latest submission ID per user in localStorage
-      localStorage.setItem(`latestSubmissionId_${userId}`, res.data.data.title._id);
+      localStorage.setItem(`latestSubmissionId_${userId}`, res.data.data._id);
 
       // Reset form
       leaderNameRef.current.value = "";
@@ -71,7 +73,7 @@ function QuickTitleCheck() {
 
       // Navigate to the newly submitted title
       setTimeout(() => {
-        navigate(`/student/my-submissions/${res.data.data.title._id}`);
+        navigate(`/student/my-submissions/${res.data.data._id}`);
       }, 1200);
     } catch (error) {
       console.error(error.response || error.message);

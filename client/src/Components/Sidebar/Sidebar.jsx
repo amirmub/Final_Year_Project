@@ -1,3 +1,4 @@
+// Sidebar.jsx
 import React, { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
 import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle } from "react-icons/fa";
@@ -9,19 +10,26 @@ const Sidebar = () => {
   const auth = getAuth() || {};
   const { id: userId } = auth;
 
-  // Get the latest submission ID for the current user
-  const latestSubmissionId = localStorage.getItem(`latestSubmissionId_${userId}`);
+  const [latestSubmissionId, setLatestSubmissionId] = useState(
+    localStorage.getItem(`latestSubmissionId_${userId}`) || "new"
+  );
 
-  // Always render My Submissions as /student/my-submissions/:id
-  // If no submission exists yet, use 'new' as a placeholder ID
-  const mySubmissionPath = latestSubmissionId
-    ? `/student/my-submissions/${latestSubmissionId}`
-    : `/student/my-submissions/new`;
+  // Update on localStorage changes (optional if you use events)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const updatedId = localStorage.getItem(`latestSubmissionId_${userId}`);
+      if (updatedId) setLatestSubmissionId(updatedId);
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [userId]);
+
+  const mySubmissionPath = `/student/my-submissions/${latestSubmissionId}`;
 
   const navItems = [
     { path: "/student/dashboard", label: "Dashboard", icon: <FaHome /> },
     { path: "/student/submit-title", label: "Submit Title", icon: <FaUpload /> },
-    { path: mySubmissionPath, label: "My Submissions", icon: <FaBook /> },
+    { path: "/student/my-submissions", label: "My Submissions", icon: <FaBook /> }, // Keep base path for active highlighting
     { path: "/student/announcements", label: "Announcements", icon: <FaBell /> },
     { path: "/student/faq", label: "FAQ", icon: <FaQuestionCircle /> }
   ];
@@ -33,6 +41,8 @@ const Sidebar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const isActive = (basePath) => location.pathname.startsWith(basePath);
 
   return (
     <div
@@ -48,20 +58,25 @@ const Sidebar = () => {
       }}
     >
       <Nav className="flex-column gap-1">
-        {navItems.map((item, index) => (
-          <Nav.Item key={index}>
-            <Link
-              to={item.path}
-              className={`d-flex align-items-center px-3 py-1 rounded text-decoration-none ${
-                location.pathname === item.path ? "bg-white text-primary" : "text-light"
-              }`}
-              style={{ transition: "all 0.2s ease-in-out" }}
-            >
-              <span className="me-3 fs-5">{item.icon}</span>
-              {item.label}
-            </Link>
-          </Nav.Item>
-        ))}
+        {navItems.map((item, index) => {
+          // Determine actual path for My Submissions
+          const path = item.label === "My Submissions" ? mySubmissionPath : item.path;
+
+          return (
+            <Nav.Item key={index}>
+              <Link
+                to={path}
+                className={`d-flex align-items-center px-3 py-1 rounded text-decoration-none ${
+                  isActive(item.path) ? "bg-white text-primary" : "text-light"
+                }`}
+                style={{ transition: "all 0.2s ease-in-out" }}
+              >
+                <span className="me-3 fs-5">{item.icon}</span>
+                {item.label}
+              </Link>
+            </Nav.Item>
+          );
+        })}
       </Nav>
 
       <div
