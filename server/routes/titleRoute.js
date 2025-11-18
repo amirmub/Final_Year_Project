@@ -6,8 +6,8 @@ const authMiddleware = require("../middleware/authMiddleware");
 // CREATE title (nested under user)
 router.post("/", authMiddleware.tokenVerify, titleController.createTitle);
 
-// GET all titles (admin only)
-router.get("/", [authMiddleware.tokenVerify, authMiddleware.isAdmin], titleController.getAllTitles);
+// GET all titles
+router.get("/", [authMiddleware.tokenVerify], titleController.getAllTitles);
 
 // GET single title
 router.get("/:id", authMiddleware.tokenVerify, titleController.getTitle);
