@@ -8,6 +8,7 @@ import NotFound from './Pages/NotFound/NotFound'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import StudentRoutes from './Routes/StudentRoutes/StudentRoutes'
 import Unauthorized from './Pages/Unauthorized/Unauthorized'
+import { PrivateRoute } from './Routes/PrivateRoute/PrivateRoute'
 
 function App() {
 
@@ -20,15 +21,22 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        <Route path="/student/*" element={
+        <Route path="/student/*"  element={
             <ProtectedRoute>
-              <StudentRoutes />
+              <PrivateRoute role={"student"}>
+                <StudentRoutes />
+              </PrivateRoute>
             </ProtectedRoute>
            }
         />
 
         {/* admin routes */}
-        <Route path='/admin/dashboard' element={<AdminDashboard />}/>
+        <Route path='/admin/dashboard'  element={
+            <PrivateRoute role={"admin"}>
+              <AdminDashboard />
+            </PrivateRoute>
+           }
+        />
         {/* <Route path='/admin/submit-title' element={<SubmitTitle />}/>
         <Route path='/admin/my-submissions' element={<SubmittedTitles />}/>
         <Route path='/admin/announcements' element={<Announcement />}/>

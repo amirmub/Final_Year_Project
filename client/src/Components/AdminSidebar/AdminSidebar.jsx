@@ -1,20 +1,39 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
-import { FaHome, FaUpload, FaBook, FaBell, FaUser, FaQuestionCircle } from "react-icons/fa";
+import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import { getAuth } from "../../utils/auth";
 
 const Sidebar = () => {
   const location = useLocation();
+  const auth = getAuth() || {};
+  const { id: userId } = auth;
+
+  const [latestSubmissionId, setLatestSubmissionId] = useState(
+    localStorage.getItem(`latestSubmissionId_${userId}`) || "new"
+  );
+
+  // Update on localStorage changes (optional if you use events)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const updatedId = localStorage.getItem(`latestSubmissionId_${userId}`);
+      if (updatedId) setLatestSubmissionId(updatedId);
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [userId]);
+
+  const mySubmissionPath = `/student/my-submissions/${latestSubmissionId}`;
 
   const navItems = [
     { path: "/admin/dashboard", label: "Dashboard", icon: <FaHome /> },
-    { path: "#", label: "Review Submission", icon: <FaUpload /> },
-    { path: "#", label: "Approved Titles", icon: <FaBook /> },
+    { path: "#", label: "Submit Title", icon: <FaUpload /> },
+    { path: "#", label: "My Submissions", icon: <FaBook /> }, // Keep base path for active highlighting
     { path: "#", label: "Announcements", icon: <FaBell /> },
     { path: "#", label: "FAQ", icon: <FaQuestionCircle /> }
   ];
 
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992); // lg breakpoint
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 992);
@@ -22,11 +41,13 @@ const Sidebar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const isActive = (basePath) => location.pathname.startsWith(basePath);
+
   return (
     <div
       className="d-flex flex-column vh-100 p-3 shadow-sm text-white"
       style={{
-        background: "linear-gradient(180deg, #2C74E0 0%, #1B4DA0 100%)",
+        background: "#5581BB",
         minWidth: "220px",
         minHeight: "80vh",
         position: isDesktop ? "fixed" : "sticky",
@@ -35,36 +56,32 @@ const Sidebar = () => {
         zIndex: 999,
       }}
     >
-      {/* Logo / Title */}
-      {/* <div className="mb-4 text-center border-bottom pb-3">
-        <h5 className="fw-bold">🎓 Title Similarity</h5>
-        <small style={{ color: "#cce0ff" }}>Detection System</small>
-      </div> */}
-
-      {/* Navigation */}
       <Nav className="flex-column gap-1">
-        {navItems.map((item, index) => (
-          <Nav.Item key={index}>
-            <Link
-              to={item.path}
-              className={`d-flex align-items-center px-3 py-1 rounded text-decoration-none ${
-                location.pathname === item.path
-                  ? "bg-white text-primary "
-                  : "text-light"
-              }`}
-              style={{
-                transition: "all 0.2s ease-in-out",
-              }}
-            >
-              <span className="me-3 fs-5">{item.icon}</span>
-              {item.label}
-            </Link>
-          </Nav.Item>
-        ))}
+        {navItems.map((item, index) => {
+          // Determine actual path for My Submissions
+          const path = item.label === "My Submissions" ? mySubmissionPath : item.path;
+
+          return (
+            <Nav.Item key={index}>
+              <Link
+                to={path}
+                className={`d-flex align-items-center px-3 py-1 rounded text-decoration-none ${
+                  isActive(item.path) ? "bg-white text-primary" : "text-light"
+                }`}
+                style={{ transition: "all 0.2s ease-in-out" }}
+              >
+                <span className="me-3 fs-5">{item.icon}</span>
+                {item.label}
+              </Link>
+            </Nav.Item>
+          );
+        })}
       </Nav>
 
-      {/* Footer Section */}
-      <div style={{position: "fixed", bottom: 15,left:30 }} className="mt-auto text-center border-top pt-3 small text-light">
+      <div
+        style={{ position: "fixed", bottom: 15, left: 30 }}
+        className="mt-auto text-center border-top pt-3 small text-light"
+      >
         <p className="mb-0">© 2025 Title Detection</p>
       </div>
     </div>

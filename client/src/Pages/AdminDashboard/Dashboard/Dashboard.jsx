@@ -25,7 +25,7 @@ function Dashboard() {
               minHeight: "100vh",
             }}
           >
-            <h4 className="fw-bold mb-3 text-primary">Dashboard Overview</h4>
+            <h4 className="fw-bold mb-3 text-primary">Admin Dashboard</h4>
             <Row className="g-4">
               <Col sm={6} lg={3}>
                 <StatsCard

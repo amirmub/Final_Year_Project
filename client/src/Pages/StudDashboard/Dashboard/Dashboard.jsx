@@ -87,7 +87,7 @@ function Dashboard() {
 
           <Col md={9} lg={9} className="py-4 m-auto">
             <div className="mb-2 pb-3" style={fadeIn}>
-              <h3 className="fw-bold text-primary">Dashboard Overview</h3>
+              <h3 className="fw-bold text-primary">Student Dashboard</h3>
             </div>
 
             <Row className="g-4 mb-4">

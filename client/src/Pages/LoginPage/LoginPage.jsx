@@ -61,18 +61,33 @@ export default function LoginPage() {
         email: emailValue,
         password: passwordValue,
       });
-      toast.success("Logged in successfully!", { style: iosToastStyle });
-      localStorage.setItem("Token", response.data.token);
-      setTimeout(() => {
-        navigate("/student/dashboard");
-      }, 1200);
-    } catch (error) {
-      toast.error(error.response.data.message || "Login failed!", {
-        style: iosToastStyle,
-      });
-      console.error("Login error:", error.response || error.message);
-    }
-  };
+
+    toast.success("Logged in successfully!", { style: iosToastStyle });
+
+    const { token, user } = response.data;
+
+    // save token + user
+    localStorage.setItem("Token", token);
+    localStorage.setItem("User", JSON.stringify(user));
+
+    // redirect based on role
+    let path = "/login"; // fallback
+
+    if (user.role === "student") path = "/student/dashboard";
+    if (user.role === "admin") path = "/admin/dashboard";
+    if (user.role === "superAdmin") path = "/super-admin/dashboard";
+
+    setTimeout(() => {
+      navigate(path);
+    }, 1200);
+  } 
+  catch (error) {
+    toast.error(error.response?.data?.message || "Login failed!", {
+      style: iosToastStyle,
+    });
+    console.error("Login error:", error.response || error.message);
+  }
+  }
 
   return (
     <Container
