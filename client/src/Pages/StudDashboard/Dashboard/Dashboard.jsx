@@ -4,7 +4,7 @@ import StatsCard from "../../../Components/StatsCard/StatsCard";
 import AnnouncementCard from "../../../Components/AnnouncementCard/AnnouncementCard";
 import SkeletonLoader from "../../../Components/SkeletonLoader/SkeletonLoader";
 
-import { FaCheckCircle, FaClock, FaExclamationTriangle, FaFileAlt } from "react-icons/fa";
+import { FaCheckCircle, FaUsers, FaFileAlt } from "react-icons/fa"; // Updated icon
 import Header from "../../../Components/Header/Header";
 import { useEffect, useState } from "react";
 import { getAuth } from "../../../utils/auth";
@@ -18,14 +18,13 @@ function Dashboard() {
 
   const { id: titleIdParam } = useParams();
   const latestSubmissionId = localStorage.getItem(`latestSubmissionId_${userId}`);
-  const titleId = titleIdParam || latestSubmissionId; // fallback
+  const titleId = titleIdParam || latestSubmissionId;
 
   const [loading, setLoading] = useState(true);
   const [titlesData, setTitlesData] = useState({
     total: 0,
     approved: 0,
-    pending: 0,
-    similarityAlerts: 0,
+    groupMembers: 0,
   });
 
   const fadeIn = { animation: "fadeIn 0.6s ease" };
@@ -43,24 +42,24 @@ function Dashboard() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const title = res.data.data; // single submission
+        const title = res.data.data;
 
-        // Count non-empty titles
+        // Total titles
         const titleArray = [title.title_1, title.title_2, title.title_3];
         const totalTitles = titleArray.filter(t => t && t.trim() !== "").length;
 
-        const approvedCount = titleArray.filter(t => t && title.status === "Approved").length;
-        const pendingCount = titleArray.filter(t => t && title.status === "Pending").length;
-        const similarityCount = titleArray.filter(t => t && title.similarityAlert).length;
+        // Approved titles
+        const approvedCount = title.status === "Approved" ? totalTitles : 0;
+
+        // Group members count (from number field)
+        const groupMembersCount = title.group_member ? Number(title.group_member) : 0;
 
         setTitlesData({
           total: totalTitles,
           approved: approvedCount,
-          pending: pendingCount,
-          similarityAlerts: similarityCount,
+          groupMembers: groupMembersCount,
         });
 
-        console.log("Fetched title:", res.data);
       } catch (error) {
         console.error(error.response || error.message);
       } finally {
@@ -77,7 +76,6 @@ function Dashboard() {
       <style>
         {`
           @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-          @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         `}
       </style>
 
@@ -94,20 +92,38 @@ function Dashboard() {
 
             <Row className="g-4 mb-4">
               {loading ? (
-                [...Array(4)].map((_, i) => <Col key={i} sm={6} lg={3}><SkeletonLoader /></Col>)
+                [...Array(3)].map((_, i) => (
+                  <Col key={i} sm={6} lg={4}>
+                    <SkeletonLoader />
+                  </Col>
+                ))
               ) : (
                 <>
-                  <Col sm={6} lg={3}>
-                    <StatsCard title="My Submissions" value={titlesData.total} icon={<FaFileAlt />} color="#007bff" />
+                  <Col sm={6} lg={4}>
+                    <StatsCard
+                      title="Submitted Titles"
+                      value={titlesData.total}
+                      icon={<FaFileAlt />}
+                      color="#007bff"
+                    />
                   </Col>
-                  <Col sm={6} lg={3}>
-                    <StatsCard title="Pending Review" value={titlesData.pending} icon={<FaClock />} color="#ffc107" />
+
+                  <Col sm={6} lg={4}>
+                    <StatsCard
+                      title="Results"
+                      value={titlesData.approved}
+                      icon={<FaCheckCircle />}
+                      color="#28a745"
+                    />
                   </Col>
-                  <Col sm={6} lg={3}>
-                    <StatsCard title="Approved Titles" value={titlesData.approved} icon={<FaCheckCircle />} color="#28a745" />
-                  </Col>
-                  <Col sm={6} lg={3}>
-                    <StatsCard title="Similarity Alerts" value={titlesData.similarityAlerts} icon={<FaExclamationTriangle />} color="#dc3545" />
+
+                  <Col sm={6} lg={4}>
+                    <StatsCard
+                      title="Group Members"
+                      value={titlesData.groupMembers}
+                      icon={<FaUsers />} // Updated icon here
+                      color="#dc3545"
+                    />
                   </Col>
                 </>
               )}
