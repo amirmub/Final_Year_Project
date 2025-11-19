@@ -3,12 +3,12 @@ import LandingPage from './Pages/LandingPage/LandingPage'
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from './Pages/LoginPage/LoginPage'
 import RegisterPage from './Pages/RegisterPage/RegisterPage'
-import AdminDashboard from './Pages/AdminDashboard/Dashboard/Dashboard'
 import NotFound from './Pages/NotFound/NotFound'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import StudentRoutes from './Routes/StudentRoutes/StudentRoutes'
 import Unauthorized from './Pages/Unauthorized/Unauthorized'
 import { PrivateRoute } from './Routes/PrivateRoute/PrivateRoute'
+import AdminRoute from './Routes/AdminRoute/AdminRoute'
 
 function App() {
 
@@ -31,17 +31,15 @@ function App() {
         />
 
         {/* admin routes */}
-        <Route path='/admin/dashboard'  element={
+        <Route path='/admin/*'  element={
+          <ProtectedRoute>
             <PrivateRoute role={"admin"}>
-              <AdminDashboard />
+              <AdminRoute />
             </PrivateRoute>
+          </ProtectedRoute>
            }
         />
-        {/* <Route path='/admin/submit-title' element={<SubmitTitle />}/>
-        <Route path='/admin/my-submissions' element={<SubmittedTitles />}/>
-        <Route path='/admin/announcements' element={<Announcement />}/>
-        <Route path='/admin/faq' element={<FAQPage />}/> */}
-
+        
       </Routes>
     </>
   )

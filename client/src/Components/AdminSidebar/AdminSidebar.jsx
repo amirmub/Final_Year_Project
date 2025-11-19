@@ -27,10 +27,10 @@ const Sidebar = () => {
 
   const navItems = [
     { path: "/admin/dashboard", label: "Dashboard", icon: <FaHome /> },
-    { path: "#", label: "Submit Title", icon: <FaUpload /> },
-    { path: "#", label: "My Submissions", icon: <FaBook /> }, // Keep base path for active highlighting
-    { path: "#", label: "Announcements", icon: <FaBell /> },
-    { path: "#", label: "FAQ", icon: <FaQuestionCircle /> }
+    { path: "/admin/all-submissions", label: "All Submission", icon: <FaUpload /> },
+    // { path: "#", label: "My Submissions", icon: <FaBook /> },
+    // { path: "#", label: "Announcements", icon: <FaBell /> },
+    // { path: "#", label: "FAQ", icon: <FaQuestionCircle /> }
   ];
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);

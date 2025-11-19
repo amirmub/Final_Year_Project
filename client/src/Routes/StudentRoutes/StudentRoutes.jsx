@@ -4,7 +4,6 @@ import FAQPage from '../../Pages/FAQPage/FAQPage'
 import SubmitTitle from '../../Pages/StudDashboard/SubmitTitle/SubmitTitle'
 import SubmittedTitles from '../../Pages/StudDashboard/SubmittedTitles/SubmittedTitles'
 import Dashboard from '../../Pages/StudDashboard/Dashboard/Dashboard'
-import { PrivateRoute } from "../PrivateRoute/PrivateRoute";
 import AnnouncementCard from "../../Components/AnnouncementCard/AnnouncementCard";
 
 export default function StudentRoutes() {
