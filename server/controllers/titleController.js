@@ -3,7 +3,7 @@ const User = require("../models/userModel");
 
 // Create a new title for a user
 async function createTitle(req, res) {
-  const { name, department, title_1, title_2, title_3 } = req.body;
+  const { name, department, title_1, title_2, title_3, group_member } = req.body;
 
   try {
     // Create title linked to user from nested route
@@ -13,6 +13,7 @@ async function createTitle(req, res) {
       title_1,
       title_2,
       title_3,
+      group_member,
       user: req.params.userId
     });
 

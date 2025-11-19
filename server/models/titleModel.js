@@ -10,6 +10,11 @@ const titleSchema = new mongoose.Schema({
     enum: ["Computer Science", "Information Science", "Information Technology", "Software Engineering"],
     required: true
   },
+  group_member:{
+    type: Number,
+    max: 5,
+    min:1
+  },
   title_1: { type: String, required: true },
   title_2: { type: String, required: true },
   title_3: { type: String, required: true },
