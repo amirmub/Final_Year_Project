@@ -1,76 +1,71 @@
 import { Col, Container, Row, Button } from "react-bootstrap";
 import Header from "../../../Components/Header/Header";
 import AdminSidebar from "../../../Components/AdminSidebar/AdminSidebar";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FaFilter, FaSort } from "react-icons/fa";
 import "./SubmittedTitle.css";
+import { getAuth } from "../../../utils/auth";
+import axios from "../../../utils/axios";
 
 function SubmittedTitle() {
-  const submittedData = [
-    {
-      id: 1,
-      short: "SM",
-      name: "Sarah Mohammed",
-      time: "Submitted 2 days ago",
-      dept: "Computer Science",
-      titles: [
-        "AI-Powered Student Performance Prediction System",
-        "Machine Learning Based Academic Analytics Platform",
-        "Predictive Model for Student Success Using AI",
-      ],
-    },
-    {
-      id: 2,
-      short: "AY",
-      name: "Ahmed Yusuf",
-      time: "Submitted 3 days ago",
-      dept: "Information Science",
-      titles: [
-        "Blockchain-Based Supply Chain Management System",
-        "Decentralized Logistics Tracking Using Blockchain",
-        "Smart Contract System for Supply Chain Transparency",
-      ],
-    },
-    {
-      id: 3,
-      short: "AM",
-      name: "Amir Mubarek",
-      time: "Submitted 5 days ago",
-      dept: "Software Engineering",
-      titles: [
-        "IoT Fleet Vehicle Monitoring System",
-        "Smart Transport Analytics Dashboard",
-        "AI Traffic Congestion Predictor",
-      ],
-    },
-    {
-      id: 4,
-      short: "HB",
-      name: "Hana Bekele",
-      time: "Submitted 1 day ago",
-      dept: "Information Technology",
-      titles: [
-        "E-Learning Recommendation Engine",
-        "Adaptive Course Personalization System",
-        "AI Tutor Chatbot for Students",
-      ],
-    },
-  ];
+  const authData = getAuth();
+  const token = authData?.token;
+  const userId = authData?.id;
 
   // States
+  const [submittedData, setSubmittedData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("");
   const [filterDept, setFilterDept] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const rowsPerPage = 2;
+
+  // ---------- FETCH DATA ----------
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`/users/${userId}/titles`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.data.status === "success") {
+          const transformed = res.data.message.map((item) => ({
+            id: item._id,
+            name: item.name,
+            dept: item.department,
+            createdAt: item.createdAt,
+            time: new Date(item.createdAt).toLocaleDateString(),
+            short: item.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase(),
+            titles: [item.title_1, item.title_2, item.title_3].filter(Boolean),
+          }));
+          setSubmittedData(transformed);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [userId, token]);
 
   // Filter, search, sort logic
   const filteredData = useMemo(() => {
     let data = [...submittedData];
 
-    if (filterDept) data = data.filter((d) => d.dept === filterDept);
+    // Department filter
+    if (filterDept && filterDept !== "All") {
+      data = data.filter((d) => d.dept === filterDept);
+    }
 
+    // Search
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       data = data.filter(
@@ -81,6 +76,7 @@ function SubmittedTitle() {
       );
     }
 
+    // Sort
     switch (sortOption) {
       case "az":
         data.sort((a, b) => a.name.localeCompare(b.name));
@@ -89,17 +85,17 @@ function SubmittedTitle() {
         data.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case "oldest":
-        data.sort((a, b) => a.id - b.id);
+        data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
         break;
       case "mostRecent":
-        data.sort((a, b) => b.id - a.id);
+        data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
       default:
         break;
     }
 
     return data;
-  }, [searchQuery, sortOption, filterDept]);
+  }, [searchQuery, sortOption, filterDept, submittedData]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const startIdx = (currentPage - 1) * rowsPerPage;
@@ -111,10 +107,16 @@ function SubmittedTitle() {
 
   const departments = ["All", ...new Set(submittedData.map((d) => d.dept))];
 
+  if (loading)
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary" role="status"></div>
+      </div>
+    );
+
   return (
     <>
       <Header />
-
       <Container fluid>
         <Row>
           <Col md={3} lg={2} className="p-0">
@@ -129,9 +131,9 @@ function SubmittedTitle() {
           >
             <h4 className="fw-bold mb-2 text-primary">Submitted Titles</h4>
 
-            {/* --- SEARCH + SORT + FILTER BAR --- */}
+            {/* --- SEARCH + SORT + FILTER --- */}
             <div className="d-flex flex-wrap align-items-center justify-content-between mb-2 submitted-search-box gap-2">
-              {/* Search Input (keep original) */}
+              {/* Search */}
               <div
                 className="search-input-wrapper d-flex align-items-center"
                 style={{
@@ -170,21 +172,16 @@ function SubmittedTitle() {
                     style={{
                       padding: "0.35rem 1rem",
                       fontSize: "14px",
-                      transition: "all 0.3s ease",
-                      cursor: "pointer",
                       appearance: "none",
                       background: `#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center`,
                       backgroundSize: "12px",
+                      cursor: "pointer",
                     }}
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}
                   >
                     <option value="">
-                      {
-                        <>
-                          <FaSort className="me-1" /> Sort
-                        </>
-                      }
+                      <FaSort className="me-1" /> Sort
                     </option>
                     <option value="mostRecent">Most Recent</option>
                     <option value="oldest">Oldest</option>
@@ -200,11 +197,10 @@ function SubmittedTitle() {
                     style={{
                       padding: "0.35rem 1rem",
                       fontSize: "14px",
-                      transition: "all 0.3s ease",
-                      cursor: "pointer",
                       appearance: "none",
                       background: `#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center`,
                       backgroundSize: "12px",
+                      cursor: "pointer",
                     }}
                     value={filterDept}
                     onChange={(e) => {
@@ -213,11 +209,7 @@ function SubmittedTitle() {
                     }}
                   >
                     <option value="">
-                      {
-                        <>
-                          <FaFilter className="me-1" /> Filter
-                        </>
-                      }
+                      <FaFilter className="me-1" /> Filter
                     </option>
                     {departments.map((d, i) => (
                       <option key={i} value={d === "All" ? "" : d}>
@@ -251,67 +243,105 @@ function SubmittedTitle() {
                 </thead>
 
                 <tbody>
-                  {currentRows.map((row, index) => (
-                    <tr key={row.id}>
-                      <td style={{ border: "1.5px solid #dee2e6" }}>
-                        {startIdx + index + 1}
-                      </td>
-                      <td
-                        style={{
-                          border: "1.5px solid #dee2e6",
-                          fontSize: "14.5px",
-                        }}
-                      >
-                        <div className="d-flex align-items-center gap-2">
-                          <div
-                            className="rounded-circle bg-primary text-white fw-bold d-flex justify-content-center align-items-center"
-                            style={{
-                              width: 30,
-                              height: 30,
-                              fontSize: "12.5px",
-                            }}
-                          >
-                            {row.short}
-                          </div>
-                          <div>
-                            <div className="fw-semibold">{row.name}</div>
-                            <div className="small text-muted">{row.time}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td
-                        style={{
-                          border: "1.5px solid #dee2e6",
-                          fontSize: "14.5px",
-                        }}
-                      >
-                        {row.dept}
-                      </td>
-                      <td style={{ border: "1.5px solid #dee2e6" }}>
-                        {row.titles.map((t, i) => (
-                          <div
-                            key={i}
-                            className="pb-2 mb-2"
-                            style={{ borderBottom: "1.5px solid #e0e0e0" }}
-                          >
-                            <span
-                              className="fw-bold"
-                              style={{ fontSize: "13px" }}
-                            >
-                              {t}
-                            </span>
-                          </div>
-                        ))}
-                      </td>
-                      <td style={{ border: "1.5px solid #dee2e6" }}></td>
-                      <td style={{ border: "1.5px solid #dee2e6" }}></td>
-                      <td style={{ border: "1.5px solid #dee2e6" }}></td>
-                    </tr>
-                  ))}
+                  {currentRows.length > 0 ? (
+                    currentRows.map((row, index) => (
+                      <tr key={row.id}>
+                        {/* # */}
+                        <td style={{ border: "1.5px solid #dee2e6" }}>
+                          {startIdx + index + 1}
+                        </td>
 
-                  {currentRows.length === 0 && (
+                        {/* Student */}
+                        <td style={{ border: "1.5px solid #dee2e6" }}>
+                          <div className="d-flex align-items-center gap-2">
+                            <div
+                              className="rounded-circle bg-primary text-white text-center fw-bold d-flex justify-content-center align-items-center"
+                              style={{
+                                width: 30,
+                                height: 30,
+                                fontSize: "12.5px",
+                              }}
+                            >
+                              {row.short}
+                            </div>
+                            <div>
+                              <div className="fw-semibold">{row.name}</div>
+                              <div className="small text-muted">{row.time}</div>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Department */}
+                        <td style={{ border: "1.5px solid #dee2e6 " }}>
+                          <div className="text-center">{row.dept}</div>
+                        </td>
+
+                        {/* Project Titles (constant height + scroll) */}
+                        <td
+                          style={{
+                            border: "1.5px solid #dee2e6",
+                            padding: 0,
+                            height: "135px",
+                            maxHeight: "135px",
+                            overflowY: "auto",
+                          }}
+                        >
+                          {row.titles.map((t, i) => {
+                            const words = t.split(" ");
+                            const isLong = words.length > 6;
+                            const shortTitle = isLong
+                              ? words.slice(0, 6).join(" ") + "..."
+                              : t;
+
+                            return (
+                              <div
+                                key={i}
+                                style={{
+                                  borderBottom:
+                                    i === row.titles.length - 1
+                                      ? "none"
+                                      : "1.5px solid #dee2e6",
+                                  padding: "0.5rem 1rem",
+                                  width: "100%",
+                                  boxSizing: "border-box",
+                                }}
+                                className="project-title-item"
+                                title={t} 
+                              >
+                                <span
+                                  className="fw-bold"
+                                  style={{
+                                    fontSize: "13px",
+                                    display: "block",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                >
+                                  {shortTitle}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </td>
+
+                        {/* Similarity */}
+                        <td style={{ border: "1.5px solid #dee2e6" }}></td>
+
+                        {/* Priority */}
+                        <td style={{ border: "1.5px solid #dee2e6" }}></td>
+
+                        {/* Actions */}
+                        <td style={{ border: "1.5px solid #dee2e6" }}></td>
+                      </tr>
+                    ))
+                  ) : (
                     <tr>
-                      <td colSpan="7" className="text-center text-muted py-4">
+                      <td
+                        colSpan="7"
+                        className="text-center text-muted py-4"
+                        style={{ border: "1.5px solid #dee2e6" }}
+                      >
                         No records found.
                       </td>
                     </tr>
@@ -321,29 +351,31 @@ function SubmittedTitle() {
             </div>
 
             {/* PAGINATION */}
-            <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
-              <Button
-                variant="warning"
-                className="fw-semibold rounded-lg" 
-                disabled={currentPage === 1}
-                onClick={prevPage}
-                style={{ fontSize: "14px" }}
-              >
-                Previous
-              </Button>
-              <div className="fw-semibold" style={{ fontSize: "14px" }}>
-                Page {currentPage} of {totalPages}
+            {currentRows.length > 0 && (
+              <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
+                <Button
+                  variant="warning"
+                  className="fw-semibold rounded-lg"
+                  disabled={currentPage === 1}
+                  onClick={prevPage}
+                  style={{ fontSize: "14px" }}
+                >
+                  Previous
+                </Button>
+                <div className="fw-semibold" style={{ fontSize: "14px" }}>
+                  Page {currentPage} of {totalPages}
+                </div>
+                <Button
+                  variant="primary"
+                  className="rounded-lg"
+                  disabled={currentPage === totalPages}
+                  onClick={nextPage}
+                  style={{ fontSize: "14.5px" }}
+                >
+                  Next →
+                </Button>
               </div>
-              <Button
-                variant="primary"
-                className="rounded-lg"
-                disabled={currentPage === totalPages}
-                onClick={nextPage}
-                style={{ fontSize: "14.5px" }}
-              >
-                Next →
-              </Button>
-            </div>
+            )}
           </Col>
         </Row>
       </Container>
