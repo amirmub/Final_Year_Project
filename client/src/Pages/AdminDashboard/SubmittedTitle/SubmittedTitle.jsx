@@ -126,10 +126,10 @@ function SubmittedTitle() {
           <Col
             md={9}
             lg={10}
-            className="px-5 py-4"
-            style={{ backgroundColor: "#f4f6f9", minHeight: "100vh" }}
+            className="px-5 py-3"
+            style={{ backgroundColor: "#f4f6f9", minHeight: "70vh" }}
           >
-            <h4 className="fw-bold mb-2 text-primary">Submitted Titles</h4>
+            <h4 className="fw-bold mb-2 mt-2 text-primary">Submitted Titles</h4>
 
             {/* --- SEARCH + SORT + FILTER --- */}
             <div className="d-flex flex-wrap align-items-center justify-content-between mb-2 submitted-search-box gap-2">
