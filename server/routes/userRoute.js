@@ -16,4 +16,10 @@ router.get("/users", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userC
 // Get a single user
 router.get("/users/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.getUser);
 
+// Get a Update user
+router.put("/users/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.updateUser);
+
+// Get a Delete user
+router.delete("/users/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.deleteUser);
+
 module.exports = router;

@@ -81,4 +81,47 @@ async function getUser(req, res) {
   }
 }
 
-module.exports = { createUser, getAllUsers, getUser };
+//  to update a User
+async function updateUser (req, res) {
+    try {
+    const { name, email, password, passwordConfirm, role } = req.body;
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ status : "fail", message: "User not found" });
+    }
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.password = password || user.password;
+    user.passwordConfirm = passwordConfirm || user.passwordConfirm;
+    user.role = role || user.role;
+
+    await user.save();
+    return res.status(200).json({ status : "success", message: "User updated successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal server error"});
+  }
+};
+
+//  to delete a User
+async function deleteUser(req, res) {
+   try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        return res.status(404).json({ status : "fail", message: "User not found"});
+    }
+
+    await User.deleteOne();
+    return res.status(200).json({ status : "success", message: "User deleted successfully", data: null });
+
+   } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Internal server error"});
+   }
+};
+
+
+module.exports = { createUser, getAllUsers, getUser, updateUser, deleteUser };

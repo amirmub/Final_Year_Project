@@ -4,6 +4,13 @@ const Announcement = require("../models/announcementModel");
 async function createAnnouncement(req, res) {
   const { title, description } = req.body;
 
+  if (!title || !description) {
+    res.status(400).json({
+      status: "fail",
+      message: "Enter all require field"
+    });
+  }
+
   try {
     // Create Announcement
     const announcement = await Announcement.create({ title, description });
@@ -58,6 +65,7 @@ async function getAnnouncement(req, res) {
 async function updateAnnouncement (req, res) {
     try {
     const { title, description } = req.body;
+
     const announcement = await Announcement.findById(req.params.id);
 
     if (!announcement) {
@@ -75,7 +83,7 @@ async function updateAnnouncement (req, res) {
   }
 };
 
-//  to delete a title
+//  to delete a announcement
 async function deleteAnnouncement(req, res) {
    try {
     const announcement = await Announcement.findById(req.params.id);

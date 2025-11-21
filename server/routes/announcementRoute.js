@@ -7,10 +7,10 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.post("/announcement",[authMiddleware.tokenVerify, authMiddleware.isAdmin], announcementController.createAnnouncement);
 
 // Get all announcement (admin only)
-router.get("/announcement", [authMiddleware.tokenVerify, authMiddleware.isAdmin], announcementController.getAllAnnouncement);
+router.get("/announcement", [authMiddleware.tokenVerify], announcementController.getAllAnnouncement);
 
 // Get a single announcement (admin only)
-router.get("/announcement/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], announcementController.getAnnouncement);
+router.get("/announcement/:id", [authMiddleware.tokenVerify], announcementController.getAnnouncement);
 
 // Update an  announcement (admin only)
 router.put("/announcement/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], announcementController.updateAnnouncement);
