@@ -107,13 +107,6 @@ function SubmittedTitle() {
 
   const departments = ["All", ...new Set(submittedData.map((d) => d.dept))];
 
-  if (loading)
-    return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status"></div>
-      </div>
-    );
-
   return (
     <>
       <Header />
@@ -123,260 +116,272 @@ function SubmittedTitle() {
             <AdminSidebar />
           </Col>
 
-          <Col
-            md={9}
-            lg={10}
-            className="px-5 py-3"
-            style={{ backgroundColor: "#f4f6f9", minHeight: "70vh" }}
-          >
-            <h4 className="fw-bold mb-2 mt-2 text-primary">Submitted Titles</h4>
+          {loading ? (
+            <div className="d-flex flex-wrap align-items-center justify-content-center " style={{height: "70vh"}}>
+              <div className="spinner-border text-primary" role="status"></div>
+            </div>
+          ) : (
+            <Col
+              md={9}
+              lg={10}
+              className="px-5 py-3"
+              style={{ backgroundColor: "#f4f6f9", minHeight: "88vh" }}
+            >
+              <h4 className="fw-bold mb-2 mt-2 text-primary">
+                Submitted Titles
+              </h4>
 
-            {/* --- SEARCH + SORT + FILTER --- */}
-            <div className="d-flex flex-wrap align-items-center justify-content-between mb-2 submitted-search-box gap-2">
-              {/* Search */}
-              <div
-                className="search-input-wrapper d-flex align-items-center"
-                style={{
-                  backgroundColor: "#fff",
-                  color: "#000",
-                  borderRadius: "50px",
-                  padding: "0.2rem 0.5rem",
-                  minWidth: 250,
-                }}
-              >
-                <i className="bi bi-search ms-2 me-2"></i>
-                <input
-                  type="text"
-                  placeholder="Search members..."
-                  className="search-input-field"
+              {/* --- SEARCH + SORT + FILTER --- */}
+              <div className="d-flex flex-wrap align-items-center justify-content-between mb-2 submitted-search-box gap-2">
+                {/* Search */}
+                <div
+                  className="search-input-wrapper d-flex align-items-center"
                   style={{
-                    border: "none",
                     backgroundColor: "#fff",
                     color: "#000",
-                    outline: "none",
+                    borderRadius: "50px",
+                    padding: "0.2rem 0.5rem",
+                    minWidth: 250,
                   }}
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                />
-              </div>
-
-              {/* Sort & Filter */}
-              <div className="d-flex align-items-center gap-2 flex-wrap">
-                {/* Sort Dropdown */}
-                <div className="position-relative" style={{ minWidth: 180 }}>
-                  <select
-                    className="form-select rounded-pill shadow-sm"
+                >
+                  <i className="bi bi-search ms-2 me-2"></i>
+                  <input
+                    type="text"
+                    placeholder="Search members..."
+                    className="search-input-field"
                     style={{
-                      padding: "0.35rem 1rem",
-                      fontSize: "14px",
-                      appearance: "none",
-                      background: `#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center`,
-                      backgroundSize: "12px",
-                      cursor: "pointer",
+                      border: "none",
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      outline: "none",
                     }}
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
-                  >
-                    <option value="">
-                      <FaSort className="me-1" /> Sort
-                    </option>
-                    <option value="mostRecent">Most Recent</option>
-                    <option value="oldest">Oldest</option>
-                    <option value="az">A → Z</option>
-                    <option value="za">Z → A</option>
-                  </select>
-                </div>
-
-                {/* Filter Dropdown */}
-                <div className="position-relative" style={{ minWidth: 180 }}>
-                  <select
-                    className="form-select rounded-pill shadow-sm"
-                    style={{
-                      padding: "0.35rem 1rem",
-                      fontSize: "14px",
-                      appearance: "none",
-                      background: `#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center`,
-                      backgroundSize: "12px",
-                      cursor: "pointer",
-                    }}
-                    value={filterDept}
+                    value={searchQuery}
                     onChange={(e) => {
-                      setFilterDept(e.target.value);
+                      setSearchQuery(e.target.value);
                       setCurrentPage(1);
                     }}
-                  >
-                    <option value="">
-                      <FaFilter className="me-1" /> Filter
-                    </option>
-                    {departments.map((d, i) => (
-                      <option key={i} value={d === "All" ? "" : d}>
-                        {d}
+                  />
+                </div>
+
+                {/* Sort & Filter */}
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  {/* Sort Dropdown */}
+                  <div className="position-relative" style={{ minWidth: 180 }}>
+                    <select
+                      className="form-select rounded-pill shadow-sm"
+                      style={{
+                        padding: "0.35rem 1rem",
+                        fontSize: "14px",
+                        appearance: "none",
+                        background: `#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center`,
+                        backgroundSize: "12px",
+                        cursor: "pointer",
+                      }}
+                      value={sortOption}
+                      onChange={(e) => setSortOption(e.target.value)}
+                    >
+                      <option value="">
+                        <FaSort className="me-1" /> Sort
                       </option>
-                    ))}
-                  </select>
+                      <option value="mostRecent">Most Recent</option>
+                      <option value="oldest">Oldest</option>
+                      <option value="az">A → Z</option>
+                      <option value="za">Z → A</option>
+                    </select>
+                  </div>
+
+                  {/* Filter Dropdown */}
+                  <div className="position-relative" style={{ minWidth: 180 }}>
+                    <select
+                      className="form-select rounded-pill shadow-sm"
+                      style={{
+                        padding: "0.35rem 1rem",
+                        fontSize: "14px",
+                        appearance: "none",
+                        background: `#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center`,
+                        backgroundSize: "12px",
+                        cursor: "pointer",
+                      }}
+                      value={filterDept}
+                      onChange={(e) => {
+                        setFilterDept(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                    >
+                      <option value="">
+                        <FaFilter className="me-1" /> Filter
+                      </option>
+                      {departments.map((d, i) => (
+                        <option key={i} value={d === "All" ? "" : d}>
+                          {d}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* TABLE */}
-            <div className="table-responsive shadow-sm rounded-0 bg-white p-0 m-0">
-              <table className="table table-hover align-middle">
-                <thead className="table-light text-center">
-                  <tr>
-                    <th style={{ border: "1.5px solid #dee2e6" }}>#</th>
-                    <th style={{ border: "1.5px solid #dee2e6" }}>Student</th>
-                    <th style={{ border: "1.5px solid #dee2e6" }}>
-                      Department
-                    </th>
-                    <th style={{ border: "1.5px solid #dee2e6" }}>
-                      Project Titles
-                    </th>
-                    <th style={{ border: "1.5px solid #dee2e6" }}>
-                      Similarity
-                    </th>
-                    <th style={{ border: "1.5px solid #dee2e6" }}>Priority</th>
-                    <th style={{ border: "1.5px solid #dee2e6" }}>Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {currentRows.length > 0 ? (
-                    currentRows.map((row, index) => (
-                      <tr key={row.id}>
-                        {/* # */}
-                        <td style={{ border: "1.5px solid #dee2e6" }}>
-                          {startIdx + index + 1}
-                        </td>
-
-                        {/* Student */}
-                        <td style={{ border: "1.5px solid #dee2e6" }}>
-                          <div className="d-flex align-items-center gap-2">
-                            <div
-                              className="rounded-circle bg-primary text-white text-center fw-bold d-flex justify-content-center align-items-center"
-                              style={{
-                                width: 30,
-                                height: 30,
-                                fontSize: "12.5px",
-                              }}
-                            >
-                              {row.short}
-                            </div>
-                            <div>
-                              <div className="fw-semibold">{row.name}</div>
-                              <div className="small text-muted">{row.time}</div>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Department */}
-                        <td style={{ border: "1.5px solid #dee2e6 " }}>
-                          <div className="text-center">{row.dept}</div>
-                        </td>
-
-                        {/* Project Titles (constant height + scroll) */}
-                        <td
-                          style={{
-                            border: "1.5px solid #dee2e6",
-                            padding: 0,
-                            height: "135px",
-                            maxHeight: "135px",
-                            overflowY: "auto",
-                          }}
-                        >
-                          {row.titles.map((t, i) => {
-                            const words = t.split(" ");
-                            const isLong = words.length > 6;
-                            const shortTitle = isLong
-                              ? words.slice(0, 6).join(" ") + "..."
-                              : t;
-
-                            return (
-                              <div
-                                key={i}
-                                style={{
-                                  borderBottom:
-                                    i === row.titles.length - 1
-                                      ? "none"
-                                      : "1.5px solid #dee2e6",
-                                  padding: "0.5rem 1rem",
-                                  width: "100%",
-                                  boxSizing: "border-box",
-                                }}
-                                className="project-title-item"
-                                title={t} 
-                              >
-                                <span
-                                  className="fw-bold"
-                                  style={{
-                                    fontSize: "13px",
-                                    display: "block",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                  }}
-                                >
-                                  {shortTitle}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </td>
-
-                        {/* Similarity */}
-                        <td style={{ border: "1.5px solid #dee2e6" }}></td>
-
-                        {/* Priority */}
-                        <td style={{ border: "1.5px solid #dee2e6" }}></td>
-
-                        {/* Actions */}
-                        <td style={{ border: "1.5px solid #dee2e6" }}></td>
-                      </tr>
-                    ))
-                  ) : (
+              {/* TABLE */}
+              <div className="table-responsive shadow-sm rounded-0 bg-white p-0 m-0">
+                <table className="table table-hover align-middle">
+                  <thead className="table-light text-center">
                     <tr>
-                      <td
-                        colSpan="7"
-                        className="text-center text-muted py-4"
-                        style={{ border: "1.5px solid #dee2e6" }}
-                      >
-                        No records found.
-                      </td>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>#</th>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>Student</th>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>
+                        Department
+                      </th>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>
+                        Project Titles
+                      </th>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>
+                        Similarity
+                      </th>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>
+                        Priority
+                      </th>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>Actions</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
 
-            {/* PAGINATION */}
-            {currentRows.length > 0 && (
-              <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
-                <Button
-                  variant="warning"
-                  className="fw-semibold rounded-lg"
-                  disabled={currentPage === 1}
-                  onClick={prevPage}
-                  style={{ fontSize: "14px" }}
-                >
-                  Previous
-                </Button>
-                <div className="fw-semibold" style={{ fontSize: "14px" }}>
-                  Page {currentPage} of {totalPages}
-                </div>
-                <Button
-                  variant="primary"
-                  className="rounded-lg"
-                  disabled={currentPage === totalPages}
-                  onClick={nextPage}
-                  style={{ fontSize: "14.5px" }}
-                >
-                  Next →
-                </Button>
+                  <tbody>
+                    {currentRows.length > 0 ? (
+                      currentRows.map((row, index) => (
+                        <tr key={row.id}>
+                          {/* # */}
+                          <td style={{ border: "1.5px solid #dee2e6" }}>
+                            {startIdx + index + 1}
+                          </td>
+
+                          {/* Student */}
+                          <td style={{ border: "1.5px solid #dee2e6" }}>
+                            <div className="d-flex align-items-center gap-2">
+                              <div
+                                className="rounded-circle bg-primary text-white text-center fw-bold d-flex justify-content-center align-items-center"
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  fontSize: "12.5px",
+                                }}
+                              >
+                                {row.short}
+                              </div>
+                              <div>
+                                <div className="fw-semibold">{row.name}</div>
+                                <div className="small text-muted">
+                                  {row.time}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Department */}
+                          <td style={{ border: "1.5px solid #dee2e6 " }}>
+                            <div className="text-center">{row.dept}</div>
+                          </td>
+
+                          {/* Project Titles (constant height + scroll) */}
+                          <td
+                            style={{
+                              border: "1.5px solid #dee2e6",
+                              padding: 0,
+                              height: "135px",
+                              maxHeight: "135px",
+                              overflowY: "auto",
+                            }}
+                          >
+                            {row.titles.map((t, i) => {
+                              const words = t.split(" ");
+                              const isLong = words.length > 6;
+                              const shortTitle = isLong
+                                ? words.slice(0, 6).join(" ") + "..."
+                                : t;
+
+                              return (
+                                <div
+                                  key={i}
+                                  style={{
+                                    borderBottom:
+                                      i === row.titles.length - 1
+                                        ? "none"
+                                        : "1.5px solid #dee2e6",
+                                    padding: "0.5rem 1rem",
+                                    width: "100%",
+                                    boxSizing: "border-box",
+                                  }}
+                                  className="project-title-item"
+                                  title={t}
+                                >
+                                  <span
+                                    className="fw-bold"
+                                    style={{
+                                      fontSize: "13px",
+                                      display: "block",
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                    }}
+                                  >
+                                    {shortTitle}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </td>
+
+                          {/* Similarity */}
+                          <td style={{ border: "1.5px solid #dee2e6" }}></td>
+
+                          {/* Priority */}
+                          <td style={{ border: "1.5px solid #dee2e6" }}></td>
+
+                          {/* Actions */}
+                          <td style={{ border: "1.5px solid #dee2e6" }}></td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="7"
+                          className="text-center text-muted py-4"
+                          style={{ border: "1.5px solid #dee2e6" }}
+                        >
+                          No records found.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </Col>
+
+              {/* PAGINATION */}
+              {currentRows.length > 0 && (
+                <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
+                  <Button
+                    variant="warning"
+                    className="fw-semibold rounded-lg"
+                    disabled={currentPage === 1}
+                    onClick={prevPage}
+                    style={{ fontSize: "14px" }}
+                  >
+                    Previous
+                  </Button>
+                  <div className="fw-semibold" style={{ fontSize: "14px" }}>
+                    Page {currentPage} of {totalPages}
+                  </div>
+                  <Button
+                    variant="primary"
+                    className="rounded-lg"
+                    disabled={currentPage === totalPages}
+                    onClick={nextPage}
+                    style={{ fontSize: "14.5px" }}
+                  >
+                    Next →
+                  </Button>
+                </div>
+              )}
+            </Col>
+          )}
         </Row>
       </Container>
     </>

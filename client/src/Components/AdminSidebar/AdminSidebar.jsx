@@ -28,9 +28,7 @@ const Sidebar = () => {
   const navItems = [
     { path: "/admin/dashboard", label: "Dashboard", icon: <FaHome /> },
     { path: "/admin/all-submissions", label: "All Submission", icon: <FaUpload /> },
-    // { path: "#", label: "My Submissions", icon: <FaBook /> },
-    // { path: "#", label: "Announcements", icon: <FaBell /> },
-    // { path: "#", label: "FAQ", icon: <FaQuestionCircle /> }
+    { path: "/admin/create-announcement", label: "Announcement", icon: <FaBell /> },
   ];
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);

@@ -18,7 +18,6 @@ function App() {
         <Route path='/' element={<LandingPage />}/>
         <Route path='/register' element={<RegisterPage />}/>
         <Route path='/login' element={<LoginPage />}/>
-        <Route path="*" element={<NotFound />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         <Route path="/student/*"  element={
@@ -40,6 +39,7 @@ function App() {
            }
         />
         
+      <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )
