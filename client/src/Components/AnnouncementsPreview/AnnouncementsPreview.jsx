@@ -1,94 +1,151 @@
-import React from "react";
-import { Card, Badge } from "react-bootstrap";
-import { FaInfoCircle, FaCalendarAlt } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import axios from "../../utils/axios";
+import { Modal, Button } from "react-bootstrap";
+import toast, { Toaster } from "react-hot-toast";
+import { getAuth } from "../../utils/auth";
 
-const AnnouncementPreview = () => {
-  const announcements = [
-    {
-      id: 1,
-      title: "Orientation Session",
-      date: "2025-11-20",
-      description:
-        "All new students must attend the orientation session next Wednesday at 10:00 AM in the main hall.",
-    },
-    {
-      id: 2,
-      title: "Lab Maintenance",
-      date: "2025-11-22",
-      description:
-        "The computing lab will be closed for maintenance on Friday. Plan your work accordingly.",
-    },
-    {
-      id: 3,
-      title: "Research Grant Update",
-      date: "2025-11-25",
-      description:
-        "Final year students applying for the Tech4Good grant must submit their proposals by next Monday.",
-    },
-  ];
+export default function AnnouncementsPreview() {
+  const [announcements, setAnnouncements] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const themeColor = "#5581BB"; // main theme color
-  const dateBackground = "#5581BB"; // date badge background
+  const itemsPerPage = 3; // Show only 3 per page
+  const token = getAuth().token;
+
+  const fetchAnnouncements = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("/announcement", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const sorted = res.data.message.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      setAnnouncements(sorted);
+    } catch (error) {
+      toast.error("Failed to load announcements!");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
+
+  const paginatedData = announcements.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(announcements.length / itemsPerPage);
 
   return (
-    <div style={{ maxWidth: 920, margin: "40px auto", height: "74vh" }}>
-      <h2
-        style={{
-          textAlign: "center",
-          marginBottom: 30,
-          fontWeight: 700,
-          color: themeColor,
-        }}
-      >
-         Latest Announcements
-      </h2>
+    <>
+      <Toaster />
+      <div className="container pt-4">
+        <h3 className="fw-bold mb-3 text-primary">Latest Announcements</h3>
 
-      {announcements.map((item) => (
-        <Card
-          key={item.id}
-          className="mb-4 py-2 rounded-4 shadow-sm"
-          style={{
-            backgroundColor: "#fff",
-            borderLeft: `3px solid ${themeColor}`,
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-3px)";
-            e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.12)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 6px 18px rgba(0,0,0,0.08)";
-          }}
-        >
-          <div className="d-flex justify-content-between align-items-start p-3">
-            <div>
-              <h5 className="fw-bold mb-2" style={{ color: "#212529" }}>
-                {item.title}
-              </h5>
-              <p className="text-muted mb-0 d-flex align-items-center">
-                <FaInfoCircle className="me-2" style={{ color: themeColor }} />
-                {item.description}
-              </p>
-            </div>
-            <Badge
-              className="px-3 py-2 rounded-pill d-flex align-items-center"
+        {/* LOADING SKELETON */}
+        {loading ? (
+          [...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="p-3 mb-3 rounded"
               style={{
-                fontSize: "0.85rem",
-                height: "max-content",
-                backgroundColor: dateBackground,
-                color: "#fff",
+                background: "#fff",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                animation: "pulse 1.3s infinite",
               }}
-            >
-              <FaCalendarAlt className="me-1" />
-              {item.date}
-            </Badge>
-          </div>
-        </Card>
-      ))}
-    </div>
-  );
-};
+            ></div>
+          ))
+        ) : announcements.length === 0 ? (
+          <p className="text-muted">No announcements found.</p>
+        ) : (
+          <>
+            {/* ANNOUNCEMENTS LIST */}
+            {paginatedData.map((item) => (
+              <div
+                key={item._id}
+                className="mb-3 bg-white rounded shadow-sm"
+                style={{ borderLeft: "4px solid #007bff", padding : "13px 20px" }}
+              >
+                <h5 className="fw-bold">{item.title}</h5>
+                <p className="text-muted mb-2" style={{ fontSize: "14px" }}>
+                  {item.description}
+                </p>
 
-export default AnnouncementPreview;
+                {/* View Full Modal */}
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  onClick={() => setSelected(item)}
+                >
+                  View Full
+                </Button>
+              </div>
+            ))}
+
+            {/* PAGINATION */}
+            {totalPages > 1 && (
+              <div className="d-flex justify-content-center gap-3 mt-3 ">
+                <Button
+                  className="rounded"
+                  style={{fontSize : "13px"}}
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                >
+                  Previous
+                </Button>
+
+                <span className=" py-2 fw-semiBold" style={{fontSize : "13px"}}>
+                  Page {currentPage} of {totalPages}
+                </span>
+
+                <Button
+                  className="rounded"
+                  style={{fontSize : "13px"}}
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* FULL MODAL */}
+      <Modal show={selected !== null} onHide={() => setSelected(null)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="fw-bold">{selected?.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="text-secondary" style={{ lineHeight: "1.6" }}>
+            {selected?.description}
+          </p>
+          <hr />
+          <small className="text-muted">
+            Posted on:{" "}
+            {selected &&
+              new Date(selected.createdAt).toLocaleDateString("en-US", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+          </small>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setSelected(null)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}

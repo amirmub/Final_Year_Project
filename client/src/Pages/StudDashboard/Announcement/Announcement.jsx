@@ -13,7 +13,7 @@ function Announcement() {
           <Col md={3} lg={2} className="p-0">
             <Sidebar />
           </Col>
-          <Col md={9} lg={10} className="px-5">
+          <Col md={9} lg={10} className="px-5" style={{height : "88vh"}}>
             <AnnouncementsPreview />
           </Col>
         </Row>
