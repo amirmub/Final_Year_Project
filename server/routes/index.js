@@ -7,7 +7,10 @@ router.use(userRouter);
 const userLogin = require('./userLoginRoute');
 router.use(userLogin);
 
-const titles = require('./titleRoute');
-router.use(titles);
+// const titles = require('./titleRoute');
+// router.use(titles);
+
+const announcement = require('./announcementRoute');
+router.use(announcement);
 
 module.exports = router;
