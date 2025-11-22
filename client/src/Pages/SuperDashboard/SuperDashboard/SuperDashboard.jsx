@@ -5,7 +5,7 @@ import SuperAdminSidebar from "../../../Components/SuperAdminSidebar/SuperAdminS
 import Header from "../../../Components/Header/Header";
 import axios from "../../../utils/axios";
 
-import { FaCheckCircle, FaUsers, FaFileAlt } from "react-icons/fa"; 
+import { FaCheckCircle, FaUsers} from "react-icons/fa"; 
 import { useEffect, useState } from "react";
 import { getAuth } from "../../../utils/auth";
 import { useParams } from "react-router-dom";
@@ -51,9 +51,9 @@ function SuperDashboard() {
                 <>
                   <Col sm={6} lg={4}>
                     <StatsCard
-                      title="Submitted Titles"
+                      title="Total Admins"
                       value={titlesData.total}
-                      icon={<FaFileAlt />}
+                      icon={<FaUsers />}
                       color="#007bff"
                     />
                   </Col>

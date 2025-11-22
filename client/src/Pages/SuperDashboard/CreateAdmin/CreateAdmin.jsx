@@ -5,16 +5,93 @@ import {Col,Container,Row,Button,Table,Form,Modal} from "react-bootstrap";
 import { FaSearch, FaSort, FaFilter, FaUserPlus } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./AddAdminModal.css";
-import { Toaster } from "react-hot-toast";
+import  toast,{ Toaster } from "react-hot-toast";
+import axios from "../../../utils/axios";
+import { getAuth } from "../../../utils/auth";
 
 function CreateAdmin() {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+    role: "admin", // default
+  });
+
+  const [errors, setErrors] = useState({});
+
+  // TOAST STYLE
+  const iosToastStyle = {
+    background: "#333",
+    color: "#fff",
+    borderRadius: "10px",
+    padding: "10px 16px",
+  };
+
+  // INPUT HANDLERS
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // PASSWORD VISIBILITY
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const togglePassword = () => setShowPassword(!showPassword);
-  const toggleConfirmPassword = () =>
-    setShowConfirmPassword(!showConfirmPassword);
+  const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+
+  const token = getAuth().token;
+
+  // FORM SUBMIT
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+
+    // BASIC VALIDATION
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Full name required";
+    if (!formData.email.trim()) newErrors.email = "Email required";
+    if (!formData.password.trim()) newErrors.password = "Password required";
+    if (formData.password !== formData.passwordConfirm)
+      newErrors.passwordConfirm = "Passwords do not match";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Please fix the errors", { style: iosToastStyle });
+      console.log(newErrors);
+  
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await axios.post("/users", formData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+      toast.success("Admin created successfully!", { style: iosToastStyle });
+      setShowModal(false);
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        passwordConfirm: "",
+        role: "admin",
+      });
+
+    } catch (err) {
+      toast.error("Failed to create admin", { style: iosToastStyle });
+      console.log(err);
+      
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <>
@@ -158,203 +235,231 @@ function CreateAdmin() {
             </div>
             <>
               {/*ADD STAFF POPUP MODAL */}
-              <>
-                <Toaster position="top-center" />
+              <div>
 
-                <Modal
-                  show={showModal}
-                  onHide={() => setShowModal(false)}
-                  centered
-                  size="lg"
-                  backdrop="static"
-                  dialogClassName="slide-up-modal"
-                >
-                  <Modal.Body
+      <Toaster position="top-center" />
+
+      {/* MODAL */}
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        size="lg"
+        backdrop="static"
+        dialogClassName="slide-up-modal"
+      >
+        <Modal.Body
+          style={{
+            background: "#EEF2F5",
+            color: "#000",
+            borderRadius: "12px",
+            padding: "30px",
+            border: "1px solid #e5e5e5",
+          }}
+        >
+          {/* HEADER */}
+          <div className="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <h3 className="fw-bold text-primary">Add New Admin</h3>
+              <p className="text-muted">Create a new admin for this System.</p>
+            </div>
+
+            <button
+              onClick={() => setShowModal(false)}
+              style={{
+                background: "transparent",
+                border: "none",
+                fontSize: "30px",
+                color: "#777",
+                cursor: "pointer",
+              }}
+            >
+              ×
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            {/* PERSONAL */}
+            <h6 className="fw-bold mt-3 text-secondary">PERSONAL INFORMATION</h6>
+
+            <div className="mt-3">
+              {/* FULL NAME */}
+              <label className="fw-semibold">Full Name *</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter full name"
+                className="form-control mb-1"
+                style={{
+                  background: "#f9f9f9",
+                  borderRadius: "8px",
+                  border: "1px solid #dcdcdc",
+                  height: "40px",
+                }}
+              />
+              {errors.name && <p className="text-danger" style={{fontSize : "12px", margin: "0", padding : "0"}}>{errors.name}</p>}
+
+              <div className="row mt-2">
+                {/* EMAIL */}
+                <div className="col-md-6">
+                  <label className="fw-semibold">Email *</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter email address"
+                    className="form-control mb-1"
                     style={{
-                      background: "#EEF2F5",
-                      color: "#000",
-                      borderRadius: "12px",
-                      padding: "30px",
-                      border: "1px solid #e5e5e5",
+                      background: "#f9f9f9",
+                      borderRadius: "8px",
+                      border: "1px solid #dcdcdc",
+                      height: "40px",
+                    }}
+                  />
+                  {errors.email && <p className="text-danger" style={{fontSize : "12px", margin: "0", padding : "0"}}>{errors.email}</p>}
+                </div>
+
+                {/* ROLE */}
+                <div className="col-md-6">
+                  <label className="fw-semibold">Role *</label>
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    className="form-control"
+                    style={{
+                      background: "#f9f9f9",
+                      borderRadius: "8px",
+                      border: "1px solid #dcdcdc",
+                      height: "40px",
                     }}
                   >
-                    {/* TITLE */}
-                    <div className="d-flex justify-content-between align-items-start mb-2">
-                      <div>
-                        <h3 className="fw-bold text-primary">Add New Admin</h3>
-                        <p className="text-muted">
-                          Create a new admin for this System.
-                        </p>
-                      </div>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+            </div>
 
-                      {/* X Close */}
-                      <button
-                        onClick={() => setShowModal(false)}
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          fontSize: "30px",
-                          color: "#777",
-                          cursor: "pointer",
-                        }}
-                      >
-                        ×
-                      </button>
-                    </div>
+            {/* SECURITY */}
+            <h6 className="fw-bold mt-3 text-secondary">ACCOUNT SECURITY</h6>
 
-                    {/* PERSONAL */}
-                    <h6 className="fw-bold mt-3 text-secondary">
-                      PERSONAL INFORMATION
-                    </h6>
+            <div className="row mt-2">
 
-                    <div className="mt-3">
-                      {/* FULL NAME */}
-                      <label className="fw-semibold">Full Name *</label>
-                      <input
-                        type="text"
-                        placeholder="Enter full name"
-                        className="form-control mb-3"
-                        style={{
-                          background: "#f9f9f9",
-                          borderRadius: "8px",
-                          border: "1px solid #dcdcdc",
-                          height: "40px",
-                        }}
-                      />
+              {/* PASSWORD */}
+              <div className="col-md-6 position-relative">
+                <label className="fw-semibold">Password *</label>
+                <div
+                  className="d-flex align-items-center mb-1"
+                  style={{
+                    background: "#f9f9f9",
+                    borderRadius: "8px",
+                    border: "1px solid #dcdcdc",
+                    height: "40px",
+                  }}
+                >
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter password"
+                    className="form-control"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                    }}
+                  />
+                  <span
+                    onClick={togglePassword}
+                    style={{
+                      cursor: "pointer",
+                      color: "#888",
+                      position: "absolute",
+                      right: 25,
+                    }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
+                {errors.password && <p className="text-danger" style={{fontSize : "12px", margin: "0", padding : "0"}}>{errors.password}</p>}
+              </div>
 
-                      {/* EMAIL + ROLE */}
-                      <div className="row">
-                        <div className="col-md-6">
-                          <label className="fw-semibold">Email *</label>
-                          <input
-                            type="email"
-                            placeholder="Enter email address"
-                            className="form-control mb-3"
-                            style={{
-                              background: "#f9f9f9",
-                              borderRadius: "8px",
-                              border: "1px solid #dcdcdc",
-                              height: "40px",
-                            }}
-                          />
-                        </div>
+              {/* CONFIRM PASSWORD */}
+              <div className="col-md-6 position-relative">
+                <label className="fw-semibold">Confirm Password *</label>
+                <div
+                  className="d-flex align-items-center mb-1"
+                  style={{
+                    background: "#f9f9f9",
+                    borderRadius: "8px",
+                    border: "1px solid #dcdcdc",
+                    height: "40px",
+                  }}
+                >
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="passwordConfirm"
+                    value={formData.passwordConfirm}
+                    onChange={handleChange}
+                    placeholder="Confirm password"
+                    className="form-control"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                    }}
+                  />
+                  <span
+                    onClick={toggleConfirmPassword}
+                    style={{
+                      cursor: "pointer",
+                      color: "#888",
+                      position: "absolute",
+                      right: 25,
+                    }}
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
+                {errors.passwordConfirm && (
+                  <p className="text-danger" style={{fontSize : "12px", margin: "0", padding : "0"}}>{errors.passwordConfirm}</p>
+                )}
+              </div>
+            </div>
 
-                        <div className="col-md-6">
-                          <label className="fw-semibold">Role *</label>
-                          <select
-                            className="form-control mb-3"
-                            style={{
-                              background: "#f9f9f9",
-                              borderRadius: "8px",
-                              border: "1px solid #dcdcdc",
-                              height: "40px",
-                            }}
-                          >
-                            <option>Admin</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
+            {/* BUTTONS */}
+            <div className="d-flex justify-content-end mt-3">
+              <button
+                type="button"
+                className="btn me-2"
+                onClick={() => setShowModal(false)}
+                style={{
+                  background: "#e9ecef",
+                  color: "#333",
+                  borderRadius: "8px",
+                }}
+              >
+                Cancel
+              </button>
 
-                    {/* SECURITY */}
-                    <h6 className="fw-bold mt-3 text-secondary">
-                      ACCOUNT SECURITY
-                    </h6>
-
-                    <div className="row mt-2">
-                      {/* PASSWORD */}
-                      <div className="col-md-6 position-relative">
-                        <label className="fw-semibold">Password *</label>
-                        <div
-                          className="d-flex align-items-center mb-3"
-                          style={{
-                            background: "#f9f9f9",
-                            borderRadius: "8px",
-                            border: "1px solid #dcdcdc",
-                            height: "40px",
-                          }}
-                        >
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter password"
-                            className="form-control"
-                            style={{
-                              background: "transparent",
-                              border: "none",
-                            }}
-                          />
-                          <span
-                            onClick={togglePassword}
-                            style={{ cursor: "pointer", color: "#888", position: "absolute", right : 30 }}
-                          >
-                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* CONFIRM PASSWORD */}
-                      <div className="col-md-6 position-relative">
-                        <label className="fw-semibold">
-                          Confirm Password *
-                        </label>
-                        <div
-                          className="d-flex align-items-center mb-3"
-                          style={{
-                            background: "#f9f9f9",
-                            borderRadius: "8px",
-                            border: "1px solid #dcdcdc",
-                            height: "40px",
-                          }}
-                        >
-                          <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            placeholder="Confirm password"
-                            className="form-control"
-                            style={{
-                              background: "transparent",
-                              border: "none",
-                            }}
-                          />
-                          <span
-                            onClick={toggleConfirmPassword}
-                            style={{ cursor: "pointer", color: "#888", position: "absolute", right : 30 }}
-                          >
-                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* BUTTONS */}
-                    <div className="d-flex justify-content-end mt-3">
-                      <button
-                        className="btn me-2"
-                        style={{
-                          background: "#e9ecef",
-                          color: "#333",
-                          borderRadius: "8px",
-                        }}
-                        onClick={() => setShowModal(false)}
-                      >
-                        Cancel
-                      </button>
-
-                      <button
-                        className="btn btn-primary"
-                        style={{
-                          borderRadius: "8px",
-                        }}
-                        onClick={() => {
-                          toast.success("Admin created successfully!");
-                          setShowModal(false);
-                        }}
-                      >
-                        Create Admin
-                      </button>
-                    </div>
-                  </Modal.Body>
-                </Modal>
-              </>
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn btn-primary"
+                style={{
+                  borderRadius: "8px",
+                  minWidth: "140px",
+                }}
+              >
+                {loading ? "Creating..." : "Create Admin"}
+              </button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </div>
             </>
           </Col>
         </Row>
