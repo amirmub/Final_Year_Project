@@ -8,3 +8,17 @@
   transform: translateY(0);
   opacity: 1;
 }
+.admin-table tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: 0.2s ease-in-out;
+}
+
+.admin-table thead th {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table td {
+  font-size: 15px;
+}

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../../Components/Header/Header";
 import SuperAdminSidebar from "../../../Components/SuperAdminSidebar/SuperAdminSidebar";
 import {Col,Container,Row,Button,Table,Form,Modal} from "react-bootstrap";
 import { FaSearch, FaSort, FaFilter, FaUserPlus } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import "./AddAdminModal.css";
 import  toast,{ Toaster } from "react-hot-toast";
 import axios from "../../../utils/axios";
@@ -11,6 +12,7 @@ import { getAuth } from "../../../utils/auth";
 
 function CreateAdmin() {
   const [showModal, setShowModal] = useState(false);
+  const [showAdmin,setShowAdmin] = useState([])
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -21,6 +23,8 @@ function CreateAdmin() {
   });
 
   const [errors, setErrors] = useState({});
+  
+  const token = getAuth().token;
 
   // TOAST STYLE
   const iosToastStyle = {
@@ -42,7 +46,6 @@ function CreateAdmin() {
   const togglePassword = () => setShowPassword(!showPassword);
   const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
-  const token = getAuth().token;
 
   // FORM SUBMIT
   const handleSubmit = async (e) => {
@@ -82,6 +85,7 @@ function CreateAdmin() {
         passwordConfirm: "",
         role: "admin",
       });
+      fetchAdmins();
 
     } catch (err) {
       toast.error("Failed to create admin", { style: iosToastStyle });
@@ -92,6 +96,30 @@ function CreateAdmin() {
     }
   };
 
+  // fetch only admins
+    const fetchAdmins = async () => {
+      try {
+        const res = await axios.get(`/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log(res.data.msg);
+      // Keep only admins
+      const onlyAdmins = res.data.msg
+        .filter((user) => user.role === "admin")
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // newest first
+
+      setShowAdmin(onlyAdmins);
+       
+      } catch (error) {
+        toast.error("Failed to load admin", { style: iosToastStyle });
+        console.log(error);
+        
+      }
+  }
+
+    useEffect(() =>{
+      fetchAdmins();
+    },[])
 
   return (
     <>
@@ -204,40 +232,99 @@ function CreateAdmin() {
             </div>
 
             {/* TABLE */}
-            <div
-              className="p-0 bg-white"
+          <Table 
+  hover 
+  responsive 
+  className="admin-table shadow-sm"
+  style={{
+    borderRadius: "12px",
+    overflow: "hidden",
+    background: "#ffffff"
+  }}
+>
+  <thead style={{ background: "#f1f3f5", color: "#343a40" }}>
+    <tr>
+      <th style={{ padding: "14px" }}>#</th>
+      <th style={{ padding: "14px" }}>Name</th>
+      <th style={{ padding: "14px" }}>Email</th>
+      <th style={{ padding: "14px" }}>Role</th>
+      <th style={{ padding: "14px" }}>Date Added</th>
+      <th style={{ padding: "14px" }}>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {showAdmin.length > 0 ? (
+      showAdmin.map((admin, index) => (
+        <tr key={admin._id} style={{ verticalAlign: "middle" }}>
+          <td style={{ padding: "14px" }}>
+            <strong>{index + 1}</strong>
+          </td>
+
+          <td style={{ padding: "14px", fontWeight: 500 }}>
+            {admin.name}
+          </td>
+
+          <td style={{ padding: "14px" }}>
+            <span className="text-muted">{admin.email}</span>
+          </td>
+
+          <td style={{ padding: "14px" }}>
+            <span 
+              className="badge"
               style={{
-                borderRadius: "10px",
-                border: "1px solid #ddd",
-                overflow: "hidden",
+                background: "#4c6ef5",
+                padding: "6px 10px",
+                borderRadius: "8px",
+                fontSize: "12px",
+                color: "#fff"
               }}
             >
-              <Table hover responsive className="m-0 text-center">
-                <thead style={{ background: "#f8f9fa" }}>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Date Added</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
+              {admin.role}
+            </span>
+          </td>
 
-                <tbody>
-                  <tr>
-                    <td colSpan="6" className="py-4 text-secondary">
-                      No admin members found.
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
-            <>
-              {/*ADD STAFF POPUP MODAL */}
-              <div>
+          <td style={{ padding: "14px" }}>
+            {new Date(admin.createdAt).toLocaleDateString()}
+          </td>
 
-      <Toaster position="top-center" />
+          <td style={{ padding: "14px" }} className="">
+
+          {/* Edit Icon */}
+          <FaEdit
+            size={18}
+            style={{ cursor: "pointer", color: "#1971c2" }}
+            onClick={() => handleEdit(admin)}
+            title="Edit Admin"
+          />
+
+          {/* Delete Icon */}
+          <FaTrash
+            size={18}
+            className="mx-2"
+            style={{ cursor: "pointer", color: "#e03131" }}
+            onClick={() => handleDelete(admin._id)}
+            title="Delete Admin"
+          />
+
+        </td>
+
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="py-4 text-secondary">
+                  No admin members found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+       <>
+
+       {/*ADD STAFF POPUP MODAL */}
+       <div>
+        <Toaster position="top-center" />
 
       {/* MODAL */}
       <Modal
