@@ -9,6 +9,7 @@ import StudentRoutes from './Routes/StudentRoutes/StudentRoutes'
 import Unauthorized from './Pages/Unauthorized/Unauthorized'
 import { PrivateRoute } from './Routes/PrivateRoute/PrivateRoute'
 import AdminRoute from './Routes/AdminRoute/AdminRoute'
+import SuperAdminRoute from "./Routes/SuperAdminRoute/SuperAdminRoute"
 
 function App() {
 
@@ -34,6 +35,16 @@ function App() {
           <ProtectedRoute>
             <PrivateRoute role={"admin"}>
               <AdminRoute />
+            </PrivateRoute>
+          </ProtectedRoute>
+           }
+        />
+
+        {/* super-admin routes */}
+        <Route path='/super-admin/*'  element={
+          <ProtectedRoute>
+            <PrivateRoute role={"superAdmin"}>
+              <SuperAdminRoute />
             </PrivateRoute>
           </ProtectedRoute>
            }

@@ -1,0 +1,10 @@
+.slide-up-modal .modal-dialog {
+  transform: translateY(40px);
+  opacity: 0;
+  transition: all 0.35s ease;
+}
+
+.slide-up-modal.show .modal-dialog {
+  transform: translateY(0);
+  opacity: 1;
+}
