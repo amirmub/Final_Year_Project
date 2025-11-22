@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import Header from "../../../Components/Header/Header";
 import SuperAdminSidebar from "../../../Components/SuperAdminSidebar/SuperAdminSidebar";
 import {Col,Container,Row,Button,Table,Form,Modal} from "react-bootstrap";
-import { FaSearch, FaSort, FaFilter, FaUserPlus } from "react-icons/fa";
+import { FaSearch, FaSort, FaFilter, FaUserPlus, FaSave, FaTimes } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import "./AddAdminModal.css";
 import  toast,{ Toaster } from "react-hot-toast";
 import axios from "../../../utils/axios";
 import { getAuth } from "../../../utils/auth";
+import Swal from "sweetalert2";
 
 function CreateAdmin() {
   const [showModal, setShowModal] = useState(false);
@@ -132,7 +133,65 @@ function CreateAdmin() {
 
     useEffect(() =>{
       fetchAdmins();
-    },[])
+    },[]);
+    
+const [editAdminId, setEditAdminId] = useState(null); // stores the ID being edited
+const [editFormData, setEditFormData] = useState({ name: "", email: "" });
+
+// Start editing
+const handleEdit = (admin) => {
+  setEditAdminId(admin._id);
+  setEditFormData({ name: admin.name, email: admin.email });
+};
+
+// Cancel editing
+const handleCancelEdit = () => {
+  setEditAdminId(null);
+  setEditFormData({ name: "", email: "" });
+};
+
+// Save edited data
+const handleSaveEdit = async (id) => {
+  try {
+    const res = await axios.put(`/users/${id}`, editFormData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    toast.success("Admin updated successfully!", { style: iosToastStyle });
+    handleCancelEdit();
+    fetchAdmins();
+  } catch (err) {
+    toast.error("Failed to update admin", { style: iosToastStyle });
+    console.log(err);
+  }
+};
+
+// Handle delete with professional popup
+const handleDelete = (id) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`/users/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        toast.success("Admin deleted successfully!", { style: iosToastStyle });
+        fetchAdmins();
+      } catch (err) {
+        toast.error("Failed to delete admin", { style: iosToastStyle });
+        console.log(err);
+      }
+    }
+  });
+};
 
   return (
     <>
@@ -267,75 +326,101 @@ function CreateAdmin() {
           </tr>
         </thead>
 
-        <tbody>
-        {currentAdmins.length > 0 ? (
-          currentAdmins.map((admin, index) => (
-            <tr key={admin._id} style={{ verticalAlign: "middle" }}>
-              {/* Index number */}
-              <td style={{ padding: "14px" }}>
-                <strong>{indexOfFirstAdmin + index + 1}</strong>
-              </td>
+       <tbody>
+          {currentAdmins.length > 0 ? (
+            currentAdmins.map((admin, index) => (
+              <tr key={admin._id} style={{ verticalAlign: "middle" }}>
+                <td>{indexOfFirstAdmin + index + 1}</td>
 
-              {/* Name */}
-              <td style={{ padding: "14px", fontWeight: 500 }}>
-                {admin.name}
-              </td>
+                {/* Name */}
+                <td style={{padding : "1px"}}>
+                  {editAdminId === admin._id ? (
+                    <input
+                      type="text"
+                      value={editFormData.name}
+                      onChange={(e) =>
+                        setEditFormData({ ...editFormData, name: e.target.value })
+                      }
+                      className="form-control form-control-sm"
+                      style={{ borderRadius: "8px", border: "1px solid #999" }}
+                    />
+                  ) : (
+                    admin.name
+                  )}
+                </td>
 
-              {/* Email */}
-              <td style={{ padding: "14px" }}>
-                <span className="text-muted">{admin.email}</span>
-              </td>
+                {/* Email */}
+                <td style={{padding : "14px"}}>
+                  {editAdminId === admin._id ? (
+                    <input
+                      type="email"
+                      value={editFormData.email}
+                      onChange={(e) =>
+                        setEditFormData({ ...editFormData, email: e.target.value })
+                      }
+                      className="form-control form-control-sm"
+                      style={{ borderRadius: "8px", border: "1px solid #999" }}
+                    />
+                  ) : (
+                    <span className="text-muted">{admin.email}</span>
+                  )}
+                </td>
 
-              {/* Role */}
-              <td style={{ padding: "14px" }}>
-                <span
-                  className="badge"
-                  style={{
-                    background: "#4c6ef5",
-                    padding: "6px 10px",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                    color: "#fff",
-                  }}
-                >
-                  {admin.role}
-                </span>
-              </td>
+                {/* Role */}
+                <td style={{padding : "14px"}}>
+                  <span className="badge" style={{ background: "#4c6ef5" }}>
+                    {admin.role}
+                  </span>
+                </td>
 
-              {/* Date Added */}
-              <td style={{ padding: "14px" }}>
-                {new Date(admin.createdAt).toLocaleDateString()}
-              </td>
+                {/* Date */}
+                <td style={{padding : "14px"}}>{new Date(admin.createdAt).toLocaleDateString()}</td>
 
-              {/* Actions */}
-              <td style={{ padding: "14px"}} >
-                {/* Edit Icon */}
-                <FaEdit
-                  size={18}
-                  className="mx-2"
-                  style={{ cursor: "pointer", color: "#1971c2" }}
-                  onClick={() => handleEdit(admin)}
-                  title="Edit Admin"
-                />
-
-                {/* Delete Icon */}
-                <FaTrash
-                  size={18}
-                  style={{ cursor: "pointer", color: "#e03131" }}
-                  onClick={() => handleDelete(admin._id)}
-                  title="Delete Admin"
-                />
+                {/* Actions */}
+                <td style={{padding : "14px"}}>
+                  {editAdminId === admin._id ? (
+                    <>
+                      <FaSave
+                        size={20}
+                        style={{ cursor: "pointer", color: "#2b8a3e", marginRight: "10px" }}
+                        title="Save"
+                        onClick={() => handleSaveEdit(admin._id)}
+                      />
+                      <FaTimes
+                        size={20}
+                        style={{ cursor: "pointer", color: "#d6336c" }}
+                        title="Cancel"
+                        onClick={handleCancelEdit}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <FaEdit
+                        size={19}
+                        style={{ cursor: "pointer", color: "#1971c2", marginRight: "10px" }}
+                        title="Edit"
+                        onClick={() => handleEdit(admin)}
+                      />
+                      <FaTrash
+                        size={18}
+                        style={{ cursor: "pointer", color: "#e03131" }}
+                        title="Delete"
+                        onClick={() => handleDelete(admin._id)}
+                      />
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" className="py-4 text-dark text-center">
+                No admin members found.
               </td>
             </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="6" className="py-4 text-secondary">
-              No admin members found.
-            </td>
-          </tr>
-        )}
-      </tbody>
+          )}
+        </tbody>
+
 
         </Table>
         {/* pagination */}
