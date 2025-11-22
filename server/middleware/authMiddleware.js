@@ -32,4 +32,15 @@ function isAdmin(req, res, next) {
   }
 }
 
-module.exports = { tokenVerify, isAdmin };
+// Middleware to check if the user is an admin (role 3)
+function isSuperAdmin(req, res, next) {
+  const role = req.role;
+
+  if (role === "superAdmin" ) {
+    next();
+  } else {
+    return res.status(403).json({ msg: "Access denied: Super Admin only" });
+  }
+}
+
+module.exports = { tokenVerify, isAdmin, isSuperAdmin };

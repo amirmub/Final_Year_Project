@@ -114,14 +114,14 @@ async function deleteUser(req, res) {
         return res.status(404).json({ status : "fail", message: "User not found"});
     }
 
-    await User.deleteOne();
+    await user.deleteOne();
     return res.status(200).json({ status : "success", message: "User deleted successfully", data: null });
 
    } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Internal server error"});
    }
-};
+}
 
 
 module.exports = { createUser, getAllUsers, getUser, updateUser, deleteUser };

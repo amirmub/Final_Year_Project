@@ -10,16 +10,16 @@ router.use("/users/:userId/titles", titleRoute);
 // Create user
 router.post("/users", userController.createUser);
 
-// Get all users (admin only)
-router.get("/users", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.getAllUsers);
+// Get all users (admin)
+router.get("/users", [authMiddleware.tokenVerify], userController.getAllUsers);
 
 // Get a single user
-router.get("/users/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.getUser);
+router.get("/users/:id", [authMiddleware.tokenVerify], userController.getUser);
 
 // Get a Update user
-router.put("/users/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.updateUser);
+router.put("/users/:id", [authMiddleware.tokenVerify], userController.updateUser);
 
 // Get a Delete user
-router.delete("/users/:id", [authMiddleware.tokenVerify, authMiddleware.isAdmin], userController.deleteUser);
+router.delete("/users/:id", [authMiddleware.tokenVerify], userController.deleteUser);
 
 module.exports = router;
