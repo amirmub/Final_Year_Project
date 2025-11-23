@@ -51,7 +51,7 @@ function Dashboard() {
         // Approved titles
         const approvedCount = title.status === "Approved" ? totalTitles : 0;
 
-        // Group members count (from number field)
+        // Group members count
         const groupMembersCount = title.group_member ? Number(title.group_member) : 0;
 
         setTitlesData({
@@ -121,7 +121,7 @@ function Dashboard() {
                     <StatsCard
                       title="Group Members"
                       value={titlesData.groupMembers}
-                      icon={<FaUsers />} // Updated icon here
+                      icon={<FaUsers />}
                       color="#dc3545"
                     />
                   </Col>

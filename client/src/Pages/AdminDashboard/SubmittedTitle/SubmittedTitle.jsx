@@ -22,7 +22,7 @@ function SubmittedTitle() {
 
   const rowsPerPage = 2;
 
-  // ---------- FETCH DATA ----------
+  // FETCH DATA
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -131,7 +131,7 @@ function SubmittedTitle() {
                 Submitted Titles
               </h4>
 
-              {/* --- SEARCH + SORT + FILTER --- */}
+              {/* SEARCH + SORT + FILTER */}
               <div className="d-flex flex-wrap align-items-center justify-content-between mb-2 submitted-search-box gap-2">
                 {/* Search */}
                 <div
@@ -358,7 +358,7 @@ function SubmittedTitle() {
               {currentRows.length > 0 && (
                 <div className="d-flex justify-content-center align-items-center mt-4 gap-2">
                   <Button
-                    variant="warning"
+                    variant="primary"
                     className="fw-semibold rounded-lg"
                     disabled={currentPage === 1}
                     onClick={prevPage}
