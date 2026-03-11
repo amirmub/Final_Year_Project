@@ -13,4 +13,7 @@ router.use(userLogin);
 const announcement = require('./announcementRoute');
 router.use(announcement);
 
+const password = require('./passwordRoute');
+router.use(password);
+
 module.exports = router;
