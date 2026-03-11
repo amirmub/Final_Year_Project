@@ -1,7 +1,7 @@
 // Sidebar.jsx
 import React, { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
-import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle } from "react-icons/fa";
+import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle, FaCog } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { getAuth } from "../../utils/auth";
 
@@ -31,7 +31,8 @@ const Sidebar = () => {
     { path: "/student/submit-title", label: "Submit Title", icon: <FaUpload /> },
     { path: "/student/my-submissions", label: "My Submissions", icon: <FaBook /> }, // Keep base path for active highlighting
     { path: "/student/announcements", label: "Announcements", icon: <FaBell /> },
-    { path: "/student/faq", label: "FAQ", icon: <FaQuestionCircle /> }
+    { path: "/student/faq", label: "FAQ", icon: <FaQuestionCircle /> },
+    { path: "/student/setting", label: "Settings", icon: <FaCog  /> }
   ];
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
