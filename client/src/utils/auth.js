@@ -36,4 +36,4 @@ export const getAuth = () => {
   };
 }
 
-console.log(getAuth());
+// console.log(getAuth());

@@ -10,17 +10,19 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import { FaShieldAlt, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 import Header from "../../../Components/Header/Header";
 import Sidebar from "../../../Components/Sidebar/Sidebar";
 import axios from "../../../utils/axios";
+import { getAuth } from "../../../utils/auth";
 
 const Setting = () => {
   const [showModal, setShowModal] = useState(false);
-
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const auth = getAuth();
 
   const [form, setForm] = useState({
     currentPassword: "",
@@ -28,12 +30,12 @@ const Setting = () => {
     newPasswordConfirm: "",
   });
 
-  // ✅ FIX: handle input change
+  // Handle input changes
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ FIX: submit handler
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,18 +43,30 @@ const Setting = () => {
       return toast.error("Passwords do not match");
     }
 
+    if (!auth?.token) {
+      return toast.error("Session expired. Please login again.");
+    }
+
     try {
-      await axios.patch("/update-password", {
-        currentPassword: form.currentPassword,
-        newPassword: form.newPassword,
-        newPasswordConfirm: form.newPasswordConfirm,
-      });
+      await axios.patch(
+        "/update-password",
+        {
+          currentPassword: form.currentPassword,
+          newPassword: form.newPassword,
+          newPasswordConfirm: form.newPasswordConfirm,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      );
 
       toast.success("Password changed. Please login again.");
 
+      // Logout after password change
       setTimeout(() => {
-        localStorage.removeItem("token");
-        sessionStorage.clear();
+        localStorage.removeItem("Token"); // your auth token key
         window.location.href = "/login";
       }, 1000);
     } catch (err) {
@@ -69,6 +83,7 @@ const Setting = () => {
       }}
     >
       <Header />
+      <Toaster position="top-center" />
 
       <Container fluid>
         <Row>
@@ -141,7 +156,6 @@ const Setting = () => {
             </Button>
           </div>
 
-          {/* ✅ FIX: onSubmit added */}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">Current Password</Form.Label>
@@ -183,9 +197,7 @@ const Setting = () => {
             </Form.Group>
 
             <Form.Group className="mb-4">
-              <Form.Label className="fw-semibold">
-                Confirm New Password
-              </Form.Label>
+              <Form.Label className="fw-semibold">Confirm New Password</Form.Label>
               <InputGroup>
                 <Form.Control
                   type={showConfirm ? "text" : "password"}
@@ -214,11 +226,7 @@ const Setting = () => {
                 Cancel
               </Button>
 
-              <Button
-                type="submit"
-                variant="primary"
-                className="rounded-pill px-4"
-              >
+              <Button type="submit" variant="primary" className="rounded-pill px-4">
                 Change Password
               </Button>
             </div>
