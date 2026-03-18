@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
-import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle } from "react-icons/fa";
+import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle, FaCog } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { getAuth } from "../../utils/auth";
 
@@ -29,6 +29,7 @@ const Sidebar = () => {
     { path: "/admin/dashboard", label: "Dashboard", icon: <FaHome /> },
     { path: "/admin/all-submissions", label: "All Submission", icon: <FaUpload /> },
     { path: "/admin/create-announcement", label: "Announcement", icon: <FaBell /> },
+    { path: "/admin/setting", label: "Settings", icon: <FaCog  /> }
   ];
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
