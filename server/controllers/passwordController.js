@@ -206,71 +206,76 @@ async function forgotPassword(req, res) {
 
 // 2) User resets password using the token sent to their email
 async function resetPassword(req, res) {
-  const { password, passwordConfirm } = req.body;
+  try {
+    const { password, passwordConfirm } = req.body;
 
-  // Validate input
-  if (!password || !passwordConfirm) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Please provide password and passwordConfirm",
+    // 1️⃣ Validate input
+    if (!password || !passwordConfirm) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Please provide password and passwordConfirm",
+      });
+    }
+
+    if (password !== passwordConfirm) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Passwords do not match",
+      });
+    }
+
+    // 2️⃣ Hash token from URL
+    const resetToken = req.params.token;
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // // 🔍 DEBUG LOGS (IMPORTANT FOR POSTMAN TEST)
+    // console.log("RAW TOKEN FROM URL:", resetToken);
+    // console.log("HASHED TOKEN:", hashedToken);
+    // console.log("CURRENT TIME:", Date.now());
+
+    // 3️⃣ Find user with valid token
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    console.log("USER FOUND:", user ? user.email : null);
+
+    if (!user) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Token is invalid or has expired",
+      });
+    }
+
+    // 4️⃣ Hash new password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // 5️⃣ Update user
+    user.password = hashedPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    user.passwordChangedAt = Date.now();
+
+    await user.save({ validateBeforeSave: false });
+
+    // 6️⃣ Success response (NO JWT REQUIRED)
+    res.status(200).json({
+      status: "success",
+      message: "Password reset successful. You can now login.",
+    });
+
+  } catch (error) {
+    console.error("RESET PASSWORD ERROR:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong",
     });
   }
-
-  if (password !== passwordConfirm) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Passwords do not match",
-    });
-  }
-
-  // Hash token from URL
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex");
-
-  // Find valid user
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Token is invalid or has expired",
-    });
-  }
-
-  // Hash password manually (MODEL HAS NO MIDDLEWARE)
-  const hashedPassword = await bcrypt.hash(password, 12);
-
-  user.password = hashedPassword;
-  user.passwordConfirm = undefined;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-  user.passwordChangedAt = Date.now() - 1000;
-
-  await user.save({ validateBeforeSave: false });
-
-  // Optional: auto-login
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_SECRET_EXPIRES_IN }
-  );
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    sameSite: "Strict",
-    secure: process.env.NODE_ENV === "production",
-    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-  });
-
-  res.status(200).json({
-    status: "success",
-    message: "Password reset successful",
-  });
 }
 
 
