@@ -10,6 +10,7 @@ import Unauthorized from './Pages/Unauthorized/Unauthorized'
 import { PrivateRoute } from './Routes/PrivateRoute/PrivateRoute'
 import AdminRoute from './Routes/AdminRoute/AdminRoute'
 import SuperAdminRoute from "./Routes/SuperAdminRoute/SuperAdminRoute"
+import ForgotPassword from './Pages/ForgotPassword/ForgotPassword'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path='/register' element={<RegisterPage />}/>
         <Route path='/login' element={<LoginPage />}/>
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route path="/student/*"  element={
             <ProtectedRoute>

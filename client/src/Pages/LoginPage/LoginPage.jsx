@@ -239,7 +239,7 @@ export default function LoginPage() {
             {/* Remember Me */}
             <Form.Group className="mb-3 d-flex justify-content-end align-items-center">
               <small>
-                <Link to="#" className="text-primary text-decoration-none">
+                <Link to="/forgot-password" className="text-primary text-decoration-none">
                   Forgot Password?
                 </Link>
               </small>
