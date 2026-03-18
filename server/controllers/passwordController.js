@@ -203,7 +203,6 @@ async function forgotPassword(req, res) {
   }
 }
 
-
 // 2) User resets password using the token sent to their email
 async function resetPassword(req, res) {
   try {
