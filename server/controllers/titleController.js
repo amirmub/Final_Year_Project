@@ -82,6 +82,37 @@ async function getTitle(req, res) {
   }
 }
 
+// to update a title
+async function updateTitle(req, res) {
+    try {
+        const title = await Title.findById(req.params.id);
+        if (!title) {
+            return res.status(404).json({ status: "fail", message: "Title not found" });
+        }
+
+        // Check if req.body exists and has keys
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.status(400).json({ status: "fail", message: "No data provided to update" });
+        }
+
+        const updates = Object.keys(req.body);
+        updates.forEach((update) => {
+            title[update] = req.body[update];
+        });
+
+        await title.save();
+
+        return res.status(200).json({
+            status: "success",
+            message: "Title updated successfully",
+            data: title
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+}
+
 //  to delete a title
 async function deleteTitle(req, res) {
    try {
@@ -99,4 +130,4 @@ async function deleteTitle(req, res) {
    }
 };
 
-module.exports = { createTitle, getAllTitles, getTitle, deleteTitle };
+module.exports = { createTitle, getAllTitles, getTitle, updateTitle, deleteTitle };
