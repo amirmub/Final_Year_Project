@@ -5,7 +5,7 @@ import { Col, Container, Row } from 'react-bootstrap'
 
 function SubmittedTitles() {
   return (
-    <div style={{backgroundColor: "#F7F7F7"}}>
+    <div style={{backgroundColor: "#F7F7F7", height: "100vh"}}>
     <Header />
      <Container fluid>
         <Row>

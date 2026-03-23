@@ -106,7 +106,7 @@ const AnnouncementCard = () => {
             Team Members
           </h6>
           <p className="small mb-3">
-            Abebe Kebede, Tigist Alemu, Mohammed Hassen, Sara Tesfaye,
+            Amir Mubarek, Tigist Alemu, Mohammed Hassen, Sara Tesfaye,
             Daniel Mengesha
           </p>
 
@@ -115,7 +115,7 @@ const AnnouncementCard = () => {
             <FaUniversity className="me-2 text-secondary" />
             Department
           </h6>
-          <p className="small mb-0">Computing and Informatics</p>
+          <p className="small mb-0">Computer Science</p>
         </div>
       </Card.Body>
     </Card>

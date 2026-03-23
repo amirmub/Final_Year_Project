@@ -75,7 +75,7 @@ export default function Footer() {
         <Row className="align-items-center text-center text-md-start">
           <Col xs={12} md={6}>
             <p className="mb-0 small text-light">
-              © 2025 Jimma University. All rights reserved.
+              © 2026 Jimma University. All rights reserved.
             </p>
           </Col>
           <Col

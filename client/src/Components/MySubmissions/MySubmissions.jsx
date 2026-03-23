@@ -1,70 +1,87 @@
 import { useEffect, useState } from "react";
-import { Card, Badge, Spinner } from "react-bootstrap";
-import { FaBookOpen, FaUser, FaCalendarAlt, FaBuilding } from "react-icons/fa";
+import { Table, Button, Spinner, Form, Badge } from "react-bootstrap";
+import { FaEdit, FaSave, FaUser, FaCalendarAlt, FaBuilding } from "react-icons/fa";
 import axios from "../../utils/axios";
+import { toast, Toaster } from "react-hot-toast";
 import { getAuth } from "../../utils/auth";
 import { useParams } from "react-router-dom";
 
 const MySubmissions = () => {
   const [submission, setSubmission] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState({}); // Track which field is being edited
+  const [updatedTitles, setUpdatedTitles] = useState({});
 
-  const { id } = useParams(); // submission id from URL
+  const { id } = useParams(); 
   const auth = getAuth() || {};
-  const { id: userId } = auth; // <-- define userId here
+  const { id: userId } = auth;
+  const token = auth.token;
 
-  console.log(id, userId);
-
-  const token = getAuth().token;
-
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "Approved":
-        return <Badge bg="success" className="px-3 py-2 rounded-pill">Approved</Badge>;
-      case "Rejected":
-        return <Badge bg="danger" className="px-3 py-2 rounded-pill">Rejected</Badge>;
-      default:
-        return <Badge bg="warning" text="dark" className="px-3 py-2 rounded-pill">Pending Review</Badge>;
-    }
-  };
-
-  const getBorderColor = (status) => {
-    switch (status) {
-      case "Approved": return "#28a745";
-      case "Rejected": return "#dc3545";
-      default: return "#ffc107";
+  const fetchSubmission = async () => {
+    try {
+      const res = await axios.get(`/users/${userId}/titles/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSubmission(res.data.data);
+      setUpdatedTitles({
+        title_1: res.data.data.title_1,
+        title_2: res.data.data.title_2,
+        title_3: res.data.data.title_3,
+      });
+      console.log(res);
+      
+    } catch (error) {
+      console.error(error.response || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (id === "new") {
-      setLoading(false);
-      setSubmission(null);
-      return;
-    }
-
-    const fetchSubmission = async () => {
-      try {
-        const res = await axios.get(`/users/${userId}/titles/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setSubmission(res.data.data);
-        console.log(res);
-      } catch (error) {
-        console.error(error.response || error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchSubmission();
-  }, [id, token]);
+  }, [id]);
 
-  
+  const handleEdit = (field) => {
+    setEditing({ ...editing, [field]: true });
+  };
+
+  const handleChange = (field, value) => {
+    setUpdatedTitles({ ...updatedTitles, [field]: value });
+  };
+
+  const handleSave = async (field) => {
+    try {
+      const res = await axios.put(
+        `/users/${userId}/titles/${id}`,
+        { [field]: updatedTitles[field] },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSubmission(res.data.data);
+      setEditing({ ...editing, [field]: false });
+      toast.success("Title updated successfully!");
+      console.log(res);
+      
+    } catch (error) {
+      toast.error("Failed to update title.");
+      console.log(error);
+      
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Approved":
+        return <Badge bg="success">Approved</Badge>;
+      case "Rejected":
+        return <Badge bg="danger">Rejected</Badge>;
+      default:
+        return <Badge bg="warning" text="dark">Pending Review</Badge>;
+    }
+  };
 
   if (loading)
     return (
-      <div className="text-center d-flex flex-column justify-content-center align-items-center" style={{ height: "87vh", color: "#6c757d" }}>
+      <div className="text-center d-flex flex-column justify-content-center align-items-center" style={{ height: "87vh" }}>
         <Spinner animation="border" variant="primary" />
         <p className="mt-2">Loading your submission...</p>
       </div>
@@ -72,54 +89,71 @@ const MySubmissions = () => {
 
   if (!submission)
     return (
-      <div className="text-center d-flex flex-column justify-content-center align-items-center" style={{ height: "87vh", color: "#6c757d" }}>
-        <FaBookOpen style={{ fontSize: "50px", marginBottom: "10px" }} />
+      <div className="text-center" style={{ height: "87vh" }}>
         <h5>No submission found.</h5>
       </div>
     );
+    
+    return (
+      <div className="mt-4 h-100" >
+      <Toaster position="top-center"/>
 
-  return (
-    <div className="mt-4" style={{ height: "84vh" }}>
-      <Card
-        className="border-0 shadow rounded-4 p-4"
-        style={{ borderLeft: `6px solid ${getBorderColor(submission.status)}`, transition: "all 0.3s ease", cursor: "pointer" }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.12)"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 6px 18px rgba(0,0,0,0.08)"; }}
-      >
-        <div className="d-flex align-items-center mb-4">
-          <FaBookOpen className="text-primary me-2 fs-4" />
-          <h5 className="fw-bold text-primary m-0">My Submission</h5>
+      <h4 className="mb-3 text-primary">My Submission</h4>
+
+      <div className="mb-3 d-flex justify-content-between align-items-center">
+        <div className="d-flex align-items-center">
+          <FaUser className="me-2 text-secondary" />
+          <strong>{submission.name}</strong>
         </div>
-
-        <div className="p-2">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h6 className="fw-semibold text-dark mb-0 d-flex align-items-center">
-              <FaUser className="me-2 text-secondary" />
-              {submission.user.name}
-            </h6>
-            {getStatusBadge(submission.status || "Pending")}
-          </div>
-
-          <div className="mb-3 text-muted d-flex align-items-center">
-            <FaBuilding className="me-2 text-secondary" />
-            {submission.department}
-          </div>
-
-          <div className="bg-light p-3 rounded-4 mb-3">
-            <h6 className="fw-semibold text-dark mb-2">Submitted Titles</h6>
-            <ul className="mb-0 ps-3">
-              <li>{submission.title_1}</li>
-              <li>{submission.title_2}</li>
-              <li>{submission.title_3}</li>
-            </ul>
-          </div>
-
-          <div className="text-end text-muted small d-flex align-items-center justify-content-end">
-            <FaCalendarAlt className="me-2 text-secondary" />
-            Submitted on: {new Date(submission.updatedAt).toLocaleDateString()}
-          </div>
+        <div className="d-flex align-items-center">
+          <FaBuilding className="me-2 text-secondary" />
+          <span className="me-4">{submission.department}</span>
+          {getStatusBadge(submission.status || "Pending")}
         </div>
-      </Card>
+      </div>
+
+      <Table bordered hover responsive className="bg-light rounded">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {["title_1", "title_2", "title_3"].map((field, index) => (
+            <tr key={field}>
+              <td>{index + 1}</td>
+              <td>
+                {editing[field] ? (
+                  <Form.Control
+                    value={updatedTitles[field]}
+                    onChange={(e) => handleChange(field, e.target.value)}
+                  />
+                ) : (
+                  submission[field]
+                )}
+              </td>
+              <td>
+                {editing[field] ? (
+                  <Button size="sm" variant="success" onClick={() => handleSave(field)}>
+                    <FaSave />
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="primary" onClick={() => handleEdit(field)}>
+                    <FaEdit />
+                  </Button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      <div className="text-end text-muted small mt-3">
+        <FaCalendarAlt className="me-2" />
+        Submitted on: {new Date(submission.updatedAt).toLocaleDateString()}
+      </div>
     </div>
   );
 };
