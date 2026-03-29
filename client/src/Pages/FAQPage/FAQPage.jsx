@@ -32,7 +32,7 @@ const FAQPage = () => {
       <Accordion eventKey="0" alwaysOpen className="shadow-sm rounded-4 border-0">
         <Accordion.Item eventKey="0">
           <Accordion.Header>
-            <FaBook className="text-warning me-2" />
+            <FaBook className="text-primary me-2" />
             What is the purpose of this system?
           </Accordion.Header>
           <Accordion.Body>
@@ -44,7 +44,7 @@ const FAQPage = () => {
 
         <Accordion.Item eventKey="1">
           <Accordion.Header>
-            <FaUserGraduate className="text-warning me-2" />
+            <FaUserGraduate className="text-primary me-2" />
             Who can use the system?
           </Accordion.Header>
           <Accordion.Body>
@@ -56,7 +56,7 @@ const FAQPage = () => {
 
         <Accordion.Item eventKey="2">
           <Accordion.Header>
-            <FaQuestionCircle className="text-warning me-2" />
+            <FaQuestionCircle className="text-primary me-2" />
             How does title similarity detection work?
           </Accordion.Header>
           <Accordion.Body>
@@ -68,7 +68,7 @@ const FAQPage = () => {
 
         <Accordion.Item eventKey="3">
           <Accordion.Header>
-            <FaInfoCircle className="text-warning me-2" />
+            <FaInfoCircle className="text-primary me-2" />
             How are submissions reviewed and approved?
           </Accordion.Header>
           <Accordion.Body>
@@ -80,7 +80,7 @@ const FAQPage = () => {
 
         <Accordion.Item eventKey="4">
         <Accordion.Header>
-            <FaBook className="text-warning me-2" />
+            <FaBook className="text-primary me-2" />
             How do I know if my project title is approved?
         </Accordion.Header>
         <Accordion.Body>
