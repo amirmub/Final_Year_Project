@@ -29,7 +29,7 @@ export default function LandingPage() {
             <button className="btn btn-warning px-4 me-3">
               Check Your Title Now
             </button>
-            <button className="btn btn-outline-light px-4">Learn More</button>
+            {/* <button className="btn btn-outline-light px-4">Learn More</button> */}
           </div>
         </div>
       </section>
