@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Facts from "../../Components/Facts/Facts";
 import Footer from "../../Components/Footer/Footer";
 import Navbar from "../../Components/Navbar/Navbar";
@@ -26,9 +27,10 @@ export default function LandingPage() {
             Jimma University
           </p>
           <div className="mt-4">
-            <button className="btn btn-warning px-4 me-3">
+           <Link to="/register">  <button  className="btn btn-warning px-4 me-3">
               Check Your Title Now
             </button>
+            </Link>
             {/* <button className="btn btn-outline-light px-4">Learn More</button> */}
           </div>
         </div>
@@ -171,7 +173,9 @@ export default function LandingPage() {
       <section className="text-center" style={{ background: "#F1F1F1",padding: "80px 0" }}>
         <h2 className="fw-bold">Ready to Check Your Title?</h2>
         <h6 className="my-3">Join hundreds of students ensuring their project titles are unique.</h6>
+        <Link to="/register">
         <button className="btn px-5 py-2 bg-warning fw-semibold">Get Started Now</button>
+        </Link>
         <h6 className="my-3">it's free for all private university students</h6>
       </section>
 
