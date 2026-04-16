@@ -26,7 +26,7 @@ function Navbar() {
     } else if (role === "student") {
       navigate("/student/dashboard");
     } else if (role === "superAdmin") {
-      navigate("/super-admin/dashboard");
+      navigate("/super-admin/add-admin");
     } else {
       navigate("/login"); // fallback
     }

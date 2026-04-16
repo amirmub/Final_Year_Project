@@ -6,13 +6,14 @@ import { FaFilter, FaSort } from "react-icons/fa";
 import "./SubmittedTitle.css";
 import { getAuth } from "../../../utils/auth";
 import axios from "../../../utils/axios";
+import toast, { Toaster } from "react-hot-toast";
 
 function SubmittedTitle() {
   const authData = getAuth();
   const token = authData?.token;
   const userId = authData?.id;
+  console.log("Authenticated user ID:", userId);
 
-  // States
   const [submittedData, setSubmittedData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +23,25 @@ function SubmittedTitle() {
 
   const rowsPerPage = 2;
 
-  // FETCH DATA
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const [notes, setNotes] = useState({});
+  const [actionLoading, setActionLoading] = useState(null);
+
+  const handleNoteChange = (index, value) => {
+    setNotes((prev) => ({
+      ...prev,
+      [index]: value,
+    }));
+  };
+
+  const handleView = (row) => {
+    setSelectedRow(row);
+    setShowModal(true);
+  };
+
+  // ================= FETCH DATA =================
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,53 +49,74 @@ function SubmittedTitle() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        console.log("Raw submitted titles data:", res);
+
         if (res.data.status === "success") {
-          const transformed = res.data.message.map((item) => ({
-            id: item._id,
-            name: item.name,
-            dept: item.department,
-            createdAt: item.createdAt,
-            time: new Date(item.createdAt).toLocaleDateString(),
-            short: item.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase(),
-            titles: [item.title_1, item.title_2, item.title_3].filter(Boolean),
-          }));
+          const transformed = res.data.message.map((item) => {
+            // ✅ normalize titles safely
+            const titles = [item.title_1, item.title_2, item.title_3]
+              .filter(Boolean)
+              .map((t) => ({
+                text: t?.text || "No title",
+                status: t?.status || "pending",
+                note: t?.note || "",
+              }));
+
+            return {
+              id: item._id,
+              name: item.name,
+              dept: item.department,
+              createdAt: item.createdAt,
+              time: new Date(item.createdAt).toLocaleDateString(),
+
+              // ✅ initials
+              short: item.name
+                ? item.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                : "NA",
+
+              titles, // ✅ FIXED STRUCTURE
+            };
+          });
+
           setSubmittedData(transformed);
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error(err);
+        toast.error("Failed to load data");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    if (userId && token) {
+      fetchData();
+    }
   }, [userId, token]);
 
-  // Filter, search, sort logic
+  // ================= FILTER + SORT =================
   const filteredData = useMemo(() => {
     let data = [...submittedData];
 
-    // Department filter
     if (filterDept && filterDept !== "All") {
       data = data.filter((d) => d.dept === filterDept);
     }
 
-    // Search
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      data = data.filter(
-        (d) =>
-          d.name.toLowerCase().includes(q) ||
-          d.dept.toLowerCase().includes(q) ||
-          d.titles.some((t) => t.toLowerCase().includes(q))
-      );
-    }
+  const q = searchQuery.toLowerCase();
 
-    // Sort
+  data = data.filter((d) =>
+    d.name.toLowerCase().includes(q) ||
+    d.dept.toLowerCase().includes(q) ||
+    d.titles.some((t) =>
+      (t.text || "").toLowerCase().includes(q)
+    )
+  );
+}
+
     switch (sortOption) {
       case "az":
         data.sort((a, b) => a.name.localeCompare(b.name));
@@ -90,25 +130,156 @@ function SubmittedTitle() {
       case "mostRecent":
         data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
-      default:
-        break;
     }
 
     return data;
-  }, [searchQuery, sortOption, filterDept, submittedData]);
+  }, [submittedData, searchQuery, sortOption, filterDept]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const startIdx = (currentPage - 1) * rowsPerPage;
   const currentRows = filteredData.slice(startIdx, startIdx + rowsPerPage);
 
+  const updateTitleStatus = (id, field, status, note) => {
+    setSubmittedData((prev) =>
+      prev.map((user) => {
+        if (user.id !== id) return user;
+
+        return {
+          ...user,
+          titles: user.titles.map((t, idx) => {
+            const key = `title_${idx + 1}`;
+            if (key !== field) return t;
+
+            return {
+              ...t,
+              status,
+              note: note || t.note,
+            };
+          }),
+        };
+      }),
+    );
+
+    // ALSO update modal state
+    setSelectedRow((prev) => {
+      if (!prev || prev.id !== id) return prev;
+
+      return {
+        ...prev,
+        titles: prev.titles.map((t, idx) => {
+          const key = `title_${idx + 1}`;
+          if (key !== field) return t;
+
+          return {
+            ...t,
+            status,
+            note: note || t.note,
+          };
+        }),
+      };
+    });
+  };
+
+  // ================= APPROVE =================
+  const handleApprove = async (id, field, index) => {
+    try {
+      setActionLoading(field);
+
+      await axios.patch(
+        `/users/${userId}/titles/${id}/${field}/approve`,
+        { note: notes[index] || "" },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      updateTitleStatus(id, field, "approved", notes[index] || "");
+
+      toast.success("Title approved successfully ✅");
+    } catch (err) {
+      toast.error("Failed to approve title");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // ================= REJECT =================
+  const handleReject = (id, field, index) => {
+    toast((t) => (
+      <div>
+        <p className="mb-2 fw-semibold">
+          Are you sure you want to reject this title?
+        </p>
+
+        <div className="d-flex gap-2">
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={async () => {
+              toast.dismiss(t.id);
+
+              try {
+                setActionLoading(field);
+
+                await axios.patch(
+                  `/users/${userId}/titles/${id}/${field}/reject`,
+                  { note: notes[index] || "" },
+                  { headers: { Authorization: `Bearer ${token}` } },
+                );
+
+                updateTitleStatus(id, field, "rejected", notes[index] || "");
+
+                toast.success("Title rejected successfully");
+              } catch (err) {
+                toast.error("Failed to reject title");
+              } finally {
+                setActionLoading(null);
+              }
+            }}
+          >
+            Yes, Reject
+          </button>
+
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ));
+  };
+
+  // ================= DELETE =================
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/users/${userId}/titles/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      toast.success("Deleted");
+
+      // ✅ THIS IS THE KEY FIX
+      setSubmittedData((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      toast.error("Delete failed");
+    }
+  };
+
+  const allowedDepartments = [
+  "Computer Science",
+  "Information Science",
+  "Software Engineering",
+  "Information Technology",
+];
+
+const departments = ["All", ...allowedDepartments];
+
   const nextPage = () =>
     currentPage < totalPages && setCurrentPage(currentPage + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
-  const departments = ["All", ...new Set(submittedData.map((d) => d.dept))];
-
   return (
     <>
+      <Toaster position="top-center" />
       <Header />
       <Container fluid>
         <Row>
@@ -117,7 +288,10 @@ function SubmittedTitle() {
           </Col>
 
           {loading ? (
-            <div className="d-flex flex-wrap align-items-center justify-content-center " style={{height: "70vh"}}>
+            <div
+              className="d-flex flex-wrap align-items-center justify-content-center "
+              style={{ height: "70vh" }}
+            >
               <div className="spinner-border text-primary" role="status"></div>
             </div>
           ) : (
@@ -291,11 +465,14 @@ function SubmittedTitle() {
                             }}
                           >
                             {row.titles.map((t, i) => {
-                              const words = t.split(" ");
+                              const text = t?.text || "";
+
+                              const words = text.split(" ");
                               const isLong = words.length > 6;
+
                               const shortTitle = isLong
                                 ? words.slice(0, 6).join(" ") + "..."
-                                : t;
+                                : text;
 
                               return (
                                 <div
@@ -310,12 +487,12 @@ function SubmittedTitle() {
                                     boxSizing: "border-box",
                                   }}
                                   className="project-title-item"
-                                  title={t}
+                                  title={text} // ✅ FIXED
                                 >
                                   <span
                                     className="fw-bold"
                                     style={{
-                                      fontSize: "13px",
+                                      fontSize: "14px",
                                       display: "block",
                                       whiteSpace: "nowrap",
                                       overflow: "hidden",
@@ -324,6 +501,33 @@ function SubmittedTitle() {
                                   >
                                     {shortTitle}
                                   </span>
+
+                                  {/* ✅ OPTIONAL: show status */}
+                                  {/* <small
+          style={{
+            color:
+              t.status === "approved"
+                ? "green"
+                : t.status === "rejected"
+                ? "red"
+                : "orange",
+            fontSize: "11px",
+          }}
+        >
+          {t.status}
+        </small> */}
+
+                                  {/* ✅ OPTIONAL: show note */}
+                                  {t.note && (
+                                    <div
+                                      style={{
+                                        fontSize: "11px",
+                                        color: "#555",
+                                      }}
+                                    >
+                                      Note: {t.note}
+                                    </div>
+                                  )}
                                 </div>
                               );
                             })}
@@ -336,7 +540,20 @@ function SubmittedTitle() {
                           <td style={{ border: "1.5px solid #dee2e6" }}></td>
 
                           {/* Actions */}
-                          <td style={{ border: "1.5px solid #dee2e6" }}></td>
+                          <td
+                            style={{
+                              border: "1.5px solid #dee2e6",
+                              verticalAlign: "middle",
+                            }}
+                          >
+                            <button
+                              className="btn btn-primary btn-sm w-100"
+                              style={{ fontSize: "11px", fontWeight: 700 }}
+                              onClick={() => handleView(row)}
+                            >
+                              View
+                            </button>
+                          </td>
                         </tr>
                       ))
                     ) : (
@@ -384,6 +601,108 @@ function SubmittedTitle() {
           )}
         </Row>
       </Container>
+
+      {showModal && selectedRow && (
+        <div
+          className="modal fade show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }} // ✅ FIX
+        >
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Project Details</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <div className="mb-3">
+                  <strong>Student:</strong> {selectedRow.name}
+                </div>
+
+                {selectedRow.titles.map((t, i) => {
+                  const field = `title_${i + 1}`;
+
+                  return (
+                    <div key={i} className="border rounded p-3 mt-3">
+                      {/* TITLE */}
+                      <div className="fw-bold mb-1">{t.text}</div>
+
+                      {/* STATUS */}
+                      <small
+                        style={{
+                          color:
+                            t.status === "approved"
+                              ? "green"
+                              : t.status === "rejected"
+                                ? "red"
+                                : "orange",
+                        }}
+                      >
+                        Status: {t.status}
+                      </small>
+
+                      {/* NOTE INPUT */}
+                      <textarea
+                        className="form-control mt-2"
+                        placeholder="Add comment (optional)..."
+                        rows={2}
+                        value={notes[i] || ""}
+                        onChange={(e) => handleNoteChange(i, e.target.value)}
+                      />
+
+                      {/* ACTION BUTTONS */}
+                      <div className="d-flex gap-2 mt-2">
+                        <button
+                          className="btn btn-success btn-sm w-50"
+                          disabled={actionLoading === field}
+                          onClick={() =>
+                            handleApprove(selectedRow.id, field, i)
+                          }
+                        >
+                          {actionLoading === field
+                            ? "Processing..."
+                            : "Approve"}
+                        </button>
+
+                        <button
+                          className="btn btn-warning btn-sm w-50"
+                          disabled={actionLoading === field}
+                          onClick={() => handleReject(selectedRow.id, field, i)}
+                        >
+                          {actionLoading === field ? "Processing..." : "Reject"}
+                        </button>
+                      </div>
+
+                      {/* SHOW EXISTING NOTE */}
+                      {t.note && (
+                        <div
+                          className="mt-2 text-muted"
+                          style={{ fontSize: "12px" }}
+                        >
+                          <strong>Admin Note:</strong> {t.note}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowModal(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

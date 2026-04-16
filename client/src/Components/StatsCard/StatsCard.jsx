@@ -1,16 +1,18 @@
 import { useState } from "react";
 
-function StatsCard({ title, value, icon, color }) {
+function StatsCard({ title, value, icon, color, small = false }) {
   const [hover, setHover] = useState(false);
 
   return (
     <div
-      className="rounded-4 p-3"
+      className="rounded-4 px-3 py-4"
       style={{
         background: "#ffffff",
         cursor: "pointer",
         transition: "0.35s ease",
-        transform: hover ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
+        transform: hover
+          ? "translateY(-6px) scale(1.02)"
+          : "translateY(0) scale(1)",
         borderLeft: `4px solid ${color}`,
         boxShadow: hover
           ? "0 10px 25px rgba(0,0,0,0.12)"
@@ -55,10 +57,12 @@ function StatsCard({ title, value, icon, color }) {
       <h3
         className="fw-bold"
         style={{
-          margin: 0,
+          marginTop: "10px",
           color: "#2d2d2d",
-          fontSize: "1.75rem",
+          fontSize: small ? "10px" : "1.25rem",
+          wordBreak: "break-word",
         }}
+        title={value}
       >
         {value}
       </h3>

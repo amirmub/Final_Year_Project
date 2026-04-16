@@ -26,7 +26,7 @@ const SuperAdminSidebar = () => {
   const mySubmissionPath = `/student/my-submissions/${latestSubmissionId}`;
 
   const navItems = [
-    { path: "/super-admin/dashboard", label: "Dashboard", icon: <FaHome /> },
+    // { path: "/super-admin/dashboard", label: "Dashboard", icon: <FaHome /> },
     { path: "/super-admin/add-admin", label: "Manage Admins", icon: <FaUserPlus /> }
   ];
 

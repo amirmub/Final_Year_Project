@@ -75,7 +75,7 @@ export default function LoginPage() {
 
     if (user.role === "student") path = "/student/dashboard";
     if (user.role === "admin") path = "/admin/dashboard";
-    if (user.role === "superAdmin") path = "/super-admin/dashboard";
+    if (user.role === "superAdmin") path = "/super-admin/add-admin";
 
     setTimeout(() => {
       navigate(path);

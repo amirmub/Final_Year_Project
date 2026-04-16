@@ -1,10 +1,10 @@
-import { Col, Container, Row } from "react-bootstrap"; 
+import { Col, Container, Row } from "react-bootstrap";
 import Sidebar from "../../../Components/Sidebar/Sidebar";
 import StatsCard from "../../../Components/StatsCard/StatsCard";
 import AnnouncementCard from "../../../Components/AnnouncementCard/AnnouncementCard";
 import SkeletonLoader from "../../../Components/SkeletonLoader/SkeletonLoader";
 
-import { FaCheckCircle, FaUsers, FaFileAlt } from "react-icons/fa"; // Updated icon
+import { FaCheckCircle, FaUsers, FaFileAlt } from "react-icons/fa";
 import Header from "../../../Components/Header/Header";
 import { useEffect, useState } from "react";
 import { getAuth } from "../../../utils/auth";
@@ -17,13 +17,16 @@ function Dashboard() {
   const userId = authData?.id;
 
   const { id: titleIdParam } = useParams();
-  const latestSubmissionId = localStorage.getItem(`latestSubmissionId_${userId}`);
+  const latestSubmissionId = localStorage.getItem(
+    `latestSubmissionId_${userId}`
+  );
   const titleId = titleIdParam || latestSubmissionId;
 
   const [loading, setLoading] = useState(true);
+
   const [titlesData, setTitlesData] = useState({
     total: 0,
-    approved: 0,
+    approved: "--",
     groupMembers: 0,
   });
 
@@ -38,28 +41,43 @@ function Dashboard() {
       }
 
       try {
-        const res = await axios.get(`/users/${userId}/titles/${titleId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `/users/${userId}/titles/${titleId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const title = res.data.data;
+        console.log("Fetched title data:", title);
 
-        // Total titles
         const titleArray = [title.title_1, title.title_2, title.title_3];
-        const totalTitles = titleArray.filter(t => t && t.trim() !== "").length;
 
-        // Approved titles
-        const approvedCount = title.status === "Approved" ? totalTitles : 0;
+        // ✅ Submitted Titles
+        const submittedCount = titleArray.filter(
+          (t) => t?.text && t.text.trim() !== ""
+        ).length;
 
-        // Group members count
-        const groupMembersCount = title.group_member ? Number(title.group_member) : 0;
+        // ✅ Approved Title (TEXT)
+        const approvedTitle =
+          titleArray.find(
+            (t) => t?.status?.toLowerCase() === "approved"
+          )?.text || "---";
+
+        // 🔥 truncate to 15 characters
+        const formattedApprovedTitle =
+          approvedTitle.length > 15
+            ? approvedTitle.slice(0, 22) + "..."
+            : approvedTitle;
+
+        // ✅ Group Members
+        const groupMembersCount = Number(title.group_member || 0);
 
         setTitlesData({
-          total: totalTitles,
-          approved: approvedCount,
+          total: submittedCount,
+          approved: formattedApprovedTitle,
           groupMembers: groupMembersCount,
         });
-
       } catch (error) {
         console.error(error.response || error.message);
       } finally {
@@ -70,20 +88,28 @@ function Dashboard() {
     fetchUserTitle();
   }, [userId, token, titleId]);
 
-
   return (
     <>
       <style>
         {`
-          @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
         `}
       </style>
 
       <Header />
 
-      <Container fluid className="p-0" style={{ backgroundColor: "#eef2f5", minHeight: "100vh" }}>
+      <Container
+        fluid
+        className="p-0"
+        style={{ backgroundColor: "#eef2f5", minHeight: "100vh" }}
+      >
         <Row className="g-0">
-          <Col md={3} lg={2} className="p-0"><Sidebar /></Col>
+          <Col md={3} lg={2} className="p-0">
+            <Sidebar />
+          </Col>
 
           <Col md={9} lg={9} className="py-4 m-auto">
             <div className="mb-2 pb-3" style={fadeIn}>
@@ -99,6 +125,7 @@ function Dashboard() {
                 ))
               ) : (
                 <>
+                  {/* Submitted Titles */}
                   <Col sm={6} lg={4}>
                     <StatsCard
                       title="Submitted Titles"
@@ -108,15 +135,17 @@ function Dashboard() {
                     />
                   </Col>
 
+                  {/* Approved Title (TRUNCATED TEXT) */}
                   <Col sm={6} lg={4}>
                     <StatsCard
-                      title="Results"
+                      title="Approved Title"
                       value={titlesData.approved}
                       icon={<FaCheckCircle />}
                       color="#28a745"
                     />
                   </Col>
 
+                  {/* Group Members */}
                   <Col sm={6} lg={4}>
                     <StatsCard
                       title="Group Members"
