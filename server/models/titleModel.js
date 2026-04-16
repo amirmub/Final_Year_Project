@@ -1,5 +1,21 @@
 const mongoose = require('mongoose');
 
+const singleTitleSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending"
+  },
+  note: {
+    type: String,
+    default: "" // ✅ NEW FIELD
+  }
+}, { _id: false });
+
 const titleSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -13,25 +29,25 @@ const titleSchema = new mongoose.Schema({
   group_member:{
     type: Number,
     max: 5,
-    min:1
+    min: 1
   },
-  title_1: { type: String, required: true },
-  title_2: { type: String, required: true },
-  title_3: { type: String, required: true },
 
-  // REQUIRED for populate()
+  title_1: singleTitleSchema,
+  title_2: singleTitleSchema,
+  title_3: singleTitleSchema,
+
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
 
-   createdAt: {
-        type: Date,
-        default: Date.now
-    },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
 
-  }, { timestamps: true });
+}, { timestamps: true });
 
 const Title = mongoose.model('Title', titleSchema);
 
