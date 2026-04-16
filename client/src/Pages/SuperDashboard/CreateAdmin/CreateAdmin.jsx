@@ -23,14 +23,43 @@ function CreateAdmin() {
     role: "admin", // default
   });
 
+  // SEARCH / SORT / FILTER STATES
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("newest"); // newest | oldest
+  const [filterRole, setFilterRole] = useState("all"); // all | admin
+
   // PAGINATION
   const [currentPage, setCurrentPage] = useState(1);
   const adminsPerPage = 5;
 
   const indexOfLastAdmin = currentPage * adminsPerPage;
   const indexOfFirstAdmin = indexOfLastAdmin - adminsPerPage;
-  const currentAdmins = showAdmin.slice(indexOfFirstAdmin, indexOfLastAdmin);
-  const totalPages = Math.ceil(showAdmin.length / adminsPerPage);
+  // APPLY SEARCH + FILTER + SORT
+const filteredAdmins = showAdmin
+  .filter((admin) => {
+    const name = admin.name?.toLowerCase() || "";
+    const email = admin.email?.toLowerCase() || "";
+
+    return (
+      name.includes(searchTerm.toLowerCase()) ||
+      email.includes(searchTerm.toLowerCase())
+    );
+  })
+  .filter((admin) => {
+    if (filterRole === "all") return true;
+    return admin.role === filterRole;
+  })
+  .sort((a, b) => {
+    if (sortOrder === "newest") {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    } else {
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    }
+  });
+
+// PAGINATION AFTER FILTERING
+const currentAdmins = filteredAdmins.slice(indexOfFirstAdmin, indexOfLastAdmin);
+const totalPages = Math.ceil(filteredAdmins.length / adminsPerPage);
 
 
 
@@ -241,50 +270,61 @@ const handleDelete = (id) => {
                   }}
                 >
                   <FaSearch className="me-2 text-secondary" />
-                  <Form.Control
-                    type="text"
-                    placeholder="Search admin..."
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "#000",
-                      fontSize: "14px",
-                    }}
-                  />
+                 <Form.Control
+  type="text"
+  placeholder="Search admin..."
+  value={searchTerm}
+  onChange={(e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // reset page
+  }}
+  style={{
+    background: "transparent",
+    border: "none",
+    boxShadow: "none",
+    color: "#000",
+    fontSize: "14px",
+  }}
+/>
                 </div>
 
                 {/* Sort Button */}
                 <Button
-                  variant=""
-                  className="px-3 d-flex align-items-center"
-                  style={{
-                    background: "#fff",
-                    borderRadius: "10px",
-                    border: "1px solid #cfcfcf",
-                    height: "35px",
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  <FaSort className="me-2" /> Sort
-                </Button>
-
+  onClick={() => {
+    setSortOrder(sortOrder === "newest" ? "oldest" : "newest");
+  }}
+  className="px-3 d-flex align-items-center"
+  style={{
+    background: "#fff",
+    borderRadius: "10px",
+    border: "1px solid #cfcfcf",
+    height: "35px",
+    color: "#000",
+    fontSize: "14px",
+  }}
+>
+  <FaSort className="me-2" />
+  {sortOrder === "newest" ? "Newest" : "Oldest"}
+</Button>
                 {/* Filter Button */}
-                <Button
-                  variant=""
-                  className="px-3 d-flex align-items-center"
-                  style={{
-                    background: "#fff",
-                    borderRadius: "10px",
-                    border: "1px solid #cfcfcf",
-                    height: "35px",
-                    color: "#000",
-                    fontSize: "14px",
-                  }}
-                >
-                  <FaFilter className="me-2" /> Filter
-                </Button>
+<Form.Select
+  value={filterRole}
+  onChange={(e) => {
+    setFilterRole(e.target.value);
+    setCurrentPage(1);
+  }}
+  style={{
+    background: "#fff",
+    borderRadius: "10px",
+    border: "1px solid #cfcfcf",
+    height: "35px",
+    width: "130px",
+    fontSize: "14px",
+  }}
+>
+  <option value="all">All</option>
+  <option value="admin">Admin</option>
+</Form.Select>
               </div>
 
               {/* Add Staff */}
@@ -424,7 +464,7 @@ const handleDelete = (id) => {
 
         </Table>
         {/* pagination */}
-       {showAdmin.length > adminsPerPage && (
+       {filteredAdmins.length > adminsPerPage && (
         <div className="d-flex justify-content-center mt-3 gap-2">
           {/* Previous Button */}
           <Button
