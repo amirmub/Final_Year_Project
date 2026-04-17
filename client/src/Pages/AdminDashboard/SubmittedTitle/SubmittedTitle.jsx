@@ -608,8 +608,8 @@ const departments = ["All", ...allowedDepartments];
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }} // ✅ FIX
         >
-          <div className="modal-dialog modal-lg modal-dialog-centered">
-            <div className="modal-content">
+          <div className="modal-dialog modal-lg modal-dialog-centered" >
+            <div className="modal-content" style={{backgroundColor : "#F4F6F9"}}>
               <div className="modal-header">
                 <h5 className="modal-title">Project Details</h5>
                 <button
