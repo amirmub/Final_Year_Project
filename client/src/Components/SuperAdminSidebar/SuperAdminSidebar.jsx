@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
-import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle, FaUserPlus } from "react-icons/fa";
+import { FaHome, FaUpload, FaBook, FaBell, FaQuestionCircle, FaUserPlus, FaCog } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { getAuth } from "../../utils/auth";
 
@@ -26,8 +26,9 @@ const SuperAdminSidebar = () => {
   const mySubmissionPath = `/student/my-submissions/${latestSubmissionId}`;
 
   const navItems = [
+    { path: "/super-admin/add-admin", label: "Manage Admins", icon: <FaUserPlus /> },
     // { path: "/super-admin/dashboard", label: "Dashboard", icon: <FaHome /> },
-    { path: "/super-admin/add-admin", label: "Manage Admins", icon: <FaUserPlus /> }
+    { path: "/super-admin/setting", label: "Setting", icon: <FaCog /> },
   ];
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
