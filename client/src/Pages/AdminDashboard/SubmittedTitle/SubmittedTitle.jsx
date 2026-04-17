@@ -29,6 +29,17 @@ function SubmittedTitle() {
   const [notes, setNotes] = useState({});
   const [actionLoading, setActionLoading] = useState(null);
 
+  // ✅ ADD HERE
+  const getBadge = (value) => {
+    if (value > 70) {
+      return { text: "High", color: "red" };
+    } else if (value >= 40) {
+      return { text: "Medium", color: "orange" };
+    } else {
+      return { text: "Low", color: "green" };
+    }
+  };
+
   const handleNoteChange = (index, value) => {
     setNotes((prev) => ({
       ...prev,
@@ -36,8 +47,8 @@ function SubmittedTitle() {
     }));
   };
 
-  const handleView = (row) => {
-    setSelectedRow(row);
+  const handleView = (row, mode = "full") => {
+    setSelectedRow({ ...row, viewMode: mode });
     setShowModal(true);
   };
 
@@ -60,7 +71,18 @@ function SubmittedTitle() {
                 text: t?.text || "No title",
                 status: t?.status || "pending",
                 note: t?.note || "",
+                similarity: t?.similarity_percent || 0, // ✅ ADD
+                report: t?.ai_report || "", // ✅ ADD
               }));
+            const getBadge = (value) => {
+              if (value > 70) {
+                return { text: "High", color: "red" };
+              } else if (value >= 40) {
+                return { text: "Medium", color: "orange" };
+              } else {
+                return { text: "Low", color: "green" };
+              }
+            };
 
             return {
               id: item._id,
@@ -106,16 +128,15 @@ function SubmittedTitle() {
     }
 
     if (searchQuery) {
-  const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase();
 
-  data = data.filter((d) =>
-    d.name.toLowerCase().includes(q) ||
-    d.dept.toLowerCase().includes(q) ||
-    d.titles.some((t) =>
-      (t.text || "").toLowerCase().includes(q)
-    )
-  );
-}
+      data = data.filter(
+        (d) =>
+          d.name.toLowerCase().includes(q) ||
+          d.dept.toLowerCase().includes(q) ||
+          d.titles.some((t) => (t.text || "").toLowerCase().includes(q)),
+      );
+    }
 
     switch (sortOption) {
       case "az":
@@ -265,13 +286,13 @@ function SubmittedTitle() {
   };
 
   const allowedDepartments = [
-  "Computer Science",
-  "Information Science",
-  "Software Engineering",
-  "Information Technology",
-];
+    "Computer Science",
+    "Information Science",
+    "Software Engineering",
+    "Information Technology",
+  ];
 
-const departments = ["All", ...allowedDepartments];
+  const departments = ["All", ...allowedDepartments];
 
   const nextPage = () =>
     currentPage < totalPages && setCurrentPage(currentPage + 1);
@@ -412,7 +433,7 @@ const departments = ["All", ...allowedDepartments];
                         Similarity
                       </th>
                       <th style={{ border: "1.5px solid #dee2e6" }}>
-                        Priority
+                        AI Report
                       </th>
                       <th style={{ border: "1.5px solid #dee2e6" }}>Actions</th>
                     </tr>
@@ -534,10 +555,77 @@ const departments = ["All", ...allowedDepartments];
                           </td>
 
                           {/* Similarity */}
-                          <td style={{ border: "1.5px solid #dee2e6" }}></td>
+                          <td style={{ border: "1.5px solid #dee2e6" }}>
+                            <div className="d-flex flex-column gap-2">
+                              {row.titles.map((t, i) => {
+                                const value = t.similarity || 0;
+
+                                let color = "#28a745"; // green
+                                if (value > 70)
+                                  color = "#dc3545"; // red
+                                else if (value >= 40) color = "#fd7e14"; // orange
+
+                                return (
+                                  <div key={i}>
+                                    {/* % TEXT */}
+                                    <div
+                                      style={{
+                                        fontSize: "11px",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {value.toFixed(1)}%
+                                    </div>
+
+                                    {/* PROGRESS BAR */}
+                                    <div
+                                      style={{
+                                        height: "6px",
+                                        background: "#eee",
+                                        borderRadius: "5px",
+                                        overflow: "hidden",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          width: `${value}%`,
+                                          height: "100%",
+                                          background: color,
+                                        }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </td>
 
                           {/* Priority */}
-                          <td style={{ border: "1.5px solid #dee2e6" }}></td>
+                          <td style={{ border: "1.5px solid #dee2e6" }}>
+                            <button
+                              className="btn btn-sm btn-outline-primary w-100"
+                              style={{ fontSize: "11px" }}
+                              onClick={() =>
+                                handleView(
+                                  {
+                                    ...row,
+                                    combinedReport: row.titles
+                                      .map((t) => t.report)
+                                      .filter(Boolean)
+                                      .join("\n\n----------------------\n\n"),
+                                    avgSimilarity:
+                                      row.titles.reduce(
+                                        (acc, t) => acc + (t.similarity || 0),
+                                        0,
+                                      ) / row.titles.length,
+                                  },
+                                  "report",
+                                )
+                              }
+                            >
+                              View
+                            </button>
+                          </td>
 
                           {/* Actions */}
                           <td
@@ -549,7 +637,7 @@ const departments = ["All", ...allowedDepartments];
                             <button
                               className="btn btn-primary btn-sm w-100"
                               style={{ fontSize: "11px", fontWeight: 700 }}
-                              onClick={() => handleView(row)}
+                              onClick={() => handleView(row, "full")}
                             >
                               View
                             </button>
@@ -608,8 +696,11 @@ const departments = ["All", ...allowedDepartments];
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }} // ✅ FIX
         >
-          <div className="modal-dialog modal-lg modal-dialog-centered" >
-            <div className="modal-content" style={{backgroundColor : "#F4F6F9"}}>
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div
+              className="modal-content"
+              style={{ backgroundColor: "#F4F6F9" }}
+            >
               <div className="modal-header">
                 <h5 className="modal-title">Project Details</h5>
                 <button
@@ -631,60 +722,125 @@ const departments = ["All", ...allowedDepartments];
                       {/* TITLE */}
                       <div className="fw-bold mb-1">{t.text}</div>
 
-                      {/* STATUS */}
-                      <small
-                        style={{
-                          color:
-                            t.status === "approved"
-                              ? "green"
-                              : t.status === "rejected"
-                                ? "red"
-                                : "orange",
-                        }}
-                      >
-                        Status: {t.status}
-                      </small>
+                      {/* ✅ SHOW AI REPORT ONLY in REPORT MODE */}
+                      {selectedRow.viewMode === "report" && (
+                        <div>
+                          {/* RESULT */}
+                          <div className="mb-3">
+                            <h6 className="fw-bold">📊 Result</h6>
 
-                      {/* NOTE INPUT */}
-                      <textarea
-                        className="form-control mt-2"
-                        placeholder="Add comment (optional)..."
-                        rows={2}
-                        value={notes[i] || ""}
-                        onChange={(e) => handleNoteChange(i, e.target.value)}
-                      />
+                            <div style={{ fontSize: "14px" }}>
+                              <strong>Similarity:</strong>{" "}
+                              {selectedRow.avgSimilarity?.toFixed(2)}%
+                            </div>
 
-                      {/* ACTION BUTTONS */}
-                      <div className="d-flex gap-2 mt-2">
-                        <button
-                          className="btn btn-success btn-sm w-50"
-                          disabled={actionLoading === field}
-                          onClick={() =>
-                            handleApprove(selectedRow.id, field, i)
-                          }
-                        >
-                          {actionLoading === field
-                            ? "Processing..."
-                            : "Approve"}
-                        </button>
+                            <div
+                              style={{
+                                fontWeight: "bold",
+                                color:
+                                  selectedRow.avgSimilarity > 70
+                                    ? "red"
+                                    : selectedRow.avgSimilarity >= 40
+                                      ? "orange"
+                                      : "green",
+                              }}
+                            >
+                              {selectedRow.avgSimilarity > 70
+                                ? "HIGH"
+                                : selectedRow.avgSimilarity >= 40
+                                  ? "MEDIUM"
+                                  : "LOW"}
+                            </div>
+                          </div>
 
-                        <button
-                          className="btn btn-warning btn-sm w-50"
-                          disabled={actionLoading === field}
-                          onClick={() => handleReject(selectedRow.id, field, i)}
-                        >
-                          {actionLoading === field ? "Processing..." : "Reject"}
-                        </button>
-                      </div>
+                          {/* AI REPORT */}
+                          <div>
+                            <h6 className="fw-bold">🤖 AI Report</h6>
 
-                      {/* SHOW EXISTING NOTE */}
-                      {t.note && (
-                        <div
-                          className="mt-2 text-muted"
-                          style={{ fontSize: "12px" }}
-                        >
-                          <strong>Admin Note:</strong> {t.note}
+                            <div
+                              style={{
+                                background: "#f1f1f1",
+                                padding: "15px",
+                                borderRadius: "8px",
+                                maxHeight: "400px",
+                                overflowY: "auto",
+                                fontSize: "13px",
+                                whiteSpace: "pre-line",
+                              }}
+                            >
+                              {selectedRow.combinedReport ||
+                                "No AI report available"}
+                            </div>
+                          </div>
                         </div>
+                      )}
+
+                      {/* ✅ SHOW NORMAL DETAILS ONLY in FULL MODE */}
+                      {selectedRow.viewMode === "full" && (
+                        <>
+                          <div className="mt-2">
+                            <strong>Similarity:</strong>{" "}
+                            {t.similarity?.toFixed(1)}%
+                          </div>
+
+                          <small
+                            style={{
+                              color:
+                                t.status === "approved"
+                                  ? "green"
+                                  : t.status === "rejected"
+                                    ? "red"
+                                    : "orange",
+                            }}
+                          >
+                            Status: {t.status}
+                          </small>
+
+                          <textarea
+                            className="form-control mt-2"
+                            placeholder="Add comment (optional)..."
+                            rows={2}
+                            value={notes[i] || ""}
+                            onChange={(e) =>
+                              handleNoteChange(i, e.target.value)
+                            }
+                          />
+
+                          <div className="d-flex gap-2 mt-2">
+                            <button
+                              className="btn btn-success btn-sm w-50"
+                              disabled={actionLoading === field}
+                              onClick={() =>
+                                handleApprove(selectedRow.id, field, i)
+                              }
+                            >
+                              {actionLoading === field
+                                ? "Processing..."
+                                : "Approve"}
+                            </button>
+
+                            <button
+                              className="btn btn-warning btn-sm w-50"
+                              disabled={actionLoading === field}
+                              onClick={() =>
+                                handleReject(selectedRow.id, field, i)
+                              }
+                            >
+                              {actionLoading === field
+                                ? "Processing..."
+                                : "Reject"}
+                            </button>
+                          </div>
+
+                          {t.note && (
+                            <div
+                              className="mt-2 text-muted"
+                              style={{ fontSize: "12px" }}
+                            >
+                              <strong>Admin Note:</strong> {t.note}
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   );
