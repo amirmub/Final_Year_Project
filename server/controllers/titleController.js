@@ -33,7 +33,7 @@ async function createTitle(req, res) {
     // ✅ 3. SEND ONLY PDF TEXT TO AI (IMPORTANT)
     const aiResult = await checkSimilarity(pdfText);
 
-    console.log("🤖 AI RESULT:", aiResult);
+    // // console.log("🤖 AI RESULT:", aiResult);
 
     // ✅ 4. HANDLE AI RESPONSE
     const similarity = aiResult?.similarity_percent || 0;
