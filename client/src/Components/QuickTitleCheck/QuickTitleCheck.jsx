@@ -38,7 +38,8 @@ function QuickTitleCheck() {
       !groupRef.current.value ||
       !title1Ref.current.value ||
       !title2Ref.current.value ||
-      !title3Ref.current.value
+      !title3Ref.current.value ||
+      !fileRef.current.files[0]
     ) {
       return toast.error("Please fill in all fields", { style: iosToastStyle });
     }
@@ -46,19 +47,23 @@ function QuickTitleCheck() {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        `/users/${userId}/titles`,
-        {
-          user: userId,
-          name: leaderNameRef.current.value,
-          department: departmentRef.current.value,
-          group_member: groupRef.current.value,
-          title_1: title1Ref.current.value,
-          title_2: title2Ref.current.value,
-          title_3: title3Ref.current.value,
+      const formData = new FormData();
+
+      formData.append("name", leaderNameRef.current.value);
+      formData.append("department", departmentRef.current.value);
+      formData.append("group_member", groupRef.current.value);
+      formData.append("title_1", title1Ref.current.value);
+      formData.append("title_2", title2Ref.current.value);
+      formData.append("title_3", title3Ref.current.value);
+
+      // ✅ FILE
+      formData.append("pdf", fileRef.current.files[0]);
+      const res = await axios.post(`/users/${userId}/titles`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // 🔥 REQUIRED
         },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      });
 
       toast.success("Title submitted successfully", { style: iosToastStyle });
 
@@ -70,6 +75,7 @@ function QuickTitleCheck() {
       title1Ref.current.value = "";
       title2Ref.current.value = "";
       title3Ref.current.value = "";
+      fileRef.current.value = "";
 
       setTimeout(() => {
         navigate(`/student/my-submissions/${res.data.data._id}`);
@@ -81,12 +87,13 @@ function QuickTitleCheck() {
       setLoading(false);
     }
   };
+  const fileRef = useRef();
 
   return (
     <>
       <Toaster position="top-center" />
 
-      <Card className="border-0 shadow mt-1 pt-3 px-4 pb-1 rounded-3">
+      <Card className="border-0 shadow mt-0 pt-3 px-4 pb-1 rounded-3">
         <div className="d-flex align-items-center mb-2">
           {/* <h5 className="fw-bold text-primary m-0 flex-grow-1" style={{ fontSize: "1.2rem" }}>
             Submit Your Title
@@ -145,7 +152,11 @@ function QuickTitleCheck() {
                 <Button
                   variant="outline-secondary"
                   className="px-2 py-0"
-                  style={{ borderRadius: "5px", fontWeight: "bold", fontSize: "0.8rem" }}
+                  style={{
+                    borderRadius: "5px",
+                    fontWeight: "bold",
+                    fontSize: "0.8rem",
+                  }}
                   onClick={() => {
                     let current = Number(groupRef.current.value || 0);
                     if (current > 0) groupRef.current.value = current - 1;
@@ -157,7 +168,11 @@ function QuickTitleCheck() {
                 <Button
                   variant="outline-secondary"
                   className="px-2 py-0"
-                  style={{ borderRadius: "5px", fontWeight: "bold", fontSize: "0.8rem" }}
+                  style={{
+                    borderRadius: "5px",
+                    fontWeight: "bold",
+                    fontSize: "0.8rem",
+                  }}
                   onClick={() => {
                     let current = Number(groupRef.current.value || 0);
                     if (current < 5) groupRef.current.value = current + 1;
@@ -168,10 +183,26 @@ function QuickTitleCheck() {
               </div>
             </div>
           </Form.Group>
+          <Form.Group className="mb-2">
+            <Form.Label className="fw-semibold" style={{ fontSize: "0.95rem" }}>
+              Upload PDF Document
+            </Form.Label>
+
+            <Form.Control
+              type="file"
+              accept="application/pdf"
+              ref={fileRef}
+              className="custom-input"
+              style={{ fontSize: "0.85rem", padding: "6px 10px" }}
+            />
+          </Form.Group>
 
           {[title1Ref, title2Ref, title3Ref].map((ref, idx) => (
             <Form.Group key={idx} className="mb-2">
-              <Form.Label className="fw-semibold" style={{ fontSize: "0.95rem" }}>
+              <Form.Label
+                className="fw-semibold"
+                style={{ fontSize: "0.95rem" }}
+              >
                 Project Title {idx + 1}
               </Form.Label>
               <Form.Control

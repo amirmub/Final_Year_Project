@@ -7,6 +7,7 @@ import "./SubmittedTitle.css";
 import { getAuth } from "../../../utils/auth";
 import axios from "../../../utils/axios";
 import toast, { Toaster } from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
 
 function SubmittedTitle() {
   const authData = getAuth();
@@ -297,6 +298,17 @@ function SubmittedTitle() {
   const nextPage = () =>
     currentPage < totalPages && setCurrentPage(currentPage + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+
+  const cleanReport = (text = "") => {
+  return text
+    .replace(/\*\*/g, "")   // remove **
+    .replace(/\*/g, "")     // remove *
+    .replace(/__/g, "")     // remove __
+    .replace(/#/g, "")      // remove #
+    .replace(/`/g, "")      // remove `
+    .replace(/-\s/g, "• ")  // convert - to bullet
+    .trim();
+};
 
   return (
     <>
@@ -600,7 +612,7 @@ function SubmittedTitle() {
                             </div>
                           </td>
 
-                          {/* Priority */}
+                          {/*  AI Report */}
                           <td style={{ border: "1.5px solid #dee2e6" }}>
                             <button
                               className="btn btn-sm btn-outline-primary w-100"
@@ -757,20 +769,27 @@ function SubmittedTitle() {
                           <div>
                             <h6 className="fw-bold">🤖 AI Report</h6>
 
-                            <div
-                              style={{
-                                background: "#f1f1f1",
-                                padding: "15px",
-                                borderRadius: "8px",
-                                maxHeight: "400px",
-                                overflowY: "auto",
-                                fontSize: "13px",
-                                whiteSpace: "pre-line",
-                              }}
-                            >
-                              {selectedRow.combinedReport ||
-                                "No AI report available"}
-                            </div>
+<div
+  style={{
+    background: "#f0f0f0",
+    padding: "15px",
+    borderRadius: "8px",
+    maxHeight: "400px",
+    overflowY: "auto",
+    fontSize: "13px",
+    lineHeight: "1.6",
+  }}
+>
+  <ReactMarkdown
+  components={{
+    h1: ({ children }) => <h5 className="fw-bold mt-3">{children}</h5>,
+    h2: ({ children }) => <h6 className="fw-bold mt-2">{children}</h6>,
+    p: ({ children }) => <p style={{ marginBottom: "8px" }}>{children}</p>,
+    li: ({ children }) => <li style={{ marginBottom: "4px" }}>{children}</li>,
+  }}>
+    {selectedRow.combinedReport || "No AI report available"}
+  </ReactMarkdown>
+</div>
                           </div>
                         </div>
                       )}
