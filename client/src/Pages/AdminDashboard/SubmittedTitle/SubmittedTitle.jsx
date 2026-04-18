@@ -300,15 +300,15 @@ function SubmittedTitle() {
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
   const cleanReport = (text = "") => {
-  return text
-    .replace(/\*\*/g, "")   // remove **
-    .replace(/\*/g, "")     // remove *
-    .replace(/__/g, "")     // remove __
-    .replace(/#/g, "")      // remove #
-    .replace(/`/g, "")      // remove `
-    .replace(/-\s/g, "• ")  // convert - to bullet
-    .trim();
-};
+    return text
+      .replace(/\*\*/g, "") // remove **
+      .replace(/\*/g, "") // remove *
+      .replace(/__/g, "") // remove __
+      .replace(/#/g, "") // remove #
+      .replace(/`/g, "") // remove `
+      .replace(/-\s/g, "• ") // convert - to bullet
+      .trim();
+  };
 
   return (
     <>
@@ -769,27 +769,41 @@ function SubmittedTitle() {
                           <div>
                             <h6 className="fw-bold">🤖 AI Report</h6>
 
-<div
-  style={{
-    background: "#f0f0f0",
-    padding: "15px",
-    borderRadius: "8px",
-    maxHeight: "400px",
-    overflowY: "auto",
-    fontSize: "13px",
-    lineHeight: "1.6",
-  }}
->
-  <ReactMarkdown
-  components={{
-    h1: ({ children }) => <h5 className="fw-bold mt-3">{children}</h5>,
-    h2: ({ children }) => <h6 className="fw-bold mt-2">{children}</h6>,
-    p: ({ children }) => <p style={{ marginBottom: "8px" }}>{children}</p>,
-    li: ({ children }) => <li style={{ marginBottom: "4px" }}>{children}</li>,
-  }}>
-    {selectedRow.combinedReport || "No AI report available"}
-  </ReactMarkdown>
-</div>
+                            <div
+                              style={{
+                                background: "#f0f0f0",
+                                padding: "15px",
+                                borderRadius: "8px",
+                                maxHeight: "400px",
+                                overflowY: "auto",
+                                fontSize: "13px",
+                                lineHeight: "1.6",
+                              }}
+                            >
+                              <ReactMarkdown
+                                components={{
+                                  h1: ({ children }) => (
+                                    <h5 className="fw-bold mt-3">{children}</h5>
+                                  ),
+                                  h2: ({ children }) => (
+                                    <h6 className="fw-bold mt-2">{children}</h6>
+                                  ),
+                                  p: ({ children }) => (
+                                    <p style={{ marginBottom: "8px" }}>
+                                      {children}
+                                    </p>
+                                  ),
+                                  li: ({ children }) => (
+                                    <li style={{ marginBottom: "4px" }}>
+                                      {children}
+                                    </li>
+                                  ),
+                                }}
+                              >
+                                {selectedRow.combinedReport ||
+                                  "No AI report available"}
+                              </ReactMarkdown>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -839,7 +853,7 @@ function SubmittedTitle() {
                             </button>
 
                             <button
-                              className="btn btn-warning btn-sm w-50"
+                              className="btn btn-danger btn-sm w-50"
                               disabled={actionLoading === field}
                               onClick={() =>
                                 handleReject(selectedRow.id, field, i)

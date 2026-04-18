@@ -185,7 +185,7 @@ function QuickTitleCheck() {
           </Form.Group>
           <Form.Group className="mb-2">
             <Form.Label className="fw-semibold" style={{ fontSize: "0.95rem" }}>
-              Upload PDF Document
+              Upload Max file size: 5 MB (PDF only)
             </Form.Label>
 
             <Form.Control
