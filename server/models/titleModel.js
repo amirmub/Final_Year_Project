@@ -13,6 +13,15 @@ const singleTitleSchema = new mongoose.Schema({
   note: {
     type: String,
     default: "" // ✅ NEW FIELD
+  },
+   // 🔥 ADD THESE
+  similarity_percent: {
+    type: Number,
+    default: 0
+  },
+  ai_report: {
+    type: String,
+    default: ""
   }
 }, { _id: false });
 

@@ -1,38 +1,87 @@
 const Title = require("../models/titleModel");
 const User = require("../models/userModel");
-
-// ✅ CREATE TITLE (FIXED)
+const { extractTextFromPDF } = require("../services/pdfService");
+const { checkSimilarity } = require("../services/similarityService");
 async function createTitle(req, res) {
   const { name, department, title_1, title_2, title_3, group_member } =
     req.body;
 
   try {
+    let pdfText = "";
+
+    // ✅ 1. CHECK FILE
+    if (!req.file) {
+      return res.status(400).json({
+        message: "PDF file is required",
+      });
+    }
+
+    // // console.log("📂 FILE:", req.file);
+
+    // ✅ 2. EXTRACT PDF TEXT
+    pdfText = await extractTextFromPDF(req.file.buffer);
+
+    // // console.log("📄 PDF LENGTH:", pdfText.length);
+
+    // ❌ IF PDF TOO SHORT → STOP
+    if (!pdfText || pdfText.length < 200) {
+      return res.status(400).json({
+        message: "PDF content too short. Please upload valid document.",
+      });
+    }
+
+    // ✅ 3. SEND ONLY PDF TEXT TO AI (IMPORTANT)
+    const aiResult = await checkSimilarity(pdfText);
+
+    console.log("🤖 AI RESULT:", aiResult);
+
+    // ✅ 4. HANDLE AI RESPONSE
+    const similarity = aiResult?.similarity_percent || 0;
+
+    let report = aiResult?.gemini_report || "";
+
+    // ✅ HANDLE GEMINI ERROR (QUOTA / FAIL)
+    if (!report || report.includes("Gemini error")) {
+      report = "AI report not available (quota limit).";
+    }
+
+    // ✅ 5. SAVE TO DATABASE
     const title = await Title.create({
       name,
       department,
       group_member,
 
-      // ✅ wrap inside object
-      title_1: { text: title_1 },
-      title_2: { text: title_2 },
-      title_3: { text: title_3 },
+      title_1: {
+        text: title_1,
+        similarity_percent: similarity,
+        ai_report: report,
+      },
+
+      title_2: {
+        text: title_2,
+        similarity_percent: similarity,
+        ai_report: report,
+      },
+
+      title_3: {
+        text: title_3,
+        similarity_percent: similarity,
+        ai_report: report,
+      },
 
       user: req.params.userId,
     });
 
-    await title.populate({
-      path: "user",
-      select: "-password -__v -createdAt -passwordConfirm",
-    });
-
+    // ✅ 6. RESPONSE
     res.status(201).json({
       status: "success",
       data: title,
     });
+
   } catch (error) {
-    console.log(error);
-    res.status(400).json({
-      status: "fail",
+    console.error("❌ CREATE TITLE ERROR:", error);
+
+    res.status(500).json({
       message: error.message,
     });
   }
@@ -122,7 +171,6 @@ async function updateTitle(req, res) {
         if (req.body[field].note) {
           title[field].note = req.body[field].note;
         }
-
       } else {
         // normal fields
         title[field] = req.body[field];
@@ -136,7 +184,6 @@ async function updateTitle(req, res) {
       message: "Title updated successfully",
       data: title,
     });
-
   } catch (error) {
     console.log("UPDATE ERROR:", error); // 👈 VERY IMPORTANT
     return res.status(500).json({

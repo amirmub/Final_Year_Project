@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 const titleController = require("../controllers/titleController");
 const authMiddleware = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 
 // CREATE title (nested under user)
-router.post("/", authMiddleware.tokenVerify, titleController.createTitle);
+router.post("/", authMiddleware.tokenVerify, upload.single("pdf"), titleController.createTitle);
 
 // GET all titles
 router.get("/", [authMiddleware.tokenVerify], titleController.getAllTitles);
