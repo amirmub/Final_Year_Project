@@ -9,7 +9,7 @@ async function createTitle(req, res) {
   try {
     let pdfText = "";
 
-    // ✅ 1. CHECK FILE
+    //  1. CHECK FILE
     if (!req.file) {
       return res.status(400).json({
         message: "PDF file is required",
@@ -18,7 +18,7 @@ async function createTitle(req, res) {
 
     // // console.log("📂 FILE:", req.file);
 
-    // ✅ 2. EXTRACT PDF TEXT
+    //  2. EXTRACT PDF TEXT
     pdfText = await extractTextFromPDF(req.file.buffer);
 
     // // console.log("📄 PDF LENGTH:", pdfText.length);
@@ -30,22 +30,22 @@ async function createTitle(req, res) {
       });
     }
 
-    // ✅ 3. SEND ONLY PDF TEXT TO AI (IMPORTANT)
+    //  3. SEND ONLY PDF TEXT TO AI (IMPORTANT)
     const aiResult = await checkSimilarity(pdfText);
 
     // // console.log("🤖 AI RESULT:", aiResult);
 
-    // ✅ 4. HANDLE AI RESPONSE
+    //  4. HANDLE AI RESPONSE
     const similarity = aiResult?.similarity_percent || 0;
 
     let report = aiResult?.gemini_report || "";
 
-    // ✅ HANDLE GEMINI ERROR (QUOTA / FAIL)
+    //  HANDLE GEMINI ERROR (QUOTA / FAIL)
     if (!report || report.includes("Gemini error")) {
       report = "AI report not available (quota limit).";
     }
 
-    // ✅ 5. SAVE TO DATABASE
+    //  5. SAVE TO DATABASE
     const title = await Title.create({
       name,
       department,
@@ -72,7 +72,7 @@ async function createTitle(req, res) {
       user: req.params.userId,
     });
 
-    // ✅ 6. RESPONSE
+    //  6. RESPONSE
     res.status(201).json({
       status: "success",
       data: title,
@@ -87,7 +87,7 @@ async function createTitle(req, res) {
   }
 }
 
-// ✅ GET ALL
+//  GET ALL
 async function getAllTitles(req, res) {
   try {
     const allTitles = await Title.find({});
@@ -101,7 +101,7 @@ async function getAllTitles(req, res) {
   }
 }
 
-// ✅ GET ONE
+//  GET ONE
 async function getTitle(req, res) {
   try {
     const t = await Title.findById(req.params.id).select("-__v").populate({
@@ -116,7 +116,7 @@ async function getTitle(req, res) {
       });
     }
 
-    // ✅ normalize response
+    //  normalize response
     const formatted = {
       ...t.toObject(),
 
@@ -136,7 +136,7 @@ async function getTitle(req, res) {
   }
 }
 
-// ✅ UPDATE (FIXED FOR NEW STRUCTURE)
+//  UPDATE (FIXED FOR NEW STRUCTURE)
 async function updateTitle(req, res) {
   try {
     const title = await Title.findById(req.params.id);
@@ -151,14 +151,14 @@ async function updateTitle(req, res) {
     const updates = Object.keys(req.body);
 
     updates.forEach((field) => {
-      // ✅ ONLY handle title fields safely
+      //  ONLY handle title fields safely
       if (["title_1", "title_2", "title_3"].includes(field)) {
         // ensure object exists
         if (!title[field]) {
           title[field] = { text: "", status: "pending", note: "" };
         }
 
-        // ✅ update ONLY text (not override whole object)
+        //  update ONLY text (not override whole object)
         if (req.body[field].text !== undefined) {
           title[field].text = req.body[field].text;
         }
@@ -193,7 +193,7 @@ async function updateTitle(req, res) {
   }
 }
 
-// ✅ DELETE
+//  DELETE
 async function deleteTitle(req, res) {
   try {
     const title = await Title.findById(req.params.id);
