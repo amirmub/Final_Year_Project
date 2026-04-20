@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Title = require("../models/titleModel");
 const User = require("../models/userModel");
 const { extractTextFromPDF } = require("../services/pdfService");
@@ -104,10 +105,19 @@ async function getAllTitles(req, res) {
 //  GET ONE
 async function getTitle(req, res) {
   try {
-    const t = await Title.findById(req.params.id).select("-__v").populate({
-      path: "user",
-      select: "-password -__v",
-    });
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Invalid ID",
+      });
+    }
+
+    const t = await Title.findById(req.params.id)
+      .select("-__v")
+      .populate({
+        path: "user",
+        select: "-password -__v",
+      });
 
     if (!t) {
       return res.status(404).json({
@@ -116,10 +126,8 @@ async function getTitle(req, res) {
       });
     }
 
-    //  normalize response
     const formatted = {
       ...t.toObject(),
-
       title_1: t.title_1 || { text: null, status: "pending" },
       title_2: t.title_2 || { text: null, status: "pending" },
       title_3: t.title_3 || { text: null, status: "pending" },
@@ -129,10 +137,12 @@ async function getTitle(req, res) {
       status: "success",
       data: formatted,
     });
+
   } catch (error) {
     res.status(500).json({
       message: "Internal server error",
     });
+    console.log(error)
   }
 }
 
