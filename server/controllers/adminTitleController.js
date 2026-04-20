@@ -7,7 +7,7 @@ const validFields = ["title_1", "title_2", "title_3"];
 exports.approveTitle = async (req, res) => {
   try {
     const { id, field } = req.params;
-    const { note } = req.body || {}; // ✅ optional note
+    const { note } = req.body || {};
 
     if (!validFields.includes(field)) {
       return res.status(400).json({ message: "Invalid title field" });
@@ -19,15 +19,23 @@ exports.approveTitle = async (req, res) => {
       return res.status(404).json({ message: "Title not found" });
     }
 
-    const oldStatus = title[field].status;
+    // ✅ CHECK: if ANY title is already approved
+    const alreadyApproved = validFields.some(
+      (t) => title[t]?.status === "approved"
+    );
 
-    if (oldStatus === "approved") {
-      return res.status(400).json({ message: "Already approved" });
+    if (alreadyApproved) {
+      return res.status(400).json({
+        message: "Only one title can be approved per student",
+      });
     }
 
-    // ✅ update status + note
+    const oldStatus = title[field].status;
+
+    // ✅ approve selected field
     title[field].status = "approved";
-    title[field].note = note || ""; // NEW
+    title[field].note = note || "";
+
     await title.save();
 
     await AdminTitleAction.create({
