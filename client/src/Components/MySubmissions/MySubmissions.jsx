@@ -19,6 +19,7 @@ const MySubmissions = () => {
 
   // ✅ FETCH DATA
   const fetchSubmission = async () => {
+    if (!id || id === "new") return;
     try {
       const res = await axios.get(`/users/${userId}/titles/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -43,8 +44,13 @@ const MySubmissions = () => {
   };
 
   useEffect(() => {
-    fetchSubmission();
-  }, [id]);
+  if (!id || id === "new") {
+    setLoading(false);
+    return;
+  }
+
+  fetchSubmission();
+}, [id]);
 
   // ✅ EDIT HANDLER
   const handleEdit = (field) => {

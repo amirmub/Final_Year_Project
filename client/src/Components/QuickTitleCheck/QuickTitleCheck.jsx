@@ -76,6 +76,8 @@ function QuickTitleCheck() {
       title2Ref.current.value = "";
       title3Ref.current.value = "";
       fileRef.current.value = "";
+      
+      console.log("NEW ID:", res.data.data._id);
 
       setTimeout(() => {
         navigate(`/student/my-submissions/${res.data.data._id}`);
