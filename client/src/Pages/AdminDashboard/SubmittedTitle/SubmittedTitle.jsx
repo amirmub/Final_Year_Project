@@ -203,25 +203,30 @@ function SubmittedTitle() {
   };
 
   // ================= APPROVE =================
-  const handleApprove = async (id, field, index) => {
-    try {
-      setActionLoading(field);
+ const handleApprove = async (id, field, index) => {
+  try {
+    setActionLoading(field);
 
-      await axios.patch(
-        `/users/${userId}/titles/${id}/${field}/approve`,
-        { note: notes[index] || "" },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+    await axios.patch(
+      `/users/${userId}/titles/${id}/${field}/approve`,
+      { note: notes[index] || "" },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      updateTitleStatus(id, field, "approved", notes[index] || "");
+    updateTitleStatus(id, field, "approved", notes[index] || "");
 
-      toast.success("Title approved successfully ✅");
-    } catch (err) {
-      toast.error("Failed to approve title");
-    } finally {
-      setActionLoading(null);
-    }
-  };
+    toast.success("Title approved successfully ✅");
+
+  } catch (err) {
+    const message =
+      err.response?.data?.message || "Failed to approve title";
+
+    toast.error(message);
+
+  } finally {
+    setActionLoading(null);
+  }
+};
 
   // ================= REJECT =================
   const handleReject = (id, field, index) => {
