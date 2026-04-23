@@ -1,27 +1,27 @@
 const axios = require("axios");
-
-exports.checkSimilarity = async (text) => {
+exports.checkSimilarity = async (text, title, studentName) => {
   try {
     const res = await axios.post(
-      "https://abdinan-jimma.hf.space/check_plagiarism",
+      "https://abdinkoo-abdinan-kebede.hf.space/check_plagiarism",
       {
         text,
-        title: "Project Title",
-        student_name: "Student",
+        title: title || "Project Title",
+        student_name: studentName || "Student",
         year: "2026",
-      }
+      },
+      {
+        timeout: 10000, // 10 seconds max
+      },
     );
 
-    return {
-      similarity_percent: res.data.similarity_percent,
-      gemini_report: res.data.gemini_report || "",
-    };
-
+    return res.data.reports || [];
   } catch (error) {
-    console.error("AI ERROR:", error.message);
-    return {
-      similarity_percent: 0,
-      gemini_report: "AI unavailable",
-    };
+    console.error("AI ERROR FULL:", error);
+
+    return [
+      { similarity_percent: 0, gemini_report: "AI service unavailable" },
+      { similarity_percent: 0, gemini_report: "AI service unavailable" },
+      { similarity_percent: 0, gemini_report: "AI service unavailable" },
+    ];
   }
 };

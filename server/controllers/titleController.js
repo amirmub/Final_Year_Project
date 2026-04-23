@@ -3,6 +3,7 @@ const Title = require("../models/titleModel");
 const User = require("../models/userModel");
 const { extractTextFromPDF } = require("../services/pdfService");
 const { checkSimilarity } = require("../services/similarityService");
+
 async function createTitle(req, res) {
   const { name, department, title_1, title_2, title_3, group_member } =
     req.body;
@@ -31,22 +32,25 @@ async function createTitle(req, res) {
       });
     }
 
-    //  3. SEND ONLY PDF TEXT TO AI (IMPORTANT)
-    const aiResult = await checkSimilarity(pdfText);
+    const reports = await checkSimilarity(pdfText, title_1, name);
 
-    // // console.log("🤖 AI RESULT:", aiResult);
-
-    //  4. HANDLE AI RESPONSE
-    const similarity = aiResult?.similarity_percent || 0;
-
-    let report = aiResult?.gemini_report || "";
-
-    //  HANDLE GEMINI ERROR (QUOTA / FAIL)
-    if (!report || report.includes("Gemini error")) {
-      report = "AI report not available (quota limit).";
+    // ensure 3 reports
+    while (reports.length < 3) {
+      reports.push({
+        similarity_percent: 0,
+        gemini_report: "",
+      });
     }
 
-    //  5. SAVE TO DATABASE
+    // helper
+    const safeReport = (r) => {
+      if (!r?.gemini_report || r.gemini_report.includes("error")) {
+        return "AI report not available (quota limit).";
+      }
+      return r.gemini_report;
+    };
+
+    // SAVE
     const title = await Title.create({
       name,
       department,
@@ -54,31 +58,29 @@ async function createTitle(req, res) {
 
       title_1: {
         text: title_1,
-        similarity_percent: similarity,
-        ai_report: report,
+        similarity_percent: reports[0]?.similarity_percent || 0,
+        ai_report: safeReport(reports[0]),
       },
 
       title_2: {
         text: title_2,
-        similarity_percent: similarity,
-        ai_report: report,
+        similarity_percent: reports[1]?.similarity_percent || 0,
+        ai_report: safeReport(reports[1]),
       },
 
       title_3: {
         text: title_3,
-        similarity_percent: similarity,
-        ai_report: report,
+        similarity_percent: reports[2]?.similarity_percent || 0,
+        ai_report: safeReport(reports[2]),
       },
 
       user: req.params.userId,
     });
-
     //  6. RESPONSE
     res.status(201).json({
       status: "success",
       data: title,
     });
-
   } catch (error) {
     console.error("❌ CREATE TITLE ERROR:", error);
 
@@ -112,12 +114,10 @@ async function getTitle(req, res) {
       });
     }
 
-    const t = await Title.findById(req.params.id)
-      .select("-__v")
-      .populate({
-        path: "user",
-        select: "-password -__v",
-      });
+    const t = await Title.findById(req.params.id).select("-__v").populate({
+      path: "user",
+      select: "-password -__v",
+    });
 
     if (!t) {
       return res.status(404).json({
@@ -137,12 +137,11 @@ async function getTitle(req, res) {
       status: "success",
       data: formatted,
     });
-
   } catch (error) {
     res.status(500).json({
       message: "Internal server error",
     });
-    console.log(error)
+    console.log(error);
   }
 }
 
