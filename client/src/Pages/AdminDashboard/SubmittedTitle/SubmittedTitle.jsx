@@ -203,30 +203,27 @@ function SubmittedTitle() {
   };
 
   // ================= APPROVE =================
- const handleApprove = async (id, field, index) => {
-  try {
-    setActionLoading(field);
+  const handleApprove = async (id, field, index) => {
+    try {
+      setActionLoading(field);
 
-    await axios.patch(
-      `/users/${userId}/titles/${id}/${field}/approve`,
-      { note: notes[index] || "" },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+      await axios.patch(
+        `/users/${userId}/titles/${id}/${field}/approve`,
+        { note: notes[index] || "" },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
 
-    updateTitleStatus(id, field, "approved", notes[index] || "");
+      updateTitleStatus(id, field, "approved", notes[index] || "");
 
-    toast.success("Title approved successfully ✅");
+      toast.success("Title approved successfully ✅");
+    } catch (err) {
+      const message = err.response?.data?.message || "Failed to approve title";
 
-  } catch (err) {
-    const message =
-      err.response?.data?.message || "Failed to approve title";
-
-    toast.error(message);
-
-  } finally {
-    setActionLoading(null);
-  }
-};
+      toast.error(message);
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   // ================= REJECT =================
   const handleReject = (id, field, index) => {
@@ -540,21 +537,6 @@ function SubmittedTitle() {
                                     {shortTitle}
                                   </span>
 
-                                  {/* ✅ OPTIONAL: show status */}
-                                  {/* <small
-          style={{
-            color:
-              t.status === "approved"
-                ? "green"
-                : t.status === "rejected"
-                ? "red"
-                : "orange",
-            fontSize: "11px",
-          }}
-        >
-          {t.status}
-        </small> */}
-
                                   {/* ✅ OPTIONAL: show note */}
                                   {t.note && (
                                     <div
@@ -626,15 +608,6 @@ function SubmittedTitle() {
                                 handleView(
                                   {
                                     ...row,
-                                    combinedReport: row.titles
-                                      .map((t) => t.report)
-                                      .filter(Boolean)
-                                      .join("\n\n----------------------\n\n"),
-                                    avgSimilarity:
-                                      row.titles.reduce(
-                                        (acc, t) => acc + (t.similarity || 0),
-                                        0,
-                                      ) / row.titles.length,
                                   },
                                   "report",
                                 )
@@ -737,41 +710,38 @@ function SubmittedTitle() {
                   return (
                     <div key={i} className="border rounded p-3 mt-3">
                       {/* TITLE */}
-                      <div className="fw-bold mb-1">{t.text}</div>
+                      <h6>📄 Title {i + 1}</h6>
+                      <div className="fw-bold mb-1">{t.text}</div><br />
 
                       {/* ✅ SHOW AI REPORT ONLY in REPORT MODE */}
                       {selectedRow.viewMode === "report" && (
                         <div>
-                          {/* RESULT */}
-                          <div className="mb-3">
-                            <h6 className="fw-bold">📊 Result</h6>
 
-                            <div style={{ fontSize: "14px" }}>
-                              <strong>Similarity:</strong>{" "}
-                              {selectedRow.avgSimilarity?.toFixed(2)}%
-                            </div>
+                          <div style={{ fontSize: "14px" }}>
+                            <strong>Similarity:</strong>{" "}
+                            {t.similarity?.toFixed(2)}%
+                          </div>
 
-                            <div
-                              style={{
-                                fontWeight: "bold",
-                                color:
-                                  selectedRow.avgSimilarity > 70
-                                    ? "red"
-                                    : selectedRow.avgSimilarity >= 40
-                                      ? "orange"
-                                      : "green",
-                              }}
-                            >
-                              {selectedRow.avgSimilarity > 70
-                                ? "HIGH"
-                                : selectedRow.avgSimilarity >= 40
-                                  ? "MEDIUM"
-                                  : "LOW"}
-                            </div>
+                          <div
+                            style={{
+                              fontWeight: "bold",
+                              color:
+                                t.similarity > 70
+                                  ? "red"
+                                  : t.similarity >= 40
+                                    ? "orange"
+                                    : "green",
+                            }}
+                          >
+                            {t.similarity > 70
+                              ? "HIGH"
+                              : t.similarity >= 40
+                                ? "MEDIUM"
+                                : "LOW"}
                           </div>
 
                           {/* AI REPORT */}
-                          <div>
+                          <div className="mt-3">
                             <h6 className="fw-bold">🤖 AI Report</h6>
 
                             <div
@@ -779,34 +749,13 @@ function SubmittedTitle() {
                                 background: "#f0f0f0",
                                 padding: "15px",
                                 borderRadius: "8px",
-                                maxHeight: "400px",
+                                maxHeight: "300px",
                                 overflowY: "auto",
                                 fontSize: "13px",
-                                lineHeight: "1.6",
                               }}
                             >
-                              <ReactMarkdown
-                                components={{
-                                  h1: ({ children }) => (
-                                    <h5 className="fw-bold mt-3">{children}</h5>
-                                  ),
-                                  h2: ({ children }) => (
-                                    <h6 className="fw-bold mt-2">{children}</h6>
-                                  ),
-                                  p: ({ children }) => (
-                                    <p style={{ marginBottom: "8px" }}>
-                                      {children}
-                                    </p>
-                                  ),
-                                  li: ({ children }) => (
-                                    <li style={{ marginBottom: "4px" }}>
-                                      {children}
-                                    </li>
-                                  ),
-                                }}
-                              >
-                                {selectedRow.combinedReport ||
-                                  "No AI report available"}
+                              <ReactMarkdown>
+                                {t.report || "No AI report"}
                               </ReactMarkdown>
                             </div>
                           </div>
