@@ -333,7 +333,7 @@ function SubmittedTitle() {
             <Col
               md={9}
               lg={10}
-              className="px-5 py-3"
+              className="px-4 py-3"
               style={{ backgroundColor: "#f4f6f9", minHeight: "88vh" }}
             >
               <h4 className="fw-bold mb-2 mt-2 text-primary">
@@ -449,7 +449,7 @@ function SubmittedTitle() {
                       <th style={{ border: "1.5px solid #dee2e6" }}>
                         AI Report
                       </th>
-                      <th style={{ border: "1.5px solid #dee2e6" }}>Actions</th>
+                      <th style={{ border: "1.5px solid #dee2e6" }}>Action</th>
                     </tr>
                   </thead>
 
@@ -602,7 +602,7 @@ function SubmittedTitle() {
                           {/*  AI Report */}
                           <td style={{ border: "1.5px solid #dee2e6" }}>
                             <button
-                              className="btn btn-sm btn-outline-primary w-100"
+                              className="btn btn-sm btn-outline-primary w-40"
                               style={{ fontSize: "11px" }}
                               onClick={() =>
                                 handleView(
@@ -625,7 +625,7 @@ function SubmittedTitle() {
                             }}
                           >
                             <button
-                              className="btn btn-primary btn-sm w-100"
+                              className="btn btn-primary btn-sm w-40"
                               style={{ fontSize: "11px", fontWeight: 700 }}
                               onClick={() => handleView(row, "full")}
                             >

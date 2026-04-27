@@ -6,6 +6,7 @@ import SubmittedTitles from "../../Pages/StudDashboard/SubmittedTitles/Submitted
 import Dashboard from "../../Pages/StudDashboard/Dashboard/Dashboard";
 import AnnouncementCard from "../../Components/AnnouncementCard/AnnouncementCard";
 import Setting from "../../Pages/StudDashboard/Setting/Setting";
+import NotFound from "../../Pages/NotFound/NotFound";
 
 export default function StudentRoutes() {
   return (
@@ -19,6 +20,8 @@ export default function StudentRoutes() {
       <Route path="announcements/view" element={<AnnouncementCard />} />
       <Route path="faq" element={<FAQPage />} />
       <Route path="setting" element={<Setting />} />
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
