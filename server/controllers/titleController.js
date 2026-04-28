@@ -2,93 +2,62 @@ const mongoose = require("mongoose");
 const Title = require("../models/titleModel");
 const User = require("../models/userModel");
 const { extractTextFromPDF } = require("../services/pdfService");
-const { checkSimilarity } = require("../services/similarityService");
+// const { checkSimilarity } = require("../services/similarityService");
+const { checkSimilarity, generateProfessionalSummary } = require("../services/similarityService");
 
 async function createTitle(req, res) {
   const { name, department, title_1, title_2, title_3, group_member } =
     req.body;
 
   try {
-    let pdfText = "";
-
-    //  1. CHECK FILE
     if (!req.file) {
-      return res.status(400).json({
-        message: "PDF file is required",
-      });
+      return res.status(400).json({ message: "PDF required" });
     }
 
-    // // console.log("📂 FILE:", req.file);
+    const pdfText = await extractTextFromPDF(req.file.buffer);
 
-    //  2. EXTRACT PDF TEXT
-    pdfText = await extractTextFromPDF(req.file.buffer);
-
-    // // console.log("📄 PDF LENGTH:", pdfText.length);
-
-    // ❌ IF PDF TOO SHORT → STOP
     if (!pdfText || pdfText.length < 200) {
-      return res.status(400).json({
-        message: "PDF content too short. Please upload valid document.",
-      });
+      return res.status(400).json({ message: "Invalid PDF" });
     }
 
-    const reports = await checkSimilarity(pdfText, title_1, name);
+    // ✅ CALL API ONCE
+    const apiResults = await checkSimilarity(pdfText, title_1, name);
 
-    // ensure 3 reports
-    while (reports.length < 3) {
-      reports.push({
-        similarity_percent: 0,
-        gemini_report: "",
-      });
+    // ensure 3
+    while (apiResults.length < 3) {
+      apiResults.push({});
     }
 
-    // helper
-    const safeReport = (r) => {
-      if (!r?.gemini_report || r.gemini_report.includes("error")) {
-        return "AI report not available (quota limit).";
-      }
-      return r.gemini_report;
-    };
+    // ✅ MAP EACH RESULT
+    const mapTitle = (t, api) => ({
+      text: t,
+      similarity_percent: api.similarity || 0,
+      ai_report: generateProfessionalSummary(api, t, name, "2026"),
+    });
 
-    // SAVE
     const title = await Title.create({
       name,
       department,
       group_member,
 
-      title_1: {
-        text: title_1,
-        similarity_percent: reports[0]?.similarity_percent || 0,
-        ai_report: safeReport(reports[0]),
-      },
-
-      title_2: {
-        text: title_2,
-        similarity_percent: reports[1]?.similarity_percent || 0,
-        ai_report: safeReport(reports[1]),
-      },
-
-      title_3: {
-        text: title_3,
-        similarity_percent: reports[2]?.similarity_percent || 0,
-        ai_report: safeReport(reports[2]),
-      },
+      title_1: mapTitle(title_1, apiResults[0]),
+      title_2: mapTitle(title_2, apiResults[1]),
+      title_3: mapTitle(title_3, apiResults[2]),
 
       user: req.params.userId,
     });
-    //  6. RESPONSE
+
     res.status(201).json({
       status: "success",
       data: title,
     });
-  } catch (error) {
-    console.error("❌ CREATE TITLE ERROR:", error);
 
-    res.status(500).json({
-      message: error.message,
-    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 }
+
 
 //  GET ALL
 async function getAllTitles(req, res) {
