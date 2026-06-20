@@ -5,8 +5,28 @@ const app = express();
 app.use(express.json());
 
 const cors = require("cors") 
-app.use(cors())
 
+// allow credentials + specify origin
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://final-year-project-red-iota.vercel.app",
+  process.env.FRONTEND_URL,
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // 🔹 must allow credentials
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 // db connection file
 const dbConnection = require("./config/config");
 dbConnection();
