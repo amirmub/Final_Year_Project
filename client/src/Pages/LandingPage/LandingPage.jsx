@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Facts from "../../Components/Facts/Facts";
 import Footer from "../../Components/Footer/Footer";
 import Navbar from "../../Components/Navbar/Navbar";
+import bannerImage from "../../../assets/ban copy.png"; // Adjust the path as necessary
 
 export default function LandingPage() {
   return (
@@ -13,7 +14,7 @@ export default function LandingPage() {
       <section
         className="text-center text-white d-flex align-items-center"
         style={{
-          backgroundImage: "url('../../assets/img/ban copy.png')", // your image path here
+          backgroundImage: `url(${bannerImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -27,9 +28,11 @@ export default function LandingPage() {
             Jimma University
           </p>
           <div className="mt-4">
-           <Link to="/register">  <button  className="btn btn-warning px-4 me-3">
-              Check Your Title Now
-            </button>
+            <Link to="/register">
+              {" "}
+              <button className="btn btn-warning px-4 me-3">
+                Check Your Title Now
+              </button>
             </Link>
             {/* <button className="btn btn-outline-light px-4">Learn More</button> */}
           </div>
@@ -96,7 +99,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-5 text-center bg-light process-section" id="how-it-works">
+      <section
+        className="py-5 text-center bg-light process-section"
+        id="how-it-works"
+      >
         <div className="container-fluid py-5">
           <h2 className="fw-bold mb-5">Simple 3-Step Process</h2>
 
@@ -106,7 +112,9 @@ export default function LandingPage() {
               <div className="step-item">
                 <div className="step-circle">1</div>
                 <h5 className="fw-semibold mt-3">Create Account</h5>
-                <p className="text-muted small mb-0">Sign up using your email.</p>
+                <p className="text-muted small mb-0">
+                  Sign up using your email.
+                </p>
               </div>
             </div>
 
@@ -115,7 +123,9 @@ export default function LandingPage() {
               <div className="step-item">
                 <div className="step-circle">2</div>
                 <h5 className="fw-semibold mt-3">Submit Title</h5>
-                <p className="text-muted small mb-0">Enter your proposed research project title.</p>
+                <p className="text-muted small mb-0">
+                  Enter your proposed research project title.
+                </p>
               </div>
             </div>
 
@@ -124,16 +134,17 @@ export default function LandingPage() {
               <div className="step-item">
                 <div className="step-circle">3</div>
                 <h5 className="fw-semibold mt-3">Get Results</h5>
-                <p className="text-muted small mb-0">Receive similarity analysis instantly.</p>
+                <p className="text-muted small mb-0">
+                  Receive similarity analysis instantly.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-
       {/* Facts Section */}
-      <div style={{marginTop: "90px"}}>
+      <div style={{ marginTop: "90px" }}>
         <Facts />
       </div>
 
@@ -170,11 +181,18 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="text-center" style={{ background: "#F1F1F1",padding: "80px 0" }}>
+      <section
+        className="text-center"
+        style={{ background: "#F1F1F1", padding: "80px 0" }}
+      >
         <h2 className="fw-bold">Ready to Check Your Title?</h2>
-        <h6 className="my-3">Join hundreds of students ensuring their project titles are unique.</h6>
+        <h6 className="my-3">
+          Join hundreds of students ensuring their project titles are unique.
+        </h6>
         <Link to="/register">
-        <button className="btn px-5 py-2 bg-warning fw-semibold">Get Started Now</button>
+          <button className="btn px-5 py-2 bg-warning fw-semibold">
+            Get Started Now
+          </button>
         </Link>
         <h6 className="my-3">it's free for all private university students</h6>
       </section>
