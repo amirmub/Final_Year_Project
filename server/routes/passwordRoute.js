@@ -5,7 +5,7 @@ const passwordController = require("../controllers/passwordController");
 const authMiddleware = require("../middleware/authMiddleware");
 
 // Route to  password reset (send reset email)
-router.post("/forgot-password", passwordController.forgotPassword);
+router.post("/forgot-password", passwordController.forgotPassword); 
 
 // Route to  password reset (send reset email)
 router.patch("/reset-password/:token", passwordController.resetPassword);
