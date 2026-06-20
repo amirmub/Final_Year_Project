@@ -35,6 +35,13 @@ dbConnection();
 const routes = require("./routes/index.js");
 app.use("/api/v1",routes);
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "API is running ",
+  });
+});
+
 app.listen(5000, (err) => {
   if (err) console.log(err);
   else console.log("its listening PORT http://localhost:5000");
